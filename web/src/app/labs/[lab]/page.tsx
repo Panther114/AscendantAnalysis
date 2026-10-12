@@ -5,7 +5,7 @@ import { notFound } from "next/navigation";
 import { ColumnChart } from "@/components/charts/ColumnChart";
 import { HealthChart } from "@/components/charts/HealthChart";
 import { ReleaseTimeline, type TimelinePoint } from "@/components/charts/ReleaseTimeline";
-import { BandBadge, Card, Delta, InfoNote, Meter, Monogram } from "@/components/ui";
+import { BandBadge, Card, Delta, InfoNote, Meter, LabLogo } from "@/components/ui";
 import { field, history, labs, leaderboard, meta, releases, variantName } from "@/lib/data";
 import { describeLead, recentReleases, weeklyDrivers } from "@/lib/explain";
 import { AXIS_LABEL, fmtDate, fmtHealth, fmtMult, fmtPct, fmtSigned, TIER_LABEL } from "@/lib/format";
@@ -76,7 +76,7 @@ export default async function LabPage(props: PageProps<"/labs/[lab]">) {
         <div className="mt-4 flex flex-wrap items-center justify-between gap-6">
           <div className="min-w-0">
             <div className="flex items-center gap-4">
-              <Monogram lab={lab} size={44} />
+              <LabLogo lab={lab} size={44} />
               <h1 className="serif text-[52px] leading-none sm:text-[72px]">{m.name}</h1>
             </div>
             <p className="mt-4 flex flex-wrap items-center gap-x-4 gap-y-2 text-sm text-ink-2">
@@ -150,7 +150,7 @@ export default async function LabPage(props: PageProps<"/labs/[lab]">) {
             <ul className="divide-y divide-rule-soft text-sm">
               {recent.map((r) => (
                 <li key={r.slug} className="flex items-center gap-2.5 py-2">
-                  <Monogram lab={r.lab} size={18} />
+                  <LabLogo lab={r.lab} size={18} />
                   <span className={r.lab === lab ? "font-medium text-ink" : "text-ink-2"}>{r.name}</span>
                   <span className="tabular ml-auto text-xs text-ink-3">{fmtDate(r.date)}</span>
                 </li>

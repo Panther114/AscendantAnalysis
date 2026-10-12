@@ -3,7 +3,7 @@ import Link from "next/link";
 import { ColumnChart } from "@/components/charts/ColumnChart";
 import { HealthChart } from "@/components/charts/HealthChart";
 import { LeaderboardTable } from "@/components/LeaderboardTable";
-import { BandBadge, Card, Delta, LabLink, Monogram, MoreLink, PageHeader } from "@/components/ui";
+import { BandBadge, Card, Delta, LabLink, LabLogo, MoreLink, PageHeader } from "@/components/ui";
 import { featuredLabs, field, history, labName, labs, leaderboard, meta } from "@/lib/data";
 import { recentReleases } from "@/lib/explain";
 import { fmtDate, fmtHealth, TIER_LABEL } from "@/lib/format";
@@ -138,7 +138,7 @@ export default function Home() {
               {field.tiers[t].slice(0, 5).map((e) => (
                 <li key={e.lab} className="flex items-center gap-3 border-b border-rule-soft py-2.5 last:border-0">
                   <span className="serif tabular w-5 text-[18px] leading-none text-ink-3">{e.rank}</span>
-                  <Monogram lab={e.lab} />
+                  <LabLogo lab={e.lab} />
                   <div className="min-w-0 flex-1">
                     <p className="truncate text-sm font-medium">{byslug[e.release]?.name ?? e.release}</p>
                     <p className="truncate text-xs text-ink-3">{labName(e.lab)}</p>

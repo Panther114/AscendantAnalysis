@@ -1,0 +1,230 @@
+{
+ "ai2": {
+  "file": "ai2.svg",
+  "source": "lobehub:ai2-color"
+ },
+ "ai21-labs": {
+  "file": "ai21-labs.svg",
+  "source": "lobehub:ai21"
+ },
+ "ai9star": {
+  "file": "ai9star.svg",
+  "source": "artificialanalysis"
+ },
+ "alibaba": {
+  "file": "alibaba.svg",
+  "source": "lobehub:alibaba-color"
+ },
+ "anthropic": {
+  "file": "anthropic.svg",
+  "source": "lobehub:anthropic"
+ },
+ "apodex": {
+  "file": "apodex.svg",
+  "source": "artificialanalysis"
+ },
+ "arcee": {
+  "file": "arcee.svg",
+  "source": "lobehub:arcee-color"
+ },
+ "aws": {
+  "file": "aws.svg",
+  "source": "lobehub:aws-color"
+ },
+ "azure": {
+  "file": "azure.svg",
+  "source": "lobehub:microsoft-color"
+ },
+ "baidu": {
+  "file": "baidu.svg",
+  "source": "lobehub:baidu-color"
+ },
+ "bytedance_seed": {
+  "file": "bytedance_seed.svg",
+  "source": "lobehub:bytedance-color"
+ },
+ "celeris": {
+  "file": "celeris.svg",
+  "source": "artificialanalysis"
+ },
+ "china-mobile": {
+  "file": "china-mobile.png",
+  "source": "artificialanalysis"
+ },
+ "cohere": {
+  "file": "cohere.svg",
+  "source": "lobehub:cohere-color"
+ },
+ "databricks": {
+  "file": "databricks.svg",
+  "source": "lobehub:dbrx-color"
+ },
+ "deepseek": {
+  "file": "deepseek.svg",
+  "source": "lobehub:deepseek-color"
+ },
+ "google": {
+  "file": "google.svg",
+  "source": "lobehub:google-color"
+ },
+ "ibm": {
+  "file": "ibm.svg",
+  "source": "lobehub:ibm"
+ },
+ "ifm": {
+  "file": "ifm.svg",
+  "source": "artificialanalysis"
+ },
+ "inception": {
+  "file": "inception.svg",
+  "source": "lobehub:inception"
+ },
+ "inclusionai": {
+  "file": "inclusionai.svg",
+  "source": "lobehub:antgroup-color"
+ },
+ "kimi": {
+  "file": "kimi.svg",
+  "source": "lobehub:kimi-color"
+ },
+ "korea-telecom": {
+  "file": "korea-telecom.png",
+  "source": "artificialanalysis"
+ },
+ "kwaikat": {
+  "file": "kwaikat.svg",
+  "source": "lobehub:kwaikat"
+ },
+ "lg": {
+  "file": "lg.svg",
+  "source": "lobehub:lg-color"
+ },
+ "liquidai": {
+  "file": "liquidai.svg",
+  "source": "lobehub:liquid"
+ },
+ "longcat": {
+  "file": "longcat.svg",
+  "source": "lobehub:longcat-color"
+ },
+ "meta": {
+  "file": "meta.svg",
+  "source": "lobehub:meta-color"
+ },
+ "minimax": {
+  "file": "minimax.svg",
+  "source": "lobehub:minimax-color"
+ },
+ "mistral": {
+  "file": "mistral.svg",
+  "source": "lobehub:mistral-color"
+ },
+ "motif-technologies": {
+  "file": "motif-technologies.svg",
+  "source": "artificialanalysis"
+ },
+ "multiversecomputing": {
+  "file": "multiversecomputing.svg",
+  "source": "artificialanalysis"
+ },
+ "nanbeige": {
+  "file": "nanbeige.png",
+  "source": "artificialanalysis"
+ },
+ "naver": {
+  "file": "naver.webp",
+  "source": "artificialanalysis"
+ },
+ "nex": {
+  "file": "nex.svg",
+  "source": "artificialanalysis"
+ },
+ "nous-research": {
+  "file": "nous-research.svg",
+  "source": "lobehub:nousresearch"
+ },
+ "nvidia": {
+  "file": "nvidia.svg",
+  "source": "lobehub:nvidia-color"
+ },
+ "openai": {
+  "file": "openai.svg",
+  "source": "lobehub:openai"
+ },
+ "openbmb": {
+  "file": "openbmb.svg",
+  "source": "artificialanalysis"
+ },
+ "openchat": {
+  "file": "openchat.svg",
+  "source": "lobehub:openchat-color"
+ },
+ "perplexity": {
+  "file": "perplexity.svg",
+  "source": "lobehub:perplexity-color"
+ },
+ "prime-intellect": {
+  "file": "prime-intellect.svg",
+  "source": "artificialanalysis"
+ },
+ "reka-ai": {
+  "file": "reka-ai.svg",
+  "source": "lobehub:reka"
+ },
+ "sarvam": {
+  "file": "sarvam.svg",
+  "source": "artificialanalysis"
+ },
+ "servicenow": {
+  "file": "servicenow.svg",
+  "source": "artificialanalysis"
+ },
+ "sk-telecom": {
+  "file": "sk-telecom.svg",
+  "source": "artificialanalysis"
+ },
+ "snowflake": {
+  "file": "snowflake.svg",
+  "source": "lobehub:snowflake-color"
+ },
+ "stepfun": {
+  "file": "stepfun.svg",
+  "source": "lobehub:stepfun-color"
+ },
+ "swiss-ai-initiative": {
+  "file": "swiss-ai-initiative.png",
+  "source": "artificialanalysis"
+ },
+ "tencent": {
+  "file": "tencent.svg",
+  "source": "lobehub:tencent-color"
+ },
+ "thinking-machines": {
+  "file": "thinking-machines.svg",
+  "source": "artificialanalysis"
+ },
+ "tii-uae": {
+  "file": "tii-uae.svg",
+  "source": "lobehub:tii-color"
+ },
+ "trillionlabs": {
+  "file": "trillionlabs.svg",
+  "source": "artificialanalysis"
+ },
+ "upstage": {
+  "file": "upstage.svg",
+  "source": "lobehub:upstage-color"
+ },
+ "xai": {
+  "file": "xai.svg",
+  "source": "lobehub:xai"
+ },
+ "xiaomi": {
+  "file": "xiaomi.svg",
+  "source": "artificialanalysis"
+ },
+ "zai": {
+  "file": "zai.svg",
+  "source": "lobehub:zai"
+ }
+}

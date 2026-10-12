@@ -2,7 +2,7 @@ import Link from "next/link";
 
 import { labs } from "@/lib/data";
 import { labColor } from "@/lib/palette";
-import { Monogram } from "../ui";
+import { LabLogo } from "../ui";
 
 export interface Column {
   lab: string;
@@ -75,7 +75,7 @@ export function ColumnChart({
                   </div>
                 </div>
                 <Link href={`/labs/${d.lab}/`} className="mt-2 flex flex-col items-center" aria-label={`${labs[d.lab]?.name ?? d.lab}: ${format(d.value)}${unit}`}>
-                  <Monogram lab={d.lab} size={18} />
+                  <LabLogo lab={d.lab} size={18} />
                   <span className="relative mt-1.5 block h-[60px] w-full">
                     <span className="absolute right-1/2 top-0 max-w-[84px] origin-top-right -rotate-45 truncate whitespace-nowrap text-[11px] leading-tight text-ink-2 group-hover:text-ink">
                       {d.label ?? labs[d.lab]?.name ?? d.lab}

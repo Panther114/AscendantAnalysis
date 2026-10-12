@@ -2,8 +2,11 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { labs } from "@/lib/data";
+import logos from "@/lib/logos.json";
 import { fmtSigned } from "@/lib/format";
-import { bandLevel, labColor } from "@/lib/palette";
+import { bandLevel } from "@/lib/palette";
+
+const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 export type KeyColor = "violet" | "yellow" | "orange" | "green" | "blue" | "ink";
 
@@ -61,24 +64,22 @@ export function PageHeader({ eyebrow, title, children, aside }: { eyebrow?: stri
   );
 }
 
-/** Lab monogram tile in the lab's brand color (stands in for logos). */
-export function Monogram({ lab, size = 20 }: { lab: string; size?: number }) {
-  const name = labs[lab]?.name ?? lab;
-  const letters = name.replace(/[^A-Za-z0-9 ]/g, "").split(/\s+/).filter(Boolean);
-  const text = (letters.length > 1 ? letters[0][0] + letters[1][0] : name.slice(0, 2)).toUpperCase();
+/** Lab logo on a white rounded tile (app-icon style), legible in both themes. */
+export function LabLogo({ lab, size = 20 }: { lab: string; size?: number }) {
+  const logo = (logos as Record<string, { file: string }>)[lab];
+  const pad = Math.max(2, Math.round(size * 0.14));
   return (
     <span
       aria-hidden="true"
-      className="inline-grid shrink-0 place-items-center rounded-[5px] font-semibold leading-none tracking-tight"
-      style={{
-        width: size,
-        height: size,
-        fontSize: Math.round(size * 0.42),
-        background: labColor(lab),
-        color: `var(--lab-${lab}-ink, #fff)`,
-      }}
+      className="inline-grid shrink-0 place-items-center overflow-hidden rounded-[22%] border border-black/10 bg-white"
+      style={{ width: size, height: size, padding: pad }}
     >
-      {text}
+      {logo ? (
+        // eslint-disable-next-line @next/next/no-img-element -- static export, tiny SVGs
+        <img src={`${BASE}/logos/${logo.file}`} alt="" width={size - pad * 2} height={size - pad * 2} className="h-full w-full object-contain" loading="lazy" decoding="async" />
+      ) : (
+        <span className="text-[10px] font-semibold text-black">{(labs[lab]?.name ?? lab).slice(0, 2).toUpperCase()}</span>
+      )}
     </span>
   );
 }
@@ -86,7 +87,7 @@ export function Monogram({ lab, size = 20 }: { lab: string; size?: number }) {
 export function LabLink({ lab, className = "", size = 20 }: { lab: string; className?: string; size?: number }) {
   return (
     <Link href={`/labs/${lab}/`} className={`group/lab inline-flex min-w-0 items-center gap-2.5 ${className}`}>
-      <Monogram lab={lab} size={size} />
+      <LabLogo lab={lab} size={size} />
       <span className="truncate group-hover/lab:underline group-hover/lab:underline-offset-4">{labs[lab]?.name ?? lab}</span>
     </Link>
   );

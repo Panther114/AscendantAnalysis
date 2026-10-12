@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 import Link from "next/link";
 
 import { ColumnChart } from "@/components/charts/ColumnChart";
-import { Card, InfoNote, Monogram, PageHeader, type KeyColor } from "@/components/ui";
+import { Card, InfoNote, LabLogo, PageHeader, type KeyColor } from "@/components/ui";
 import { field, labName } from "@/lib/data";
 import { fmtPct, fmtUsd, TIER_LABEL } from "@/lib/format";
 import type { Tier } from "@/lib/types";
@@ -46,7 +46,7 @@ export default function TiersPage() {
                 return (
                   <li key={e.lab} className="flex items-center gap-3 border-t border-rule-soft px-5 py-3">
                     <span className="serif tabular w-6 text-[20px] leading-none text-ink-3">{e.rank}</span>
-                    <Monogram lab={e.lab} size={22} />
+                    <LabLogo lab={e.lab} size={22} />
                     <div className="min-w-0 flex-1">
                       <p className="truncate text-sm font-medium">{r?.name ?? e.release}</p>
                       <p className="tabular truncate text-xs text-ink-3">
