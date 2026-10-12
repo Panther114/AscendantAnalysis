@@ -1,0 +1,85 @@
+name: Daily update
+
+on:
+  schedule:
+    - cron: "17 6 * * *" # daily, 06:17 UTC
+  workflow_dispatch:
+  push:
+    branches: [main]
+
+permissions:
+  contents: write
+  pages: write
+  id-token: write
+
+concurrency:
+  group: daily-update
+  cancel-in-progress: false
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: astral-sh/setup-uv@v5
+        with:
+          working-directory: pipeline
+
+      - name: Ingest today's snapshot
+        if: github.event_name != 'push'
+        working-directory: pipeline
+        env:
+          AA_API_KEY: ${{ secrets.AA_API_KEY }}
+        run: uv run --frozen ascendant ingest
+
+      - name: Tests
+        working-directory: pipeline
+        run: uv run --frozen pytest -q
+
+      - name: Determinism gate
+        working-directory: pipeline
+        run: uv run --frozen ascendant verify
+
+      - name: Export site data
+        working-directory: pipeline
+        run: uv run --frozen ascendant export
+
+      - name: Commit snapshot
+        if: github.event_name != 'push'
+        run: |
+          git config user.name "ascendant-bot"
+          git config user.email "ascendant-bot@users.noreply.github.com"
+          git add data/snapshots
+          git diff --cached --quiet || git commit -m "snapshot: $(date -u +%F)"
+          git push
+
+      - uses: actions/setup-node@v4
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Build site
+        working-directory: web
+        env:
+          NEXT_PUBLIC_BASE_PATH: /${{ github.event.repository.name }}
+        run: |
+          npm ci
+          npm run lint
+          npm run build
+
+      - uses: actions/configure-pages@v5
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: web/out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v4

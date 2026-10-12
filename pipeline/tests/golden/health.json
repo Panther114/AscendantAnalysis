@@ -1,0 +1,21 @@
+{
+  "snapshot": "2026-10-12",
+  "methodology": "1.0.0",
+  "health": {
+    "anthropic": 96.1,
+    "openai": 73.1,
+    "google": 66.7,
+    "xiaomi": 56.2,
+    "deepseek": 55.0,
+    "inclusionai": 52.4,
+    "alibaba": 49.9,
+    "meta": 48.7,
+    "zai": 48.3,
+    "mistral": 35.2,
+    "upstage": 31.8,
+    "thinking-machines": 30.2,
+    "stepfun": 26.4,
+    "xai": 26.2,
+    "minimax": 25.9
+  }
+}

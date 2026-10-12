@@ -1,0 +1,23 @@
+# Owner's subjective read of the landscape (2026-10). Informational only: it is
+# NOT used to tune weights. Each build reports how the model's output compares.
+as_of: "2026-10-12"
+expectations:
+  anthropic:
+    band: Ascendant
+    note: Opus leads the world; Opus, Sonnet and Haiku all competitive in their tiers.
+  openai:
+    band: Holding
+    note: Lineup not winning high or mid tier against Anthropic.
+  xai:
+    band: Slipping
+    trend: down
+    note: Grok 4.5 competitive, 4.6 less so, 4.7 an expensive disappointment.
+  deepseek:
+    band: Contending
+    note: Cheap specialist with consistent progress.
+  xiaomi:
+    band: Contending
+    note: Cheap specialist with consistent progress.
+  google:
+    stale: true
+    note: Feels like a while since the last major release.

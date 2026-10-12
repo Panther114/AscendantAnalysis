@@ -1,0 +1,10 @@
+# Deterministic, reviewed overrides. Keep this file short; each entry needs a reason.
+
+# release slug -> product line (when the name heuristic gets it wrong)
+product_lines: {}
+
+# release slug -> tier (small | mid | frontier)
+tiers: {}
+
+# release slugs excluded from scoring (e.g. duplicates, routers, non-models)
+exclude_releases: []

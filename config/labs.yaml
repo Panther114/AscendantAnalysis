@@ -1,0 +1,12 @@
+# Creator slug (as published by Artificial Analysis) -> canonical lab.
+# Use `aliases` when AA splits one lab across several creator slugs.
+aliases: {}
+
+# Fixed categorical color slots (validated 8-hue palette, see web/src/lib/palette.ts).
+# Color follows the lab, never its rank; labs not listed render as neutral "other".
+palette_order: [anthropic, openai, google, xai, deepseek, xiaomi, alibaba, meta]
+
+# Optional display overrides.
+display:
+  xai:
+    name: SpaceXAI
