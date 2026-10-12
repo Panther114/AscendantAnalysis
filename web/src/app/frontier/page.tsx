@@ -2,13 +2,13 @@ import type { Metadata } from "next";
 
 import { FrontierMap } from "@/components/charts/FrontierMap";
 import { Card, InfoNote, PageHeader } from "@/components/ui";
-import { featuredLabs, field, labNames, meta, ownership } from "@/lib/data";
+import { field, labNames, meta, ownership, rankedLabs } from "@/lib/data";
 import { fmtDate } from "@/lib/format";
 
 export const metadata: Metadata = { title: "Frontier map" };
 
 export default function FrontierPage() {
-  const featured = featuredLabs();
+  const ranked = rankedLabs();
   const cm = meta.cost_model;
   return (
     <div className="rise">
@@ -18,7 +18,7 @@ export default function FrontierPage() {
         who is cheapest at each capability level.
       </PageHeader>
       <Card title="Frontier map" keyColor="violet" subtitle="Intelligence Index vs. cost index (log scale) · Up and left is better">
-        <FrontierMap releases={field.releases} names={labNames()} choices={featured} initial={featured.slice(0, 3)} ownership={ownership.levels} />
+        <FrontierMap releases={field.releases} names={labNames()} choices={ranked} initial={ranked.slice(0, 3)} ownership={ownership.levels} />
         <InfoNote>
           Cost index = geometric mean of Artificial Analysis&apos;s cost to run the Intelligence Index (per task) and the blended 3:1 price
           per 1M tokens. Where cost per task isn&apos;t published it is estimated (log cost/task ≈ {cm.intercept} + {cm.log_price}·log price +{" "}

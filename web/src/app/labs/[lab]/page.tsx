@@ -218,13 +218,14 @@ export default async function LabPage(props: PageProps<"/labs/[lab]">) {
             dates={history.dates}
             series={[
               { lab, name: "Health", values: h.health },
-              { lab: `${lab}-fl`, name: "Leadership", color: "var(--ink-2)", values: h.leadership.map((v) => (v == null ? null : v * 100)) },
-              { lab: `${lab}-ls`, name: "Lineup", color: "var(--ink-3)", values: h.lineup.map((v) => (v == null ? null : v * 100)) },
+              { lab: `${lab}-fl`, name: "Leadership ×100", color: "var(--ink-2)", logo: false, values: h.leadership.map((v) => (v == null ? null : v * 100)) },
+              { lab: `${lab}-ls`, name: "Lineup ×100", color: "var(--ink-3)", logo: false, values: h.lineup.map((v) => (v == null ? null : v * 100)) },
             ]}
             initial={[lab]}
+            presets={false}
             height={300}
           />
-          <InfoNote>Leadership (dark gray) and lineup (light gray), ×100, are off by default; toggle them to see which pillar drove a move.</InfoNote>
+          <InfoNote>Leadership and lineup are off by default; toggle them to see which pillar drove a move.</InfoNote>
         </Card>
         <Card title="Active releases" keyColor="violet" subtitle="Best Intelligence Index per release · Higher is better">
           <ColumnChart data={active.slice(0, 10).map((r) => ({ lab, value: r.intelligence, label: r.name, detail: `${r.tier ? TIER_LABEL[r.tier] : "Untiered"} · ${fmtDate(r.date)}` }))} />

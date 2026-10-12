@@ -1,6 +1,6 @@
 {
   "snapshot": "2026-10-12",
-  "methodology": "1.0.0",
+  "methodology": "1.1.0",
   "health": {
     "anthropic": 96.1,
     "openai": 73.1,

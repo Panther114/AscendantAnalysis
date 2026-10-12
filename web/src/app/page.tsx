@@ -1,19 +1,18 @@
 import Link from "next/link";
 
-import { ColumnChart } from "@/components/charts/ColumnChart";
 import { HealthChart } from "@/components/charts/HealthChart";
+import { IndexExplorer } from "@/components/charts/IndexExplorer";
+import { CountUp } from "@/components/CountUp";
 import { LeaderboardTable } from "@/components/LeaderboardTable";
 import { BandBadge, Card, Delta, LabLink, LabLogo, MoreLink, PageHeader } from "@/components/ui";
-import { featuredLabs, field, history, labName, labs, leaderboard, meta } from "@/lib/data";
+import { field, history, labName, labs, leaderboard, meta, rankedLabs } from "@/lib/data";
+import { EXPLORER_METRICS, explorerRows } from "@/lib/explorer";
 import { recentReleases } from "@/lib/explain";
 import { fmtDate, fmtHealth, TIER_LABEL } from "@/lib/format";
 import type { Tier } from "@/lib/types";
 
 export default function Home() {
   const leader = leaderboard[0];
-  const top12 = leaderboard.slice(0, 12);
-  const byLeadership = [...leaderboard].sort((a, b) => b.leadership - a.leadership).slice(0, 12);
-  const byLineup = [...leaderboard].sort((a, b) => b.lineup - a.lineup).slice(0, 12);
   const movers = leaderboard
     .filter((s) => s.prev_health != null)
     .map((s) => ({ s, d: s.health - (s.prev_health as number) }))
@@ -21,7 +20,7 @@ export default function Home() {
     .sort((a, b) => Math.abs(b.d) - Math.abs(a.d))
     .slice(0, 6);
   const latest = recentReleases(meta.snapshot_date, 21).slice(0, 4);
-  const featured = featuredLabs();
+  const ranked = rankedLabs();
   const start = Math.max(0, history.dates.findIndex((d) => d >= "2026-01-01"));
   const byslug = Object.fromEntries(field.releases.map((r) => [r.slug, r]));
 
@@ -68,7 +67,7 @@ export default function Home() {
           <span className="flex items-center gap-2.5">
             <span className="text-ink-3">Ascendant this week</span>
             <LabLink lab={leader.lab} />
-            <span className="serif tabular text-[22px] leading-none text-ink">{fmtHealth(leader.health)}</span>
+            <CountUp value={leader.health} className="serif text-[22px] leading-none text-ink" />
           </span>
           <span className="text-ink-3">
             <span className="tabular text-ink">{meta.counts.labs_ranked}</span> labs ·{" "}
@@ -78,17 +77,9 @@ export default function Home() {
         </div>
       </PageHeader>
 
-      <div className="grid gap-4 lg:grid-cols-3">
-        <Card title="Health Index" keyColor="violet" subtitle="Ascendant Health Index (0–100) · Higher is better">
-          <ColumnChart data={top12.map((s) => ({ lab: s.lab, value: s.health, detail: s.band }))} max={100} format={(v) => v.toFixed(0)} />
-        </Card>
-        <Card title="Frontier Leadership" keyColor="yellow" subtitle="Lead over the best rival on intelligence, cost or speed · Higher is better">
-          <ColumnChart data={byLeadership.map((s) => ({ lab: s.lab, value: s.leadership * 100 }))} max={100} />
-        </Card>
-        <Card title="Lineup Strength" keyColor="orange" subtitle="Best tier + breadth across frontier, mid and small · Higher is better">
-          <ColumnChart data={byLineup.map((s) => ({ lab: s.lab, value: s.lineup * 100 }))} max={100} />
-        </Card>
-      </div>
+      <Card title="Index Explorer" keyColor="violet" subtitle={`All ${leaderboard.length} ranked labs · switch the measure and watch the field re-sort`}>
+        <IndexExplorer rows={explorerRows()} metrics={EXPLORER_METRICS} />
+      </Card>
 
       <Card
         className="mt-4"
@@ -112,8 +103,8 @@ export default function Home() {
         >
           <HealthChart
             dates={history.dates.slice(start)}
-            series={featured.map((lab) => ({ lab, name: labs[lab].name, values: history.labs[lab].health.slice(start) }))}
-            initial={featured.slice(0, 5)}
+            series={ranked.map((lab) => ({ lab, name: labs[lab].name, values: history.labs[lab].health.slice(start) }))}
+            initial={ranked.slice(0, 5)}
           />
         </Card>
         <Card title="This week's movers" keyColor="green" subtitle="Change in health vs. last Monday">

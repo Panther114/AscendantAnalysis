@@ -1,7 +1,7 @@
 # Ascendant Analysis Health Index, Methodology v1.
 # Every constant that influences a score lives here. Changing any value requires
 # bumping `version`, and the full history is recomputed.
-version: "1.0.0"
+version: "1.1.0"
 
 field:
   shelf_life_days: 365        # a release with no successor in its product line drops out after this
@@ -67,6 +67,9 @@ freshness:
 lab_scope:
   min_releases: 2
   active_window_days: 365
+  # Rank only labs with at least one active, priced model. Unpriced labs still count as
+  # rivals (their models shape the field) but can't be tiered or compared on cost.
+  require_priced_release: true
 
 bands:
   - [80, Ascendant]

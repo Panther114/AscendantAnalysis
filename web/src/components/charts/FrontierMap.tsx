@@ -5,6 +5,7 @@ import { useMemo, useState } from "react";
 
 import { labColor } from "@/lib/palette";
 import type { OwnershipLevel, ReleaseOut } from "@/lib/types";
+import { LabPicker } from "./LabPicker";
 import { useWidth } from "./useWidth";
 
 interface Pt {
@@ -73,13 +74,11 @@ export function FrontierMap({ releases, names, choices, initial, ownership }: Pr
     .map((p, i) => (i === 0 ? `M${x(p.x)},${y(p.y)}` : `H${x(p.x)}V${y(p.y)}`))
     .join("");
 
-  const toggle = (lab: string) =>
-    setHl((cur) => (cur.includes(lab) ? cur.filter((l) => l !== lab) : [...cur, lab].slice(-MAX_HIGHLIGHT)));
-
   const onMove = (e: React.PointerEvent<SVGRectElement>) => {
+    // Convert screen pixels to chart units: the SVG may be scaled to fit (viewBox).
     const box = e.currentTarget.getBoundingClientRect();
-    const px = e.clientX - box.left;
-    const py = e.clientY - box.top;
+    const px = ((e.clientX - box.left) / box.width) * iw;
+    const py = ((e.clientY - box.top) / box.height) * ih;
     let best: Pt | null = null;
     let bd = 16 * 16;
     for (const p of pts) {
@@ -111,26 +110,13 @@ export function FrontierMap({ releases, names, choices, initial, ownership }: Pr
 
   return (
     <div>
-      <div className="mb-3 flex flex-wrap items-center gap-1.5" role="group" aria-label="Highlight labs (up to 3)">
-        <span className="mr-1 text-xs text-ink-3">Highlight up to 3:</span>
-        {choices.map((lab) => {
-          const on = hl.includes(lab);
-          return (
-            <button
-              key={lab}
-              type="button"
-              aria-pressed={on}
-              onClick={() => toggle(lab)}
-              className={`inline-flex items-center gap-1.5 rounded-full border px-2.5 py-1 text-xs transition-colors ${
-                on ? "border-rule bg-raised text-ink" : "border-transparent text-ink-3 hover:text-ink-2"
-              }`}
-            >
-              <span className="h-2 w-2 rounded-full" style={{ background: on ? labColor(lab) : "var(--axis)" }} />
-              {names[lab] ?? lab}
-            </button>
-          );
-        })}
-      </div>
+      <LabPicker
+        options={choices.map((lab) => ({ lab, name: names[lab] ?? lab }))}
+        selected={hl}
+        onChange={setHl}
+        max={MAX_HIGHLIGHT}
+        label="Highlight"
+      />
 
       <div ref={ref} className="relative w-full">
         <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="viz block h-auto max-w-full" role="img" aria-label="Intelligence versus cost for every active model variant">
@@ -166,6 +152,8 @@ export function FrontierMap({ releases, names, choices, initial, ownership }: Pr
                   {vs.length > 1 && (
                     <path
                       d={vs.map((v, i) => `${i ? "L" : "M"}${x(v.cost as number)},${y(v.intelligence)}`).join("")}
+                      pathLength={1}
+                      className="draw-in"
                       fill="none"
                       stroke={color}
                       strokeWidth={2}
@@ -174,7 +162,7 @@ export function FrontierMap({ releases, names, choices, initial, ownership }: Pr
                     />
                   )}
                   {vs.map((v) => (
-                    <circle key={v.slug} cx={x(v.cost as number)} cy={y(v.intelligence)} r={4} fill={color} stroke="var(--surface)" strokeWidth={2} />
+                    <circle key={v.slug} className="pop-in" cx={x(v.cost as number)} cy={y(v.intelligence)} r={4} fill={color} stroke="var(--surface)" strokeWidth={2} />
                   ))}
                 </g>
               );

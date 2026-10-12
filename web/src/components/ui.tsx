@@ -2,11 +2,9 @@ import Link from "next/link";
 import type { ReactNode } from "react";
 
 import { labs } from "@/lib/data";
-import logos from "@/lib/logos.json";
 import { fmtSigned } from "@/lib/format";
 import { bandLevel } from "@/lib/palette";
-
-const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
+import { LabMark } from "./LabMark";
 
 export type KeyColor = "violet" | "yellow" | "orange" | "green" | "blue" | "ink";
 
@@ -64,24 +62,9 @@ export function PageHeader({ eyebrow, title, children, aside }: { eyebrow?: stri
   );
 }
 
-/** Lab logo on a white rounded tile (app-icon style), legible in both themes. */
+/** Lab logo tile (server-side convenience wrapper around LabMark). */
 export function LabLogo({ lab, size = 20 }: { lab: string; size?: number }) {
-  const logo = (logos as Record<string, { file: string }>)[lab];
-  const pad = Math.max(2, Math.round(size * 0.14));
-  return (
-    <span
-      aria-hidden="true"
-      className="inline-grid shrink-0 place-items-center overflow-hidden rounded-[22%] border border-black/10 bg-white"
-      style={{ width: size, height: size, padding: pad }}
-    >
-      {logo ? (
-        // eslint-disable-next-line @next/next/no-img-element -- static export, tiny SVGs
-        <img src={`${BASE}/logos/${logo.file}`} alt="" width={size - pad * 2} height={size - pad * 2} className="h-full w-full object-contain" loading="lazy" decoding="async" />
-      ) : (
-        <span className="text-[10px] font-semibold text-black">{(labs[lab]?.name ?? lab).slice(0, 2).toUpperCase()}</span>
-      )}
-    </span>
-  );
+  return <LabMark lab={lab} name={labs[lab]?.name} size={size} />;
 }
 
 export function LabLink({ lab, className = "", size = 20 }: { lab: string; className?: string; size?: number }) {

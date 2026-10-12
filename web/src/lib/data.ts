@@ -55,12 +55,9 @@ export function scoreFor(lab: string): LabScore | undefined {
   return leaderboard.find((s) => s.lab === lab);
 }
 
-/** Labs shown in charts by default: the palette labs that are ranked, in palette order. */
-export function featuredLabs(): string[] {
-  return Object.entries(labs)
-    .filter(([slug, m]) => m.slot !== null && leaderboard.some((s) => s.lab === slug))
-    .sort((a, b) => (a[1].slot ?? 99) - (b[1].slot ?? 99))
-    .map(([slug]) => slug);
+/** Every ranked lab, in current rank order (the order pickers and "Top N" presets use). */
+export function rankedLabs(): string[] {
+  return leaderboard.map((s) => s.lab);
 }
 
 

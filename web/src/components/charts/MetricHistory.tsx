@@ -3,6 +3,7 @@
 import { useState } from "react";
 
 import { HealthChart, type Series } from "./HealthChart";
+import { Tabs } from "./Tabs";
 
 type Metric = "health" | "leadership" | "lineup" | "momentum" | "freshness";
 
@@ -24,6 +25,8 @@ export function MetricHistory({
   initial: string[];
 }) {
   const [metric, setMetric] = useState<Metric>("health");
+  // Selection lives here so it survives metric switches (the chart is never remounted).
+  const [shown, setShown] = useState<string[]>(initial);
   const m = METRICS.find((x) => x.key === metric)!;
   const series: Series[] = labs.map((l) => ({
     lab: l.lab,
@@ -32,21 +35,8 @@ export function MetricHistory({
   }));
   return (
     <div>
-      <div className="mb-4 flex max-w-full overflow-x-auto [scrollbar-width:none]"><div className="inline-flex shrink-0 rounded-full bg-sunken p-1 text-[13px]" role="tablist">
-        {METRICS.map((x) => (
-          <button
-            key={x.key}
-            role="tab"
-            type="button"
-            aria-selected={metric === x.key}
-            onClick={() => setMetric(x.key)}
-            className={`rounded-full px-3 py-1.5 transition-colors ${metric === x.key ? "bg-raised text-ink shadow-[0_1px_2px_rgba(0,0,0,0.08)]" : "text-ink-2 hover:text-ink"}`}
-          >
-            {x.label}
-          </button>
-        ))}
-      </div></div>
-      <HealthChart key={metric} dates={dates} series={series} initial={initial} height={420} metric={m.label} domain={m.domain} fmt={m.fmt} />
+      <Tabs options={METRICS.map((x) => ({ key: x.key, label: x.label }))} value={metric} onChange={(k) => setMetric(k as Metric)} />
+      <HealthChart dates={dates} series={series} shown={shown} onShownChange={setShown} height={420} metric={m.label} domain={m.domain} fmt={m.fmt} />
     </div>
   );
 }

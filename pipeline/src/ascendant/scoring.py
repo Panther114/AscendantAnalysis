@@ -322,7 +322,13 @@ class Engine:
         sc = self.cfg.m("lab_scope")
         rs = [r for r in self.by_lab.get(lab, []) if r.date <= date]
         recent = [r for r in rs if (date - r.date).days <= sc["active_window_days"]]
-        return len(rs) >= sc["min_releases"] and bool(recent)
+        if len(rs) < sc["min_releases"] or not recent:
+            return False
+        if sc.get("require_priced_release"):
+            # A lab whose active models have no published price can't be tiered or compared on
+            # cost; it stays in the field as a rival but isn't ranked.
+            return any(r.priced for r in self.field(date).active if r.lab == lab)
+        return True
 
     def band(self, health: float) -> str:
         for lo, name in self.cfg.m("bands"):

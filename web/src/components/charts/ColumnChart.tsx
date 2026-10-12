@@ -33,21 +33,22 @@ export function ColumnChart({
   const ticks = [0.25, 0.5, 0.75, 1].map((t) => t * top);
   return (
     // Left padding leaves room for the first column's angled label (labels run down-left).
-    <div className="pl-10">
-      <div className="relative" style={{ height: height + 92 }}>
+    // A minimum column width keeps long lists legible; narrow screens scroll horizontally.
+    <div className="overflow-x-auto pb-1 [scrollbar-width:thin]">
+      <div className="relative pl-14 pt-3" style={{ height: height + 116, minWidth: data.length * 30 + 64 }}>
         {/* gridlines */}
-        <div className="pointer-events-none absolute inset-x-0 top-0" style={{ height }}>
+        <div className="pointer-events-none absolute inset-x-0 top-3 pl-14" style={{ height }}>
           {ticks.map((t) => (
             <div key={t} className="absolute inset-x-0 border-t border-dashed border-rule-soft" style={{ bottom: `${(t / top) * 100}%` }} />
           ))}
           <div className="absolute inset-x-0 bottom-0 border-t border-rule" />
         </div>
-        <ol className="relative flex h-full items-stretch gap-[5px]">
+        <ol className="relative flex h-full items-stretch gap-[5px] [&:has(li:hover)>li:not(:hover)]:opacity-55">
           {data.map((d, i) => {
             const h = Math.max(2, (d.value / top) * height);
             const inside = h >= 30;
             return (
-              <li key={`${d.lab}-${d.label ?? ""}-${i}`} className="group relative flex min-w-0 flex-1 flex-col items-center">
+              <li key={`${d.lab}-${d.label ?? ""}-${i}`} className="group relative flex min-w-0 flex-1 flex-col items-center transition-opacity duration-200">
                 <div className="relative flex w-full items-end justify-center" style={{ height }}>
                   {!inside && (
                     <span className="tabular absolute text-[11px] font-medium text-ink" style={{ bottom: h + 4 }}>
@@ -55,7 +56,7 @@ export function ColumnChart({
                     </span>
                   )}
                   <div
-                    className="grow-y relative flex w-full max-w-[44px] justify-center rounded-t-[3px] transition-[filter] group-hover:brightness-110"
+                    className="grow-y relative flex w-full max-w-[44px] justify-center rounded-t-[3px] transition-transform duration-200 group-hover:-translate-y-[3px]"
                     style={{ height: h, background: labColor(d.lab), animationDelay: `${i * 35}ms` }}
                   >
                     {inside && (
@@ -65,7 +66,11 @@ export function ColumnChart({
                     )}
                   </div>
                   {/* hover card */}
-                  <div className="pointer-events-none absolute bottom-full left-1/2 z-10 mb-1 hidden w-max max-w-[200px] -translate-x-1/2 rounded-md border border-rule bg-raised px-2.5 py-1.5 text-xs shadow-lg group-hover:block">
+                  {/* inside the plot (the scroller would clip anything above it), clamped to stay visible */}
+                  <div
+                    className="pointer-events-none absolute left-1/2 z-10 hidden w-max max-w-[200px] -translate-x-1/2 rounded-md border border-rule bg-raised px-2.5 py-1.5 text-xs shadow-lg group-hover:block"
+                    style={{ bottom: Math.min(h + 22, height - 62) }}
+                  >
                     <p className="font-medium text-ink">{labs[d.lab]?.name ?? d.lab}</p>
                     <p className="tabular text-ink-2">
                       {format(d.value)}
@@ -76,8 +81,8 @@ export function ColumnChart({
                 </div>
                 <Link href={`/labs/${d.lab}/`} className="mt-2 flex flex-col items-center" aria-label={`${labs[d.lab]?.name ?? d.lab}: ${format(d.value)}${unit}`}>
                   <LabLogo lab={d.lab} size={18} />
-                  <span className="relative mt-1.5 block h-[60px] w-full">
-                    <span className="absolute right-1/2 top-0 max-w-[84px] origin-top-right -rotate-45 truncate whitespace-nowrap text-[11px] leading-tight text-ink-2 group-hover:text-ink">
+                  <span className="relative mt-1.5 block h-[84px] w-full">
+                    <span className="absolute right-1/2 top-0 max-w-[118px] origin-top-right -rotate-45 truncate whitespace-nowrap text-[11px] leading-tight text-ink-2 group-hover:text-ink">
                       {d.label ?? labs[d.lab]?.name ?? d.lab}
                     </span>
                   </span>

@@ -75,6 +75,17 @@ def test_lab_scope_requires_two_releases(market, cfg):
     assert "solo" not in scores([*market, solo], cfg)
 
 
+def test_lab_scope_requires_priced_model(market, cfg):
+    unpriced = [
+        release("ghost-1", "ghost", D(2026, 7, 1), "Ghost", [(35, None)], None),
+        release("ghost-2", "ghost", D(2026, 8, 1), "Ghost Big", [(40, None)], None),
+    ]
+    s = scores([*market, *unpriced], cfg)
+    assert "ghost" not in s
+    # still a rival: its 40-point model doesn't change who leads, but the lab isn't ranked
+    assert s["alpha"].health == scores(market, cfg)["alpha"].health
+
+
 def test_health_bounded(market, cfg):
     for s in scores(market, cfg).values():
         assert 0.0 <= s.health <= 100.0

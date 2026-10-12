@@ -96,11 +96,14 @@ def _field_payload(engine: Engine, date) -> dict:
     tiers = {}
     for t in TIERS:
         slots = sorted(engine.tier_scores(f, t).items(), key=lambda kv: kv[1].rank)
+        # Scores are computed against every rival; the list shows ranked labs only.
+        shown = [(lab, s) for lab, s in slots if engine.in_scope(lab, date)]
         tiers[t] = [
             {"lab": lab, "release": s.release, "variant": s.variant, "score": stats.rnd(s.score),
-             "rank": s.rank, "pct_intelligence": stats.rnd(s.pct_intelligence),
+             "rank": i, "rank_overall": s.rank, "of_overall": s.of,
+             "pct_intelligence": stats.rnd(s.pct_intelligence),
              "pct_value": stats.rnd(s.pct_value), "pct_speed": stats.rnd(s.pct_speed)}
-            for lab, s in slots
+            for i, (lab, s) in enumerate(shown, 1)
         ]
     return {
         "date": date.isoformat(),
