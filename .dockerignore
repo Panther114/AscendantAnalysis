@@ -1,0 +1,7 @@
+# Only web/ and the server config are needed to build the image.
+**
+!web/
+!sws.toml
+web/node_modules/
+web/.next/
+web/out/
