@@ -69,7 +69,7 @@ export function LabLogo({ lab, size = 20 }: { lab: string; size?: number }) {
 
 export function LabLink({ lab, className = "", size = 20 }: { lab: string; className?: string; size?: number }) {
   return (
-    <Link href={`/labs/${lab}/`} className={`group/lab inline-flex min-w-0 items-center gap-2.5 ${className}`}>
+    <Link href={`/labs/${lab}/`} className={`group/lab inline-flex min-w-0 items-center gap-2.5 ${className}`} title={labs[lab]?.name ?? lab}>
       <LabLogo lab={lab} size={size} />
       <span className="truncate group-hover/lab:underline group-hover/lab:underline-offset-4">{labs[lab]?.name ?? lab}</span>
     </Link>

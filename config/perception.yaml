@@ -6,10 +6,10 @@ expectations:
     band: Ascendant
     note: Opus leads the world; Opus, Sonnet and Haiku all competitive in their tiers.
   openai:
-    band: Holding
+    band: Competitive
     note: Lineup not winning high or mid tier against Anthropic.
   xai:
-    band: Slipping
+    band: Trailing
     trend: down
     note: Grok 4.5 competitive, 4.6 less so, 4.7 an expensive disappointment.
   deepseek:

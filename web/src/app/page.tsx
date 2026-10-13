@@ -18,7 +18,7 @@ export default function Home() {
     .map((s) => ({ s, d: s.health - (s.prev_health as number) }))
     .filter((m) => Math.abs(m.d) >= 0.05)
     .sort((a, b) => Math.abs(b.d) - Math.abs(a.d))
-    .slice(0, 6);
+    .slice(0, 10);
   const latest = recentReleases(meta.snapshot_date, 21).slice(0, 4);
   const ranked = rankedLabs();
   const start = Math.max(0, history.dates.findIndex((d) => d >= "2026-01-01"));
@@ -107,13 +107,13 @@ export default function Home() {
             initial={ranked.slice(0, 5)}
           />
         </Card>
-        <Card title="Today's movers" keyColor="green" subtitle="Change in health vs. yesterday">
+        <Card title="Today's movers" keyColor="green" subtitle="Top 10 by size of change in health vs. yesterday">
           <ul className="-mt-1">
             {movers.map(({ s, d }) => (
               <li key={s.lab} className="flex items-center justify-between gap-3 border-b border-rule-soft py-3 last:border-0">
-                <LabLink lab={s.lab} className="text-sm font-medium" />
-                <span className="flex items-center gap-3 text-sm">
-                  <span className="tabular text-ink-3">{fmtHealth(s.prev_health)} → <span className="text-ink">{fmtHealth(s.health)}</span></span>
+                <LabLink lab={s.lab} className="min-w-0 flex-1 text-sm font-medium" />
+                <span className="flex shrink-0 items-center gap-3 text-sm">
+                  <span className="tabular whitespace-nowrap text-ink-3">{fmtHealth(s.prev_health)} → <span className="text-ink">{fmtHealth(s.health)}</span></span>
                   <span className="w-12 text-right"><Delta value={d} /></span>
                 </span>
               </li>
@@ -144,7 +144,7 @@ export default function Home() {
 
       <div className="mt-4 flex flex-wrap items-center gap-3 rounded-lg border border-rule bg-sunken/50 px-5 py-4 text-sm text-ink-2">
         <span className="serif text-[20px] text-ink">How to read a band</span>
-        {["Ascendant", "Contending", "Holding", "Slipping", "Fading"].map((b) => (
+        {["Ascendant", "Contending", "Competitive", "Trailing", "Peripheral"].map((b) => (
           <BandBadge key={b} band={b} />
         ))}
         <span className="text-xs text-ink-3">≥80 · ≥65 · ≥50 · ≥35 · below</span>

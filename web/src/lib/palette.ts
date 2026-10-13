@@ -40,9 +40,9 @@ export function labCss(labs: Record<string, { aa_color: string }>): string {
   return `:root{${light}}@media (prefers-color-scheme: dark){:root:where(:not([data-theme="light"])){${dark}}}:root[data-theme="dark"]{${dark}}`;
 }
 
-export const BAND_ORDER = ["Ascendant", "Contending", "Holding", "Slipping", "Fading"] as const;
+export const BAND_ORDER = ["Ascendant", "Contending", "Competitive", "Trailing", "Peripheral"] as const;
 
-/** Number of filled steps in the band glyph (Ascendant = 5 ... Fading = 1). */
+/** Number of filled steps in the band glyph (Ascendant = 5 ... Peripheral = 1). */
 export function bandLevel(band: string): number {
   const i = BAND_ORDER.indexOf(band as (typeof BAND_ORDER)[number]);
   return i < 0 ? 1 : 5 - i;

@@ -29,9 +29,9 @@ update.ps1  local refresh: snapshot → test → export → commit → push
 - **Lineup:** each lab's best-scoring release per tier (frontier / mid / small, from price natural
   breaks fixed at launch), scored against rivals on intelligence, value residual and speed.
 - **Core:** a soft-max of the two, so a specialist that wins its niche can still be healthy.
-- **Momentum (×0.8–1.2):** the trend in at-release competitiveness between successive
+- **Momentum (×0.75–1.25):** the trend in at-release competitiveness between successive
   releases of the same product line.
-- **Freshness (×0.6–1.0):** decays with a 60-day half-life after a 30-day grace period since
+- **Freshness (×0.5–1.0):** decays with a 45-day half-life after a 21-day grace period since
   the last *material* release.
 
 The full write-up is on the site's Methodology page.

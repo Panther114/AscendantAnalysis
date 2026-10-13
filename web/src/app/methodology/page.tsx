@@ -118,7 +118,7 @@ export default function MethodologyPage() {
           <TeX block>{String.raw`\phi = 0.5^{\max(0,\,d-${fr.grace_days})/${fr.half_life_days}}, \qquad F = ${fr.floor} + ${(1 - fr.floor).toFixed(1)}\,\phi`}</TeX>
           <TeX block>{String.raw`\boxed{\text{Health} = 100\cdot\text{Core}\cdot M\cdot F}`}</TeX>
           <p>
-            Bands: Ascendant ≥ 80, Contending ≥ 65, Holding ≥ 50, Slipping ≥ 35, Fading below. Everything is relative to the field, so a lab that ships
+            Bands: Ascendant ≥ 80, Contending ≥ 65, Competitive ≥ 50, Trailing ≥ 35, Peripheral below. Everything is relative to the field, so a lab that ships
             nothing still moves as rivals ship.
           </p>
         </Section>

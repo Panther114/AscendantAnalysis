@@ -1,5 +1,5 @@
 export type Tier = "frontier" | "mid" | "small";
-export type Band = "Ascendant" | "Contending" | "Holding" | "Slipping" | "Fading";
+export type Band = "Ascendant" | "Contending" | "Competitive" | "Trailing" | "Peripheral";
 
 export interface Lead {
   axis: "intelligence" | "efficiency" | "value" | "speed";

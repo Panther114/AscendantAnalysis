@@ -1,7 +1,7 @@
 # Ascendant Analysis Health Index, Methodology v1.
 # Every constant that influences a score lives here. Changing any value requires
 # bumping `version`, and the full history is recomputed.
-version: "1.3.0"
+version: "1.4.0"
 
 field:
   shelf_life_days: 365        # a release with no successor in its product line drops out after this
@@ -53,15 +53,15 @@ momentum:
   # Trend = recency-weighted mean change in at-release competitiveness between each
   # material release and its predecessor in the same product line.
   window: 5                   # last N successor deltas
-  recency_half_life_days: 180
-  tau_trend: 0.08             # competitiveness units
-  floor: 0.80
-  span: 0.40                  # M = floor + span * m
+  recency_half_life_days: 120
+  tau_trend: 0.05             # competitiveness units
+  floor: 0.75
+  span: 0.50                  # M = floor + span * m
 
 freshness:
-  grace_days: 30
-  half_life_days: 60
-  floor: 0.6                  # applied as floor + (1 - floor) * phi
+  grace_days: 21
+  half_life_days: 45
+  floor: 0.5                  # applied as floor + (1 - floor) * phi
   material_frontier_gap: 3.0  # within N index points of the tier leader at release
 
 lab_scope:
@@ -74,9 +74,9 @@ lab_scope:
 bands:
   - [80, Ascendant]
   - [65, Contending]
-  - [50, Holding]
-  - [35, Slipping]
-  - [0, Fading]
+  - [50, Competitive]
+  - [35, Trailing]
+  - [0, Peripheral]
 
 replay:
   # First day replayed. Before 2025 many deprecated models have no price or speed in
