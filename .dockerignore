@@ -1,7 +1,14 @@
-# Only web/ and the server config are needed to build the image.
+# Two images build from the repo root: the website (Dockerfile: web/ + server config) and
+# the scheduled updater (cron/Dockerfile: the pipeline's dependencies + cron/).
 **
 !web/
 !sws.toml
+!pipeline/
+!cron/
 web/node_modules/
 web/.next/
 web/out/
+pipeline/.venv/
+pipeline/.pytest_cache/
+pipeline/.ruff_cache/
+**/__pycache__/

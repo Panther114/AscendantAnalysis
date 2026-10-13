@@ -17,6 +17,7 @@ config/     methodology.v1.yaml (every constant), labs, overrides, perception re
 data/       content-hashed snapshots (committed)
 Dockerfile, railway.json, sws.toml   one-click Railway deploy (static, no key)
 update.ps1  local refresh: snapshot → test → export → commit → push
+cron/       optional Railway cron service doing the same refresh on a schedule
 ```
 
 ## How the index works
@@ -72,7 +73,10 @@ Railway health check.
 
 ## Updating the data
 
-Updates happen only when you run them locally. Railway redeploys on every push.
+The website redeploys whenever new data is pushed. Data can be pushed from your machine or
+by an optional scheduled service on Railway.
+
+### Locally
 
 ```powershell
 ./update.ps1             # fetch today's snapshot, test, verify, export, build, commit, push
@@ -81,6 +85,26 @@ Updates happen only when you run them locally. Railway redeploys on every push.
 ```
 
 Fetching needs `AA_API_KEY` locally (env var or a git-ignored `.env`).
+
+### Scheduled on Railway (optional)
+
+`cron/` is a second Railway service. It starts on a schedule (default: Mondays 09:00 UTC),
+runs the same steps as `update.ps1` except the site build, and exits. It pushes only when the
+data changed, and that push redeploys the website. Each run takes well under a minute and about
+50–100 MB of RAM, and nothing stays running between runs.
+
+1. Create a GitHub **fine-grained token** (GitHub → Settings → Developer settings →
+   Fine-grained tokens). Under Repository access, choose *Only select repositories* and pick this
+   repository. Under Permissions, set **Contents: Read and write**.
+2. In the Railway project: **New → GitHub Repo →** this repository again.
+3. In the new service's **Settings**, set **Config-as-code file path** to `/cron/railway.json`.
+   This file sets the Dockerfile, the cron schedule and the no-restart policy.
+4. In its **Variables**, add `AA_API_KEY` and `GITHUB_TOKEN`.
+5. Don't generate a domain for it, because it serves nothing.
+
+To change the schedule, edit `cronSchedule` in `cron/railway.json` (in UTC) or set it in the
+service's settings. To run an update right away, use `./update.ps1`. Setting `DRY_RUN=1` on the
+service makes it do everything except push.
 
 ## Determinism
 
