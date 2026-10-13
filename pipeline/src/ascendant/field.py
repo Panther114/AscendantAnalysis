@@ -101,7 +101,7 @@ def launch_tiers(universe: Universe, cfg: Config) -> dict[str, str | None]:
     """Tier of every release as assigned in the field on its own release date.
 
     A release keeps its launch tier for life: tiers describe the competitive role a model
-    was launched into, and re-cutting them weekly would make releases flap between tiers.
+    was launched into, and re-cutting them on every replay date would make releases flap between tiers.
     """
     out: dict[str, str | None] = {}
     for d in sorted({r.date for r in universe.releases}):

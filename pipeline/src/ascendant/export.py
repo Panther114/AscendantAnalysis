@@ -200,7 +200,7 @@ def perception_diff(scores: list[LabScore], series, cfg: Config) -> list[dict]:
             row["checks"].append({"check": "band", "expected": exp["band"], "actual": s.band,
                                   "ok": exp["band"] == s.band})
         if "trend" in exp:
-            h = [x for x in hist["labs"][lab]["health"][-13:] if x is not None]
+            h = [x for x in hist["labs"][lab]["health"][-92:] if x is not None]
             delta = round(h[-1] - max(h), 1) if h else 0.0
             actual = "down" if delta <= -10 else ("up" if h and h[-1] - min(h) >= 10 else "flat")
             row["checks"].append({"check": "13-week trend", "expected": exp["trend"],

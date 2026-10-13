@@ -45,10 +45,10 @@ export interface Driver {
 }
 
 /**
- * Splits the week-over-week health change into multiplicative factors (log attribution):
+ * Splits the day-over-day health change into multiplicative factors (log attribution):
  * H = 100 · Core · M · F, so Δlog H = Δlog Core + Δlog M + Δlog F, scaled to points.
  */
-export function weeklyDrivers(s: LabScore): Driver[] {
+export function changeDrivers(s: LabScore): Driver[] {
   if (!s.prev || s.prev_health == null || s.prev_health <= 0 || s.health <= 0) return [];
   const total = s.health - s.prev_health;
   const parts = [

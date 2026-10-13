@@ -1,7 +1,7 @@
 # Ascendant Analysis Health Index, Methodology v1.
 # Every constant that influences a score lives here. Changing any value requires
 # bumping `version`, and the full history is recomputed.
-version: "1.1.0"
+version: "1.2.0"
 
 field:
   shelf_life_days: 365        # a release with no successor in its product line drops out after this
@@ -79,7 +79,7 @@ bands:
   - [0, Fading]
 
 replay:
-  # First Monday replayed. Before 2025 many deprecated models have no price or speed in
+  # First day replayed. Before 2025 many deprecated models have no price or speed in
   # AA's current data, so tiers and cost leads aren't reliable.
   start: "2025-01-06"
-  step_days: 7
+  step_days: 1

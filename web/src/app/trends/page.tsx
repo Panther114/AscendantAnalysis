@@ -11,7 +11,7 @@ export const metadata: Metadata = { title: "Trends" };
 export default function TrendsPage() {
   const ranked = rankedLabs();
   const n = history.dates.length;
-  const idx13 = Math.max(0, n - 14);
+  const idx13 = Math.max(0, n - 92);
   const changes = leaderboard
     .map((s) => {
       const then = history.labs[s.lab]?.health[idx13] ?? null;
@@ -25,11 +25,11 @@ export default function TrendsPage() {
   return (
     <div className="rise">
       <PageHeader eyebrow="Trends" title="Health over time">
-        Every Monday is rescored using only the models released by then. History is reconstructed from today&apos;s snapshot, so
-        all weeks share one Intelligence Index version and current prices.
+        Every day is rescored using only the models released by then. History is reconstructed from today&apos;s snapshot, so
+        all days share one Intelligence Index version and current prices.
       </PageHeader>
 
-      <Card title="Weekly replay" keyColor="blue" subtitle={`All ${ranked.length} ranked labs · your selection is kept when you switch metric`}>
+      <Card title="Daily replay" keyColor="blue" subtitle={`All ${ranked.length} ranked labs · your selection is kept when you switch metric`}>
         <MetricHistory
           dates={history.dates}
           initial={ranked.slice(0, 5)}
@@ -47,7 +47,7 @@ export default function TrendsPage() {
         />
         <InfoNote>
           Replay starts {fmtDate(history.dates[0])}. Before that, many now-deprecated models lack prices and speeds in the source
-          data, which would make tiers and cost leads unreliable. Gaps mean the lab wasn&apos;t ranked that week.
+          data, which would make tiers and cost leads unreliable. Gaps mean the lab wasn&apos;t ranked that day.
         </InfoNote>
       </Card>
 

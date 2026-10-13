@@ -27,7 +27,7 @@ export default function Home() {
   return (
     <div className="rise">
       <PageHeader
-        eyebrow={`AI Lab Health Index · Week of ${fmtDate(meta.snapshot_date)}`}
+        eyebrow={`AI Lab Health Index · As of ${fmtDate(meta.snapshot_date)}`}
         title={
           <>
             The health of
@@ -65,7 +65,7 @@ export default function Home() {
         benchmarks, prices and speeds, and relative to the field: a lab that stands still loses ground.
         <div className="mt-6 flex flex-wrap items-center gap-x-6 gap-y-3 text-sm">
           <span className="flex items-center gap-2.5">
-            <span className="text-ink-3">Ascendant this week</span>
+            <span className="text-ink-3">Ascendant today</span>
             <LabLink lab={leader.lab} />
             <CountUp value={leader.health} className="serif text-[22px] leading-none text-ink" />
           </span>
@@ -98,7 +98,7 @@ export default function Home() {
         <Card
           title="Health over time"
           keyColor="blue"
-          subtitle="Weekly replay · each Monday rescored using only the models released by then"
+          subtitle="Daily replay · each day rescored using only the models released by then"
           action={<MoreLink href="/trends/">All trends</MoreLink>}
         >
           <HealthChart
@@ -107,7 +107,7 @@ export default function Home() {
             initial={ranked.slice(0, 5)}
           />
         </Card>
-        <Card title="This week's movers" keyColor="green" subtitle="Change in health vs. last Monday">
+        <Card title="Today's movers" keyColor="green" subtitle="Change in health vs. yesterday">
           <ul className="-mt-1">
             {movers.map(({ s, d }) => (
               <li key={s.lab} className="flex items-center justify-between gap-3 border-b border-rule-soft py-3 last:border-0">

@@ -24,7 +24,7 @@ function Pillar({ value }: { value: number }) {
 
 function Row({ s }: { s: LabScore }) {
   const top = strongest(s);
-  const spark = history.labs[s.lab]?.health.slice(-13) ?? [];
+  const spark = history.labs[s.lab]?.health.slice(-92) ?? [];
   const rankDelta = s.prev_rank == null ? null : s.prev_rank - s.rank;
   return (
     <tr className="group border-t border-rule-soft transition-colors hover:bg-wash">

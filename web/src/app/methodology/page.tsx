@@ -70,7 +70,7 @@ export default function MethodologyPage() {
           <p>
             Tiers come from Jenks natural breaks (k = 5) on log blended price across the active field. The top band is <strong>frontier</strong>,
             the next <strong>mid</strong>, the rest <strong>small</strong>. A lab&apos;s most intelligent line is promoted from mid to frontier when it lands
-            within 12 points of the best model in the world. A release keeps the tier it launched into, so tiers don&apos;t flap week to week.
+            within 12 points of the best model in the world. A release keeps the tier it launched into, so tiers don&apos;t flap day to day.
           </p>
         </Section>
 
@@ -127,7 +127,7 @@ export default function MethodologyPage() {
           <p>
             Scoring is a pure function of (snapshot, configuration): pure-Python arithmetic, stable tie-breaks by id, 6-decimal rounding at stage
             boundaries, and no wall-clock time. CI rebuilds the export three times, twice with shuffled input order, and refuses to deploy unless the
-            hashes match. History is <em>reconstructed</em> by replaying every Monday with only the models released by then.
+            hashes match. History is <em>reconstructed</em> by replaying every day with only the models released by then.
           </p>
         </Section>
 

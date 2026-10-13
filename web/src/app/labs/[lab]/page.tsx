@@ -7,7 +7,7 @@ import { HealthChart } from "@/components/charts/HealthChart";
 import { ReleaseTimeline, type TimelinePoint } from "@/components/charts/ReleaseTimeline";
 import { BandBadge, Card, Delta, InfoNote, Meter, LabLogo } from "@/components/ui";
 import { field, history, labs, leaderboard, meta, releases, variantName } from "@/lib/data";
-import { describeLead, recentReleases, weeklyDrivers } from "@/lib/explain";
+import { describeLead, recentReleases, changeDrivers } from "@/lib/explain";
 import { AXIS_LABEL, fmtDate, fmtHealth, fmtMult, fmtPct, fmtSigned, TIER_LABEL } from "@/lib/format";
 import { labColor } from "@/lib/palette";
 
@@ -43,7 +43,7 @@ export default async function LabPage(props: PageProps<"/labs/[lab]">) {
   const color = labColor(lab);
   const cfg = meta.methodology_config as Record<string, Record<string, number>>;
   const coreMw = cfg.core.max_weight;
-  const drivers = weeklyDrivers(s);
+  const drivers = changeDrivers(s);
   const recent = recentReleases(meta.snapshot_date);
   const h = history.labs[lab];
   const start = history.dates[0];
@@ -94,7 +94,7 @@ export default async function LabPage(props: PageProps<"/labs/[lab]">) {
               <div>
                 <p className="serif tabular text-[52px] leading-none">{fmtHealth(s.health)}</p>
                 <p className="mt-1 text-xs text-ink-3">
-                  Health · <Delta value={s.prev_health == null ? null : s.health - s.prev_health} /> 1w
+                  Health · <Delta value={s.prev_health == null ? null : s.health - s.prev_health} /> 1d
                 </p>
               </div>
             </div>
@@ -132,7 +132,7 @@ export default async function LabPage(props: PageProps<"/labs/[lab]">) {
           </div>
         </Card>
 
-        <Card title="Why it moved" keyColor="green" subtitle="Week-over-week change split across the three multiplicative factors">
+        <Card title="Why it moved" keyColor="green" subtitle="Day-over-day change split across the three multiplicative factors">
           {drivers.length ? (
             <ul className="space-y-2.5">
               {drivers.map((d) => (
@@ -143,7 +143,7 @@ export default async function LabPage(props: PageProps<"/labs/[lab]">) {
               ))}
             </ul>
           ) : (
-            <p className="text-sm text-ink-2">No change from last week.</p>
+            <p className="text-sm text-ink-2">No change from yesterday.</p>
           )}
           <p className="mb-2 mt-6 text-[11px] uppercase tracking-[0.08em] text-ink-3">Material releases across the field, last 7 days</p>
           {recent.length ? (
@@ -213,7 +213,7 @@ export default async function LabPage(props: PageProps<"/labs/[lab]">) {
       </Card>
 
       <div className="mt-4 grid gap-4 lg:grid-cols-[1fr_1fr]">
-        <Card title="Health history" keyColor="ink" subtitle="Weekly replay of the index and its pillars">
+        <Card title="Health history" keyColor="ink" subtitle="Daily replay of the index and its pillars">
           <HealthChart
             dates={history.dates}
             series={[
