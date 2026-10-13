@@ -202,6 +202,29 @@ class Engine:
         return out
 
     def tier_scores(self, f: Field, tier: str, force: Release | None = None) -> dict[str, TierSlot]:
+        """Per-lab slot in a tier. Unless `force` is given, a lab is represented by whichever of
+        its active releases in the tier scores best (rivals held at their most capable release),
+        so adding a release can never lower its lab's slot."""
+        slots = self._tier_slots(f, tier, force)
+        if force is not None:
+            return slots
+        cands: dict[str, list[Release]] = {}
+        for r in f.active:
+            if f.tier.get(r.slug) == tier:
+                cands.setdefault(r.lab, []).append(r)
+        for lab, rs in sorted(cands.items()):
+            for r in rs:
+                if len(rs) < 2 or r.slug == slots[lab].release:
+                    continue
+                alt = self._tier_slots(f, tier, r)[lab]
+                if (alt.score, alt.release) > (slots[lab].score, slots[lab].release):
+                    slots[lab] = alt
+        ranked = sorted(slots.values(), key=lambda t: (-t.score, t.release))
+        for i, t in enumerate(ranked, 1):
+            t.rank = i
+        return slots
+
+    def _tier_slots(self, f: Field, tier: str, force: Release | None = None) -> dict[str, TierSlot]:
         lc = self.cfg.m("lineup")
         entries = self._tier_entries(f, tier, force)
         if not entries:

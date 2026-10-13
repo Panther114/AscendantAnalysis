@@ -26,7 +26,7 @@ update.ps1  local refresh: snapshot → test → export → commit → push
 - **Leadership:** lead over the best rival on intelligence, near-frontier cost efficiency,
   value-zone cost and speed (frontier ownership on a 1-point capability grid). Winning one axis
   is enough to score well.
-- **Lineup:** each lab's best release per tier (frontier / mid / small, from price natural
+- **Lineup:** each lab's best-scoring release per tier (frontier / mid / small, from price natural
   breaks fixed at launch), scored against rivals on intelligence, value residual and speed.
 - **Core:** a soft-max of the two, so a specialist that wins its niche can still be healthy.
 - **Momentum (×0.8–1.2):** the trend in at-release competitiveness between successive

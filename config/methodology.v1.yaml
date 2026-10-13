@@ -1,7 +1,7 @@
 # Ascendant Analysis Health Index, Methodology v1.
 # Every constant that influences a score lives here. Changing any value requires
 # bumping `version`, and the full history is recomputed.
-version: "1.2.0"
+version: "1.3.0"
 
 field:
   shelf_life_days: 365        # a release with no successor in its product line drops out after this

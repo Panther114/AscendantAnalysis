@@ -96,7 +96,7 @@ export default function MethodologyPage() {
 
         <Section n={4} title="Pillar B: Lineup">
           <p>
-            In each tier, every lab&apos;s best release is scored by percentile among rival labs: 50% intelligence, 40% <strong>value residual</strong>{" "}
+            In each tier, every lab&apos;s best-scoring release is scored by percentile among rival labs: 50% intelligence, 40% <strong>value residual</strong>{" "}
             (intelligence above what a field-wide regression on log cost predicts), 10% speed. Then:
           </p>
           <TeX block>{String.raw`\text{LS} = 0.5\cdot\max_t s_t + 0.5\cdot\tfrac13\textstyle\sum_t s_t \quad(\text{missing tier} = 0)`}</TeX>
