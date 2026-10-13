@@ -15,9 +15,8 @@ pipeline/   Python: ingest → normalize → score → replay → export (uv)
 web/        Next.js static site that renders the exported JSON
 config/     methodology.v1.yaml (every constant), labs, overrides, perception reference
 data/       content-hashed snapshots (committed)
-Dockerfile, railway.json, sws.toml   one-click Railway deploy (static, no key)
 update.ps1  local refresh: snapshot → test → export → commit → push
-cron/       optional Railway cron service doing the same refresh on a schedule
+.github/    workflow: daily snapshot → test → export → commit → build → GitHub Pages
 ```
 
 ## How the index works
@@ -56,27 +55,30 @@ npm run dev                    # http://localhost:3000
 npm run build                  # static site in web/out
 ```
 
-## Deploy on Railway
+## Deploy on GitHub Pages
 
-The site is fully static and the scored data is committed (`web/public/data`), so the server
-needs no API key and runs no pipeline.
+The site is fully static and the scored data is committed (`web/public/data`), so hosting needs
+no server and no key. One workflow, `.github/workflows/site.yml`, does everything for free:
 
-1. In Railway: **New Project → Deploy from GitHub repo →** pick this repository.
-2. Railway reads `railway.json` and builds the `Dockerfile`; nothing to configure.
-3. **Settings → Networking → Generate Domain.**
+- **Daily (09:17 UTC) or manual run:** fetch a snapshot, test, verify determinism, export,
+  commit the data if it changed, build the site and deploy it to Pages.
+- **Push to `main`** (code, config or data): rebuild and deploy, without fetching.
 
-The image builds the Next.js site on Railway's builder, pre-compresses it (gzip + brotli), and
-serves it with [static-web-server](https://static-web-server.net). At runtime it's one small
-Rust process: about 8 MB of RAM and near-zero CPU, with no per-request compression. HTML and
-data revalidate (`no-cache`), hashed assets cache for a year, and `/health` serves the
-Railway health check.
+One-time setup:
 
-## Updating the data
+1. **Settings → Pages → Build and deployment → Source: GitHub Actions.**
+2. **Settings → Secrets and variables → Actions → New repository secret:** `AA_API_KEY`.
+3. **Settings → Actions → General → Workflow permissions: Read and write.**
+4. Run it once: **Actions → Update and deploy → Run workflow.**
 
-The website redeploys whenever new data is pushed. Data can be pushed from your machine or
-by an optional scheduled service on Railway.
+The site is served at `https://<user>.github.io/<repo>/`; the workflow builds with that base
+path. For a custom domain or a `<user>.github.io` repo, add the repository variable
+`PAGES_BASE_PATH` = `/`.
 
-### Locally
+Scheduled workflows are disabled by GitHub after 60 days without repository activity; the daily
+data commit counts as activity, so this only matters if the API fetch keeps failing.
+
+## Updating the data by hand
 
 ```powershell
 ./update.ps1             # fetch today's snapshot, test, verify, export, build, commit, push
@@ -84,27 +86,8 @@ by an optional scheduled service on Railway.
 ./update.ps1 -NoFetch    # rescore the latest snapshot (e.g. after a config change)
 ```
 
-Fetching needs `AA_API_KEY` locally (env var or a git-ignored `.env`).
-
-### Scheduled on Railway (optional)
-
-`cron/` is a second Railway service. It starts on a schedule (default: Mondays 09:00 UTC),
-runs the same steps as `update.ps1` except the site build, and exits. It pushes only when the
-data changed, and that push redeploys the website. Each run takes well under a minute and about
-50–100 MB of RAM, and nothing stays running between runs.
-
-1. Create a GitHub **fine-grained token** (GitHub → Settings → Developer settings →
-   Fine-grained tokens). Under Repository access, choose *Only select repositories* and pick this
-   repository. Under Permissions, set **Contents: Read and write**.
-2. In the Railway project: **New → GitHub Repo →** this repository again.
-3. In the new service's **Settings**, set **Config-as-code file path** to `/cron/railway.json`.
-   This file sets the Dockerfile, the cron schedule and the no-restart policy.
-4. In its **Variables**, add `AA_API_KEY` and `GITHUB_TOKEN`.
-5. Don't generate a domain for it, because it serves nothing.
-
-To change the schedule, edit `cronSchedule` in `cron/railway.json` (in UTC) or set it in the
-service's settings. To run an update right away, use `./update.ps1`. Setting `DRY_RUN=1` on the
-service makes it do everything except push.
+Fetching needs `AA_API_KEY` locally (env var or a git-ignored `.env`). The push triggers the
+workflow, which redeploys the site.
 
 ## Determinism
 

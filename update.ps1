@@ -1,4 +1,4 @@
-# Refreshes the index locally and publishes it. Railway redeploys automatically on push.
+# Refreshes the index locally and publishes it. the GitHub Actions workflow redeploys on push.
 #   ./update.ps1            fetch today's snapshot, rescore, commit, push
 #   ./update.ps1 -NoPush    same, but leave the commit unpushed
 #   ./update.ps1 -NoFetch   rescore the latest existing snapshot (e.g. after a config change)
@@ -32,6 +32,6 @@ try {
   if ($LASTEXITCODE -eq 0) { Write-Host "No data changes; nothing to publish."; exit 0 }
   $date = (Get-ChildItem data/snapshots -Directory | Sort-Object Name | Select-Object -Last 1).Name
   Step "Commit" { git commit -m "data: snapshot $date" }
-  if (-not $NoPush) { Step "Push (Railway redeploys)" { git push } }
+  if (-not $NoPush) { Step "Push (GitHub Pages redeploys)" { git push } }
 } finally { Pop-Location }
 Write-Host "Done." -ForegroundColor Green

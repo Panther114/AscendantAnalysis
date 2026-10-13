@@ -1,0 +1,119 @@
+# Daily data refresh + GitHub Pages deploy.
+#   schedule / manual run : fetch a fresh snapshot, test, verify, export, commit data, build, deploy
+#   push to main          : rebuild and deploy only (no fetch), for code/config/data pushed by hand
+# Commits made with GITHUB_TOKEN do not trigger new workflow runs, so build + deploy happen in
+# this same run, after the data commit.
+name: Update and deploy
+
+on:
+  schedule:
+    - cron: "17 9 * * *" # daily, 09:17 UTC
+  workflow_dispatch:
+    inputs:
+      fetch:
+        description: Fetch a fresh Artificial Analysis snapshot
+        type: boolean
+        default: true
+  push:
+    branches: [main]
+    paths:
+      - web/**
+      - pipeline/**
+      - config/**
+      - data/**
+      - .github/workflows/site.yml
+
+concurrency:
+  group: pages
+  cancel-in-progress: false
+
+permissions:
+  contents: write
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    env:
+      FETCH: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.fetch) }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          ref: main
+
+      - uses: astral-sh/setup-uv@v10
+        with:
+          enable-cache: true
+          cache-dependency-glob: pipeline/uv.lock
+
+      - name: Fetch snapshot from Artificial Analysis
+        if: env.FETCH == 'true'
+        working-directory: pipeline
+        env:
+          AA_API_KEY: ${{ secrets.AA_API_KEY }}
+        run: |
+          [ -n "$AA_API_KEY" ] || { echo "::error::Repository secret AA_API_KEY is not set"; exit 1; }
+          uv run --frozen ascendant ingest
+
+      - name: Tests
+        working-directory: pipeline
+        run: uv run --frozen pytest -q
+
+      - name: Determinism check
+        working-directory: pipeline
+        run: uv run --frozen ascendant verify
+
+      - name: Export site data
+        working-directory: pipeline
+        run: uv run --frozen ascendant export
+
+      - name: Commit data
+        if: env.FETCH == 'true'
+        run: |
+          git add data/snapshots web/public/data
+          if git diff --cached --quiet; then
+            echo "No data changes."
+            exit 0
+          fi
+          date=$(ls data/snapshots | sort | tail -n 1)
+          git config user.name "github-actions[bot]"
+          git config user.email "41898282+github-actions[bot]@users.noreply.github.com"
+          git commit -m "data: snapshot $date"
+          git push origin HEAD:main
+
+      - uses: actions/setup-node@v7
+        with:
+          node-version: 24
+          cache: npm
+          cache-dependency-path: web/package-lock.json
+
+      - name: Build site
+        working-directory: web
+        env:
+          NEXT_TELEMETRY_DISABLED: "1"
+          # Project sites live under /<repo>. Set repo variable PAGES_BASE_PATH to "/" for a
+          # custom domain or a <user>.github.io repository.
+          BASE_PATH: ${{ vars.PAGES_BASE_PATH || format('/{0}', github.event.repository.name) }}
+        run: |
+          [ "$BASE_PATH" = "/" ] && BASE_PATH=""
+          export NEXT_PUBLIC_BASE_PATH="$BASE_PATH"
+          npm ci --no-audit --no-fund
+          npm run build
+          touch out/.nojekyll
+
+      - uses: actions/upload-pages-artifact@v5
+        with:
+          path: web/out
+
+  deploy:
+    needs: build
+    runs-on: ubuntu-latest
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - id: deployment
+        uses: actions/deploy-pages@v5
