@@ -68,8 +68,7 @@ One-time setup:
 
 1. **Settings → Pages → Build and deployment → Source: GitHub Actions.**
 2. **Settings → Secrets and variables → Actions → New repository secret:** `AA_API_KEY`.
-3. **Settings → Actions → General → Workflow permissions: Read and write.**
-4. Run it once: **Actions → Update and deploy → Run workflow.**
+3. Run it once: **Actions → Update and deploy → Run workflow.**
 
 The site is served at `https://<user>.github.io/<repo>/`; the workflow builds with that base
 path. For a custom domain or a `<user>.github.io` repo, add the repository variable

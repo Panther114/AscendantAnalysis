@@ -41,7 +41,7 @@ jobs:
         with:
           ref: main
 
-      - uses: astral-sh/setup-uv@v10
+      - uses: astral-sh/setup-uv@v10.3.0
         with:
           enable-cache: true
           cache-dependency-glob: pipeline/uv.lock
