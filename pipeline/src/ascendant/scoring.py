@@ -88,7 +88,7 @@ class Engine:
     def field(self, date: dt.date) -> Field:
         f = self._fields.get(date)
         if f is None:
-            f = self._fields[date] = build_field(self.u, date, self.cfg, self.tiers)
+            f = self._fields[date] = build_field(self.u, date, self.cfg)
         return f
 
     # ------------------------------------------------------------ pillar A

@@ -5,16 +5,6 @@ import pytest
 from ascendant import stats
 
 
-def test_jenks_separates_obvious_clusters():
-    data = [1, 1.1, 1.2, 5, 5.1, 5.2, 10, 10.1, 10.2]
-    assert stats.jenks_breaks(data, 3) == [1.2, 5.2]
-
-
-def test_jenks_needs_enough_values():
-    with pytest.raises(ValueError):
-        stats.jenks_breaks([1, 2], 3)
-
-
 def test_ols_recovers_line():
     xs = [[x] for x in range(10)]
     ys = [3 + 2 * x for x in range(10)]

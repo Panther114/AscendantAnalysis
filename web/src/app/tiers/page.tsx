@@ -10,9 +10,9 @@ import type { Tier } from "@/lib/types";
 export const metadata: Metadata = { title: "Tiers" };
 
 const TIERS: { t: Tier; key: KeyColor; blurb: string }[] = [
-  { t: "frontier", key: "violet", blurb: "Flagships: the top price band, plus each lab's best line when within 12 points of the frontier" },
-  { t: "mid", key: "yellow", blurb: "Workhorses: the second price band" },
-  { t: "small", key: "orange", blurb: "Cheap and fast: everything below the mid band" },
+  { t: "frontier", key: "violet", blurb: "Flagships: blended price at or above the frontier cut-off" },
+  { t: "mid", key: "yellow", blurb: "Workhorses: blended price between the mid and frontier cut-offs" },
+  { t: "small", key: "orange", blurb: "Cheap and fast: blended price below the mid cut-off" },
 ];
 
 export default function TiersPage() {
@@ -22,8 +22,8 @@ export default function TiersPage() {
     <div className="rise">
       <PageHeader eyebrow="Tiers" title="Head-to-head, tier by tier">
         Each lab&apos;s best active release in each tier, scored 50% intelligence, 40% value (intelligence above what its cost
-        predicts) and 10% speed, each as a percentile among rival labs. Tiers come from natural breaks in blended price (now ≈
-        {fmtUsd(midMin)} and ≈{fmtUsd(frontierMin)} per 1M tokens) and are fixed at launch.
+        predicts) and 10% speed, each as a percentile among rival labs. Tiers come from fixed cut-offs on a release&apos;s own blended price ({fmtUsd(midMin)} and
+        {fmtUsd(frontierMin)} per 1M tokens), so they never depend on other models.
       </PageHeader>
 
       <div className="space-y-4">

@@ -68,9 +68,9 @@ export default function MethodologyPage() {
 
         <Section n={2} title="Tiers">
           <p>
-            Tiers come from Jenks natural breaks (k = 5) on log blended price across the active field. The top band is <strong>frontier</strong>,
-            the next <strong>mid</strong>, the rest <strong>small</strong>. A lab&apos;s most intelligent line is promoted from mid to frontier when it lands
-            within 12 points of the best model in the world. A release keeps the tier it launched into, so tiers don&apos;t flap day to day.
+            A release&apos;s tier depends only on its own blended price: <strong>frontier</strong> at ${String((c.tiers as Record<string, number>).frontier_min_price)}
+            per 1M tokens or more, <strong>mid</strong> from ${String((c.tiers as Record<string, number>).mid_min_price)}, <strong>small</strong> below that.
+            No other model can move it, so a new, repriced or backdated release elsewhere in the market never changes how an existing model is classed.
           </p>
         </Section>
 

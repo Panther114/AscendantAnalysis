@@ -1,7 +1,7 @@
 # Ascendant Analysis Health Index, Methodology v1.
 # Every constant that influences a score lives here. Changing any value requires
 # bumping `version`, and the full history is recomputed.
-version: "1.4.0"
+version: "1.5.0"
 
 field:
   shelf_life_days: 365        # a release with no successor in its product line drops out after this
@@ -13,15 +13,11 @@ cost:
   w_price: 0.5
 
 tiers:
-  # Jenks natural breaks on log blended price of active releases. The cheap end of the
-  # market has a long open-weights tail, so we cut finely (k=5) and map the top band to
-  # frontier, the next to mid, and the remaining bands to small.
-  jenks_k: 5
-  frontier_bands: 1
-  mid_bands: 1
-  # A lab's most intelligent active line is promoted mid -> frontier when it lands within
-  # this many index points of the field's best model (it is genuinely a flagship).
-  flagship_promotion_gap: 12
+  # A release's tier is a function of its own blended price (USD per 1M tokens, 3:1) and
+  # nothing else, so no other model can move it. Frontier is flagship pricing (Opus, Fable,
+  # GPT/Gemini top models), mid is the workhorse band (Sonnet, Flash, Sol), small is below.
+  frontier_min_price: 7.0
+  mid_min_price: 1.0
 
 leadership:
   tau_intelligence: 3.0       # index points (wider than AA's run-to-run noise)

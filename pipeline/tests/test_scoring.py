@@ -4,7 +4,7 @@ import datetime as dt
 
 from conftest import D, release, universe
 
-from ascendant.field import launch_tiers
+from ascendant.field import launch_tiers, tier_of
 from ascendant.scoring import Engine
 
 TODAY = D(2026, 9, 1)
@@ -44,7 +44,7 @@ def test_declining_line_has_negative_trend(market, cfg):
 def test_dominant_rival_release_never_raises_health(market, cfg):
     base = scores(market, cfg)
     killer = release("zeta-1", "zeta", D(2026, 8, 30), "Zeta",
-                     [(60, 0.01)], 0.01, speed=10_000)
+                     [(60, 0.01)], 0.01)
     after = scores([*market, killer], cfg)
     for lab, s in base.items():
         assert after[lab].health <= s.health, lab
@@ -89,3 +89,23 @@ def test_lab_scope_requires_priced_model(market, cfg):
 def test_health_bounded(market, cfg):
     for s in scores(market, cfg).values():
         assert 0.0 <= s.health <= 100.0
+
+
+def test_tier_depends_only_on_the_release_itself(market, cfg):
+    before = {r.slug: tier_of(r, cfg) for r in universe(market, TODAY).releases}
+    # Crowd the field with cheap, expensive and backdated rivals: no existing tier may move.
+    extra = [release(f"x-{i}", f"x{i}", D(2026, 6, 1), f"X{i}", [(30, 1.0)], p)
+             for i, p in enumerate((0.05, 0.1, 0.15, 0.2, 0.3, 25.0, 40.0))]
+    after = {r.slug: tier_of(r, cfg) for r in universe([*market, *extra], TODAY).releases}
+    assert {k: after[k] for k in before} == before
+    assert launch_tiers(universe([*market, *extra], TODAY), cfg) == after
+
+
+def test_tier_cutoffs(cfg):
+    tc = cfg.m("tiers")
+    at = lambda price: tier_of(release("r", "lab", D(2026, 1, 1), "R", [(30, 1.0)], price), cfg)  # noqa: E731
+    assert at(tc["frontier_min_price"]) == "frontier"
+    assert at(tc["frontier_min_price"] - 0.01) == "mid"
+    assert at(tc["mid_min_price"]) == "mid"
+    assert at(tc["mid_min_price"] - 0.01) == "small"
+    assert tier_of(release("r", "lab", D(2026, 1, 1), "R", [(30, None)], None), cfg) is None

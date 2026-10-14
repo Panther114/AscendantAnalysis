@@ -22,7 +22,7 @@ class Field:
     date: dt.date
     active: tuple[Release, ...]  # sorted by slug
     tier: dict[str, str | None]  # release slug -> tier
-    price_breaks: tuple[float, ...]  # USD/1M, ascending; frontier >= last, mid >= second-last
+    price_breaks: tuple[float, float]  # USD/1M: mid from the first, frontier from the second
     value_coef: tuple[float, float]  # I ~ a + b * log(cost)
     speed_coef: tuple[float, float] | None  # log(speed) ~ a + b * I
     frontier_intelligence: float
@@ -43,47 +43,23 @@ class Field:
         return math.log(v.speed) - (a + b * v.intelligence)
 
 
-def _assign_tiers(
-    active: list[Release], cfg: Config
-) -> tuple[dict[str, str | None], tuple[float, ...]]:
+def tier_of(release: Release, cfg: Config) -> str | None:
+    """Tier of a release, from its own blended price against fixed cut-offs.
+
+    The tier depends on nothing but the release itself and the methodology constants, so
+    it can't move when other models appear, are repriced or are backdated in the data.
+    """
+    override = (cfg.overrides.get("tiers") or {}).get(release.slug)
+    if override:
+        return override
+    if not release.price_blend:
+        return None
     tc = cfg.m("tiers")
-    priced = [r for r in active if r.price_blend]
-    tier: dict[str, str | None] = {r.slug: None for r in active}
-    if len(priced) < 3:
-        return tier, ()
-    k = min(tc["jenks_k"], len(priced))
-    logp = [math.log(r.price_blend) for r in priced]
-    breaks = stats.jenks_breaks(logp, k)  # k-1 upper bounds of lower classes
-    fb, mb = tc["frontier_bands"], tc["mid_bands"]
-    frontier_min = breaks[-fb] if len(breaks) >= fb else math.inf
-    mid_min = breaks[-(fb + mb)] if len(breaks) >= fb + mb else -math.inf
-
-    def band(lp: float) -> str:
-        if lp > frontier_min:
-            return "frontier"
-        if lp > mid_min:
-            return "mid"
-        return "small"
-
-    for r in priced:
-        tier[r.slug] = band(math.log(r.price_blend))
-
-    # Flagship promotion: a lab's most intelligent active line moves mid -> frontier when it
-    # lands within `flagship_promotion_gap` points of the field's best model.
-    cut = max(r.intelligence for r in active) - tc["flagship_promotion_gap"]
-    by_lab: dict[str, list[Release]] = {}
-    for r in priced:
-        by_lab.setdefault(r.lab, []).append(r)
-    for rs in by_lab.values():
-        flagship = max(rs, key=lambda r: (r.intelligence, r.slug))
-        if tier[flagship.slug] == "mid" and flagship.intelligence >= cut:
-            tier[flagship.slug] = "frontier"
-
-    for slug, t in (cfg.overrides.get("tiers") or {}).items():
-        if slug in tier:
-            tier[slug] = t
-    price_breaks = tuple(stats.rnd(math.exp(b)) for b in (mid_min, frontier_min))
-    return tier, price_breaks
+    if release.price_blend >= tc["frontier_min_price"]:
+        return "frontier"
+    if release.price_blend >= tc["mid_min_price"]:
+        return "mid"
+    return "small"
 
 
 def _active(universe: Universe, date: dt.date, cfg: Config) -> list[Release]:
@@ -98,30 +74,15 @@ def _active(universe: Universe, date: dt.date, cfg: Config) -> list[Release]:
 
 
 def launch_tiers(universe: Universe, cfg: Config) -> dict[str, str | None]:
-    """Tier of every release as assigned in the field on its own release date.
-
-    A release keeps its launch tier for life: tiers describe the competitive role a model
-    was launched into, and re-cutting them on every replay date would make releases flap between tiers.
-    """
-    out: dict[str, str | None] = {}
-    for d in sorted({r.date for r in universe.releases}):
-        active = _active(universe, d, cfg)
-        tier, _ = _assign_tiers(active, cfg)
-        for r in active:
-            if r.date == d:
-                out[r.slug] = tier[r.slug]
-    for slug, t in (cfg.overrides.get("tiers") or {}).items():
-        out[slug] = t
-    return out
+    """Tier of every release. A release keeps its tier for life (see `tier_of`)."""
+    return {r.slug: tier_of(r, cfg) for r in universe.releases}
 
 
-def build(
-    universe: Universe, date: dt.date, cfg: Config, tiers: dict[str, str | None] | None = None
-) -> Field:
+def build(universe: Universe, date: dt.date, cfg: Config) -> Field:
     active = _active(universe, date, cfg)
-    tier, breaks = _assign_tiers(active, cfg)
-    if tiers is not None:
-        tier = {r.slug: tiers.get(r.slug) for r in active}
+    tier = {r.slug: tier_of(r, cfg) for r in active}
+    tc = cfg.m("tiers")
+    breaks = (float(tc["mid_min_price"]), float(tc["frontier_min_price"]))
 
     vs = [v for r in active for v in r.variants]
     costed = [v for v in vs if v.cost is not None]

@@ -1,21 +1,21 @@
 {
-  "snapshot": "2026-10-13",
-  "methodology": "1.4.0",
+  "snapshot": "2026-10-14",
+  "methodology": "1.5.0",
   "health": {
-    "anthropic": 92.3,
-    "openai": 71.0,
-    "google": 70.2,
-    "inclusionai": 54.8,
-    "xiaomi": 54.8,
-    "meta": 52.0,
-    "deepseek": 51.8,
-    "zai": 42.9,
-    "alibaba": 42.4,
-    "mistral": 38.6,
-    "upstage": 29.1,
-    "stepfun": 27.7,
-    "xai": 27.2,
-    "thinking-machines": 27.0,
-    "minimax": 21.7
+    "anthropic": 91.7,
+    "openai": 65.9,
+    "meta": 61.8,
+    "google": 56.9,
+    "inclusionai": 54.4,
+    "xiaomi": 53.9,
+    "zai": 47.7,
+    "deepseek": 41.8,
+    "alibaba": 41.6,
+    "stepfun": 34.8,
+    "xai": 33.7,
+    "upstage": 27.7,
+    "thinking-machines": 24.9,
+    "mistral": 20.9,
+    "minimax": 20.1
   }
 }
