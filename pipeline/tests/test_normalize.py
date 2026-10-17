@@ -1,6 +1,8 @@
+import datetime as dt
+
 import pytest
 
-from ascendant.normalize import _hex_color, product_line
+from ascendant.normalize import _hex_color, _impute_deprecated_prices, product_line
 
 
 @pytest.mark.parametrize(
@@ -45,3 +47,33 @@ def test_flash_and_flash_lite_are_distinct_lines():
 )
 def test_hex_color(raw, hex_):
     assert _hex_color(raw) == hex_
+
+
+def _row(slug, release, date, intel, blend, deprecated):
+    return {"slug": slug, "name": slug, "lab": "lab", "release": release,
+            "date": dt.date.fromisoformat(date), "intelligence": intel, "price_blend": blend,
+            "deprecated": deprecated, "price_imputed": False}
+
+
+def test_deprecated_release_takes_its_lines_price():
+    meta = {"m-1": {"name": "Model 1"}, "m-2": {"name": "Model 2"}, "m-3": {"name": "Model 3"},
+            "x-1": {"name": "Other 1"}}
+    raw = [
+        _row("m-1", "m-1", "2025-01-01", 20, 3.0, False),
+        _row("m-2", "m-2", "2025-05-01", 25, None, True),   # retired, price dropped
+        _row("m-3", "m-3", "2025-09-01", 30, 6.0, False),
+        _row("x-1", "x-1", "2025-05-01", 25, None, False),  # never priced: left alone
+    ]
+    _impute_deprecated_prices(raw, meta, {})
+    by = {r["slug"]: r for r in raw}
+    assert by["m-2"]["price_blend"] == 3.0 and by["m-2"]["price_imputed"]
+    assert by["x-1"]["price_blend"] is None and not by["x-1"]["price_imputed"]
+    assert not by["m-1"]["price_imputed"]
+
+
+def test_deprecated_release_falls_back_to_later_sibling():
+    meta = {"m-1": {"name": "Model 1"}, "m-2": {"name": "Model 2"}}
+    raw = [_row("m-1", "m-1", "2025-01-01", 20, None, True),
+           _row("m-2", "m-2", "2025-06-01", 25, 4.0, False)]
+    _impute_deprecated_prices(raw, meta, {})
+    assert raw[0]["price_blend"] == 4.0

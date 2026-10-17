@@ -1,11 +1,15 @@
 # Ascendant Analysis Health Index, Methodology v1.
 # Every constant that influences a score lives here. Changing any value requires
 # bumping `version`, and the full history is recomputed.
-version: "1.5.0"
+version: "1.6.0"
 
 field:
   shelf_life_days: 365        # a release with no successor in its product line drops out after this
   min_intelligence: 1.0       # releases whose best variant scores below this are ignored
+  # A newer release replaces the active one in its product line only if it is no more than
+  # this many index points weaker. A much weaker sibling (a ChatGPT, vision or instruct cut
+  # of a flagship) joins the field next to it instead of hiding it.
+  supersede_gap: 3.0
 
 cost:
   # log C = w_task * log(cost_per_task) + w_price * log(blended_price_3to1)
@@ -18,6 +22,10 @@ tiers:
   # GPT/Gemini top models), mid is the workhorse band (Sonnet, Flash, Sol), small is below.
   frontier_min_price: 7.0
   mid_min_price: 1.0
+  # AA drops the price of deprecated models, which would strip them of a tier for the whole
+  # replay. A deprecated release with no price takes the blended price of the nearest priced
+  # release in its product line (earlier first, then later). Never-priced models stay untiered.
+  impute_deprecated_price: true
 
 leadership:
   tau_intelligence: 3.0       # index points (wider than AA's run-to-run noise)
@@ -38,6 +46,12 @@ lineup:
   w_intelligence: 0.5
   w_value: 0.4
   w_speed: 0.1
+  # Each axis is a soft win rate: the mean over rival labs in the tier of
+  # sigmoid((own - rival) / tau). With many entrants it tracks the percentile rank; with two
+  # or three it stays graded by the size of the gap instead of jumping between 0 and 1.
+  tau_intelligence: 3.0       # index points
+  tau_value: 3.0              # index points of value residual
+  tau_speed: 0.25             # log units of speed residual
   # LS = mw * best tier + (1 - mw) * mean over all tiers (missing tier = 0): a specialist
   # that wins its tier scores well, a full lineup earns the breadth bonus.
   max_weight: 0.5

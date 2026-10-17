@@ -22,7 +22,7 @@ export default function TiersPage() {
     <div className="rise">
       <PageHeader eyebrow="Tiers" title="Head-to-head, tier by tier">
         Each lab&apos;s best active release in each tier, scored 50% intelligence, 40% value (intelligence above what its cost
-        predicts) and 10% speed, each as a percentile among rival labs. Tiers come from fixed cut-offs on a release&apos;s own blended price ({fmtUsd(midMin)} and
+        predicts) and 10% speed, each as a soft win rate against rival labs (close to the percentile, but graded by the size of the gap). Tiers come from fixed cut-offs on a release&apos;s own blended price ({fmtUsd(midMin)} and
         {fmtUsd(frontierMin)} per 1M tokens), so they never depend on other models.
       </PageHeader>
 
@@ -59,7 +59,7 @@ export default function TiersPage() {
         })}
       </div>
       <InfoNote>
-        I, V and S are the release&apos;s percentile on intelligence, value and speed. Scores are computed against every lab with a model in
+        I, V and S are the release&apos;s soft win rate on intelligence, value and speed. Scores are computed against every lab with a model in
         the tier, including unranked labs whose models have no published price; the lists show ranked labs only.
       </InfoNote>
     </div>

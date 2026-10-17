@@ -94,6 +94,7 @@ export interface VariantOut {
   cost_per_task_imputed: boolean;
   price_in: number | null;
   price_out: number | null;
+  price_imputed: boolean; // deprecated, price taken from its product line
   speed: number | null;
   value_residual: number | null;
 }
@@ -151,6 +152,7 @@ export interface ReleaseIndexEntry {
   tier: Tier | null;
   intelligence: number;
   price_blend: number | null;
+  price_imputed: boolean;
   open_weights: boolean;
   material: boolean;
   competitiveness: number;

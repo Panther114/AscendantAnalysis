@@ -234,9 +234,9 @@ class Engine:
         speed_pop = [e[3] for e in entries if e[3] is not None]
         slots: dict[str, TierSlot] = {}
         for r, v, val, spd in entries:
-            pi = stats.pct_rank(v.intelligence, intel_pop)
-            pv = stats.pct_rank(val, value_pop)
-            ps = stats.pct_rank(spd, speed_pop) if spd is not None else None
+            pi = stats.soft_win_rate(v.intelligence, intel_pop, lc["tau_intelligence"])
+            pv = stats.soft_win_rate(val, value_pop, lc["tau_value"])
+            ps = stats.soft_win_rate(spd, speed_pop, lc["tau_speed"]) if spd is not None else None
             wi, wv, ws = lc["w_intelligence"], lc["w_value"], lc["w_speed"]
             if ps is None:
                 score = (wi * pi + wv * pv) / (wi + wv)

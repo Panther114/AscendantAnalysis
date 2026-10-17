@@ -63,14 +63,24 @@ def tier_of(release: Release, cfg: Config) -> str | None:
 
 
 def _active(universe: Universe, date: dt.date, cfg: Config) -> list[Release]:
+    """Releases in play on `date`: per product line, those no later sibling has superseded.
+
+    A later release supersedes an earlier one in its line unless it is more than
+    `supersede_gap` points weaker, so a weak side release (a ChatGPT, vision or instruct cut,
+    which may sort after its flagship on the same day) can't hide the flagship.
+    """
     fc = cfg.m("field")
     shelf = dt.timedelta(days=fc["shelf_life_days"])
-    newest: dict[tuple[str, str], Release] = {}
-    for r in universe.releases:  # sorted by (date, slug), so later wins
+    gap = fc["supersede_gap"]
+    lines: dict[tuple[str, str], list[Release]] = {}
+    for r in universe.releases:  # sorted by (date, slug)
         if r.date > date or r.intelligence < fc["min_intelligence"]:
             continue
-        newest[(r.lab, r.line)] = r
-    return sorted((r for r in newest.values() if date - r.date <= shelf), key=lambda r: r.slug)
+        heads = lines.setdefault((r.lab, r.line), [])
+        heads[:] = [h for h in heads if r.intelligence < h.intelligence - gap]
+        heads.append(r)
+    return sorted((r for heads in lines.values() for r in heads if date - r.date <= shelf),
+                  key=lambda r: r.slug)
 
 
 def launch_tiers(universe: Universe, cfg: Config) -> dict[str, str | None]:

@@ -36,6 +36,7 @@ class Variant:
     cost_per_task_imputed: bool
     cost: float | None  # geometric mix, the cost axis used everywhere
     speed: float | None  # median output tokens/s
+    price_imputed: bool = False  # deprecated and unpriced: blend taken from its product line
 
 
 @dataclass(frozen=True)
@@ -134,6 +135,49 @@ def _hex_color(c: str | None) -> str | None:
     return _NAMED_COLORS.get(c.lower())
 
 
+def _release_name_date(meta: dict, best_name: str, dates: list[dt.date]) -> tuple[str, dt.date]:
+    name = meta.get("name") or re.sub(r"\s*\([^)]*\)", "", best_name).strip()
+    date = dt.date.fromisoformat(meta["releaseDate"]) if meta.get("releaseDate") else None
+    return name, date or min(dates)
+
+
+def _impute_deprecated_prices(raw: list[dict], rel_meta: dict, line_ov: dict[str, str]) -> None:
+    """Give unpriced, deprecated releases the blended price of their product line.
+
+    AA drops the price once a model is deprecated, which would leave it untiered for its whole
+    life. Such a release (every variant deprecated and unpriced) takes the release-level blend
+    of the nearest priced release in its (lab, line): the closest earlier one, else the closest
+    later one. Models that were never priced (not deprecated) are left alone.
+    """
+    groups: dict[str, list[dict]] = {}
+    for r in raw:
+        groups.setdefault(r["release"], []).append(r)
+    info = []  # (lab, line, date, slug, blend or None, imputable)
+    for rslug, rows in sorted(groups.items()):
+        best = max(rows, key=lambda r: (r["intelligence"], r["slug"]))
+        name, date = _release_name_date(rel_meta.get(rslug, {}), best["name"],
+                                        [r["date"] for r in rows])
+        blends = sorted(r["price_blend"] for r in rows if r["price_blend"])
+        blend = blends[len(blends) // 2] if blends else None
+        imputable = blend is None and all(r["deprecated"] for r in rows)
+        info.append((rows[0]["lab"], line_ov.get(rslug) or product_line(name), date, rslug, blend,
+                     imputable))
+    priced: dict[tuple[str, str], list[tuple[dt.date, str, float]]] = {}
+    for lab, line, date, rslug, blend, _ in info:
+        if blend is not None:
+            priced.setdefault((lab, line), []).append((date, rslug, blend))
+    for lab, line, date, rslug, _, imputable in info:
+        sibs = priced.get((lab, line))
+        if not imputable or not sibs:
+            continue
+        before = [s for s in sibs if s[0] <= date]
+        after = [s for s in sibs if s[0] > date]
+        src = max(before) if before else min(after)
+        for r in groups[rslug]:
+            r["price_blend"] = src[2]
+            r["price_imputed"] = True
+
+
 def build(manifest: dict, api: dict, board: dict, cfg: Config) -> Universe:
     snap_date = dt.date.fromisoformat(manifest["date"])
     aliases: dict[str, str] = cfg.labs.get("aliases") or {}
@@ -190,13 +234,18 @@ def build(manifest: dict, api: dict, board: dict, cfg: Config) -> Universe:
                 "price_blend": blend,
                 "cpt": _pos(pm.get("intelligenceIndexCostPerTask")),
                 "speed": _pos(row.get("median_output_tokens_per_second")),
+                "deprecated": bool(pm.get("deprecated", False)),
+                "price_imputed": False,
             }
         )
 
     labs = {k: v if v.color else dataclasses.replace(v, color="#888888") for k, v in labs.items()}
+    line_ov: dict[str, str] = ov.get("product_lines") or {}
+    if cfg.m("tiers").get("impute_deprecated_price"):
+        _impute_deprecated_prices(raw, rel_meta, line_ov)
 
     # Impute cost-per-task where missing: log cpt ~ log price + intelligence + reasoning.
-    train = [r for r in raw if r["cpt"] and r["price_blend"]]
+    train = [r for r in raw if r["cpt"] and r["price_blend"] and not r["price_imputed"]]
     coef = stats.ols(
         [[math.log(r["price_blend"]), r["intelligence"], float(r["reasoning"])] for r in train],
         [math.log(r["cpt"]) for r in train],
@@ -248,6 +297,7 @@ def build(manifest: dict, api: dict, board: dict, cfg: Config) -> Universe:
                 cost_per_task_imputed=imputed,
                 cost=stats.rnd(cost),
                 speed=stats.rnd(r["speed"]),
+                price_imputed=r["price_imputed"],
             )
         )
 
@@ -257,16 +307,13 @@ def build(manifest: dict, api: dict, board: dict, cfg: Config) -> Universe:
 
     releases: list[Release] = []
     excluded: list[str] = []
-    line_ov: dict[str, str] = ov.get("product_lines") or {}
     for rslug in sorted(by_release):
         vs = tuple(sorted(by_release[rslug], key=lambda v: (v.intelligence, v.slug)))
         if rslug in excluded_cfg:
             excluded.append(rslug)
             continue
         meta = rel_meta.get(rslug, {})
-        name = meta.get("name") or re.sub(r"\s*\([^)]*\)", "", vs[-1].name).strip()
-        date = dt.date.fromisoformat(meta["releaseDate"]) if meta.get("releaseDate") else None
-        date = date or min(v.date for v in vs)
+        name, date = _release_name_date(meta, vs[-1].name, [v.date for v in vs])
         blends = sorted(v.price_blend for v in vs if v.price_blend)
         releases.append(
             Release(

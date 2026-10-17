@@ -57,6 +57,28 @@ def pct_rank(value: float, population: Sequence[float]) -> float:
     return (below + 0.5 * (equal - 1)) / (n - 1)
 
 
+def soft_win_rate(value: float, population: Sequence[float], tau: float) -> float:
+    """Mean of sigmoid((value - p) / tau) over the rest of `population` (which includes value).
+
+    A smooth pct_rank: ties score 0.5 and gaps much wider than tau score 0 or 1, but a narrow
+    gap stays near 0.5, so a two-entrant slot is graded instead of all-or-nothing. A lone
+    entrant scores 1.0. Infinite values (e.g. no value residual) compare as hard wins/losses.
+    """
+    others = sorted(population)
+    others.remove(value)
+    if not others:
+        return 1.0
+    total = []
+    for p in others:
+        if value == p:
+            total.append(0.5)
+        elif math.isinf(value) or math.isinf(p):
+            total.append(1.0 if value > p else 0.0)
+        else:
+            total.append(sigmoid((value - p) / tau))
+    return math.fsum(total) / len(others)
+
+
 def ols(xs: Sequence[Sequence[float]], ys: Sequence[float]) -> list[float]:
     """Least squares with intercept via normal equations + Gauss-Jordan.
 

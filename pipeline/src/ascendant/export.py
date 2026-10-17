@@ -87,6 +87,7 @@ def _field_payload(engine: Engine, date) -> dict:
                     "cost_per_task_imputed": v.cost_per_task_imputed,
                     "price_in": v.price_in,
                     "price_out": v.price_out,
+                    "price_imputed": v.price_imputed,
                     "speed": v.speed,
                     "value_residual": stats.rnd(f.value_residual(v)),
                 }
@@ -246,6 +247,7 @@ def build(u: Universe, cfg: Config, manifest: dict, with_sensitivity: bool = Tru
         r.slug: {"name": r.name, "lab": r.lab, "date": r.date.isoformat(), "line": r.line,
                  "tier": engine.tiers.get(r.slug), "intelligence": r.intelligence,
                  "price_blend": r.price_blend, "open_weights": r.open_weights,
+                 "price_imputed": any(v.price_imputed for v in r.variants),
                  "material": engine.at_release(r)[1],
                  "competitiveness": stats.rnd(engine.at_release(r)[0])}
         for r in u.releases

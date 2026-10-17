@@ -55,7 +55,9 @@ export default function MethodologyPage() {
             A <strong>release</strong> (e.g. Claude Opus 5.5) groups its reasoning-effort <strong>variants</strong>. A{" "}
             <strong>product line</strong> is the release name without version numbers (Claude Opus, GPT Sol, Gemini Flash-Lite). On any
             date, the <strong>field</strong> is the newest release in every product line, dropped after{" "}
-            {String((c.field as Record<string, number>).shelf_life_days)} days without a successor.
+            {String((c.field as Record<string, number>).shelf_life_days)} days without a successor. A newer release only replaces its
+            predecessor if it is at most {String((c.field as Record<string, number>).supersede_gap)} points weaker, so a much weaker side
+            release (a ChatGPT, vision or instruct cut) sits next to its flagship instead of hiding it.
           </p>
           <p>
             <strong>Cost</strong> blends what a model costs to actually use with its list price, as a geometric mean:
@@ -71,6 +73,8 @@ export default function MethodologyPage() {
             A release&apos;s tier depends only on its own blended price: <strong>frontier</strong> at ${String((c.tiers as Record<string, number>).frontier_min_price)}
             per 1M tokens or more, <strong>mid</strong> from ${String((c.tiers as Record<string, number>).mid_min_price)}, <strong>small</strong> below that.
             No other model can move it, so a new, repriced or backdated release elsewhere in the market never changes how an existing model is classed.
+            Artificial Analysis drops the price of deprecated models, so a deprecated release with no price takes the blended price of the
+            nearest priced release in its product line; models that never had a price stay untiered.
           </p>
         </Section>
 
@@ -96,8 +100,11 @@ export default function MethodologyPage() {
 
         <Section n={4} title="Pillar B: Lineup">
           <p>
-            In each tier, every lab&apos;s best-scoring release is scored by percentile among rival labs: 50% intelligence, 40% <strong>value residual</strong>{" "}
-            (intelligence above what a field-wide regression on log cost predicts), 10% speed. Then:
+            In each tier, every lab&apos;s best-scoring release is scored against rival labs: 50% intelligence, 40% <strong>value residual</strong>{" "}
+            (intelligence above what a field-wide regression on log cost predicts), 10% speed. Each axis is a <strong>soft win rate</strong>, the
+            mean over rivals of <TeX>{String.raw`\sigma\big((x - x_\text{rival})/\tau\big)`}</TeX>: it tracks the percentile when the tier is
+            crowded, but with only two or three entrants (as in the frontier tier) a narrow gap stays close to even instead of
+            counting as a total win or loss. Then:
           </p>
           <TeX block>{String.raw`\text{LS} = 0.5\cdot\max_t s_t + 0.5\cdot\tfrac13\textstyle\sum_t s_t \quad(\text{missing tier} = 0)`}</TeX>
           <p>A specialist that wins its tier scores well, and a full lineup earns a breadth bonus.</p>

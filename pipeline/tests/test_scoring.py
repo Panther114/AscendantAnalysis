@@ -109,3 +109,25 @@ def test_tier_cutoffs(cfg):
     assert at(tc["mid_min_price"]) == "mid"
     assert at(tc["mid_min_price"] - 0.01) == "small"
     assert tier_of(release("r", "lab", D(2026, 1, 1), "R", [(30, None)], None), cfg) is None
+
+
+def test_weak_side_release_does_not_hide_its_flagship(cfg):
+    flagship = release("big-1", "omega", D(2026, 8, 1), "Omega", [(45, 5.0)], 5.0)
+    side = release("big-1-chat", "omega", D(2026, 8, 1), "Omega", [(30, None)], None)
+    active = {r.slug for r in Engine(universe([flagship, side], TODAY), cfg).field(TODAY).active}
+    assert active == {"big-1", "big-1-chat"}
+
+
+def test_comparable_successor_still_supersedes(cfg):
+    old = release("o-1", "omega", D(2026, 6, 1), "Omega", [(45, 5.0)], 5.0)
+    new = release("o-2", "omega", D(2026, 8, 1), "Omega", [(44, 4.0)], 5.0)  # within the gap
+    active = {r.slug for r in Engine(universe([old, new], TODAY), cfg).field(TODAY).active}
+    assert active == {"o-2"}
+
+
+def test_two_entrant_tier_is_graded_not_binary(cfg):
+    a = release("a-1", "a", D(2026, 8, 1), "A", [(50, 10.0)], 10.0)
+    b = release("b-1", "b", D(2026, 8, 1), "B", [(49, 10.5)], 10.0)
+    e = Engine(universe([a, b], TODAY), cfg)
+    slots = e.tier_scores(e.field(TODAY), "frontier")
+    assert 0.3 < slots["b"].score < 0.5 < slots["a"].score < 0.7
