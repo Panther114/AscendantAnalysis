@@ -1,6 +1,6 @@
 import pytest
 
-from ascendant.normalize import product_line
+from ascendant.normalize import _hex_color, product_line
 
 
 @pytest.mark.parametrize(
@@ -27,3 +27,21 @@ def test_product_line(name, line):
 
 def test_flash_and_flash_lite_are_distinct_lines():
     assert product_line("Gemini 3.8 Flash") != product_line("Gemini 3.5 Flash-Lite")
+
+
+@pytest.mark.parametrize(
+    ("raw", "hex_"),
+    [
+        ("#cc785c", "#cc785c"),
+        ("#F0529C", "#F0529C"),
+        ("#abc", "#aabbcc"),
+        ("1f1f1f", "#1f1f1f"),
+        ("black", "#000000"),
+        (" Black ", "#000000"),
+        ("not-a-color", None),
+        ("", None),
+        (None, None),
+    ],
+)
+def test_hex_color(raw, hex_):
+    assert _hex_color(raw) == hex_

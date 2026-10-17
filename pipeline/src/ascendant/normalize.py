@@ -6,6 +6,7 @@ Joins the AA API (stable ids, release dates, prices) with the leaderboard payloa
 
 from __future__ import annotations
 
+import dataclasses
 import datetime as dt
 import math
 import re
@@ -118,6 +119,21 @@ def _pos(x: float | None) -> float | None:
     return x if (x is not None and x > 0) else None
 
 
+_HEX = re.compile(r"^#?([0-9a-f]{3}|[0-9a-f]{6})$", re.IGNORECASE)
+_NAMED_COLORS = {"black": "#000000", "white": "#ffffff", "gray": "#808080", "grey": "#808080"}
+
+
+def _hex_color(c: str | None) -> str | None:
+    """'#ABC', 'abc123', 'black' -> '#aabbcc' style hex; None when unusable."""
+    if not c:
+        return None
+    c = c.strip()
+    if m := _HEX.match(c):
+        h = m.group(1)
+        return "#" + (h if len(h) == 6 else "".join(ch * 2 for ch in h))
+    return _NAMED_COLORS.get(c.lower())
+
+
 def build(manifest: dict, api: dict, board: dict, cfg: Config) -> Universe:
     snap_date = dt.date.fromisoformat(manifest["date"])
     aliases: dict[str, str] = cfg.labs.get("aliases") or {}
@@ -141,14 +157,18 @@ def build(manifest: dict, api: dict, board: dict, cfg: Config) -> Universe:
             continue
         creator = row["model_creator"]
         lab_slug = aliases.get(creator["slug"], creator["slug"])
-        if lab_slug not in labs:
-            d = display.get(lab_slug, {})
-            labs[lab_slug] = Lab(
-                slug=lab_slug,
-                name=d.get("name", creator["name"]),
-                color=d.get("color", pm.get("modelCreatorColor") or "#888888"),
-                logo=pm.get("modelCreatorLogo"),
-            )
+        # The first row seen may be missing from the leaderboard page (no color or logo), so
+        # fill each field from the first row that has it rather than locking in a fallback.
+        d = display.get(lab_slug, {})
+        cur = labs.get(lab_slug)
+        color = _hex_color(d.get("color")) or (cur.color if cur and cur.color else None) \
+            or _hex_color(pm.get("modelCreatorColor"))
+        labs[lab_slug] = Lab(
+            slug=lab_slug,
+            name=d.get("name", cur.name if cur else creator["name"]),
+            color=color or "",
+            logo=(cur.logo if cur else None) or pm.get("modelCreatorLogo"),
+        )
         pin = _pos(row["pricing"].get("price_1m_input_tokens"))
         pout = _pos(row["pricing"].get("price_1m_output_tokens"))
         blend = (3 * pin + pout) / 4 if (pin and pout) else None
@@ -172,6 +192,8 @@ def build(manifest: dict, api: dict, board: dict, cfg: Config) -> Universe:
                 "speed": _pos(row.get("median_output_tokens_per_second")),
             }
         )
+
+    labs = {k: v if v.color else dataclasses.replace(v, color="#888888") for k, v in labs.items()}
 
     # Impute cost-per-task where missing: log cpt ~ log price + intelligence + reasoning.
     train = [r for r in raw if r["cpt"] and r["price_blend"]]
