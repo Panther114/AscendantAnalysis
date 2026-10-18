@@ -2,6 +2,8 @@
 
 import { useState } from "react";
 
+import type { LeaderSpan, RaceEvent } from "@/lib/race";
+
 import { HealthChart, type Series } from "./HealthChart";
 import { Tabs } from "./Tabs";
 
@@ -19,10 +21,14 @@ export function MetricHistory({
   dates,
   labs,
   initial,
+  leaders,
+  events,
 }: {
   dates: string[];
   labs: { lab: string; name: string; metrics: Record<Metric, (number | null)[]> }[];
   initial: string[];
+  leaders?: LeaderSpan[];
+  events?: RaceEvent[];
 }) {
   const [metric, setMetric] = useState<Metric>("health");
   // Selection lives here so it survives metric switches (the chart is never remounted).
@@ -36,7 +42,7 @@ export function MetricHistory({
   return (
     <div>
       <Tabs options={METRICS.map((x) => ({ key: x.key, label: x.label }))} value={metric} onChange={(k) => setMetric(k as Metric)} />
-      <HealthChart dates={dates} series={series} shown={shown} onShownChange={setShown} height={420} metric={m.label} domain={m.domain} fmt={m.fmt} />
+      <HealthChart dates={dates} series={series} shown={shown} onShownChange={setShown} height={420} metric={m.label} domain={m.domain} fmt={m.fmt} leaders={leaders} events={events} />
     </div>
   );
 }

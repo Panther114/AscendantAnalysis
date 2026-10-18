@@ -4,11 +4,12 @@ import { HealthChart } from "@/components/charts/HealthChart";
 import { IndexExplorer } from "@/components/charts/IndexExplorer";
 import { CountUp } from "@/components/CountUp";
 import { LeaderboardTable } from "@/components/LeaderboardTable";
-import { BandBadge, Card, Delta, LabLink, LabLogo, MoreLink, PageHeader } from "@/components/ui";
-import { field, history, labName, labs, leaderboard, meta, rankedLabs } from "@/lib/data";
+import { BandBadge, Card, CtaLink, Delta, LabLink, LabLogo, MoreLink, PageHeader } from "@/components/ui";
+import { field, history, labName, labs, leaderboard, meta, rankedLabs, releases } from "@/lib/data";
 import { EXPLORER_METRICS, explorerRows } from "@/lib/explorer";
 import { recentReleases } from "@/lib/explain";
 import { fmtDate, fmtHealth, TIER_LABEL } from "@/lib/format";
+import { leaderSpans, raceEvents } from "@/lib/race";
 import type { Tier } from "@/lib/types";
 
 export default function Home() {
@@ -99,13 +100,23 @@ export default function Home() {
           title="Health over time"
           keyColor="blue"
           subtitle="Daily replay · each day rescored using only the models released by then"
-          action={<MoreLink href="/trends/">All trends</MoreLink>}
+          action={<CtaLink href="/trends/">See the full chart</CtaLink>}
         >
           <HealthChart
             dates={history.dates.slice(start)}
             series={ranked.map((lab) => ({ lab, name: labs[lab].name, values: history.labs[lab].health.slice(start) }))}
             initial={ranked.slice(0, 5)}
           />
+          <Link
+            href="/trends/"
+            className="group mt-3 flex items-center justify-between gap-3 rounded-md border border-rule bg-sunken px-4 py-3 text-sm text-ink-2 transition-colors hover:border-ink hover:text-ink"
+          >
+            <span>
+              See who held #1 on every day ({leaderSpans(history, labName).length - 1} lead changes) and the{" "}
+              <span className="font-medium text-ink">{raceEvents(history, releases, labName).length} releases that moved the race</span>
+            </span>
+            <span aria-hidden="true" className="shrink-0 transition-transform group-hover:translate-x-0.5">→</span>
+          </Link>
         </Card>
         <Card title="Today's movers" keyColor="green" subtitle="Top 10 by size of change in health vs. yesterday">
           <ul className="-mt-1">

@@ -145,3 +145,16 @@ export function MoreLink({ href, children }: { href: string; children: ReactNode
     </Link>
   );
 }
+
+/** A filled call to action, for the one link on a card we want people to follow. */
+export function CtaLink({ href, children }: { href: string; children: ReactNode }) {
+  return (
+    <Link
+      href={href}
+      className="group inline-flex items-center gap-2 rounded-full bg-ink px-4 py-2 text-sm font-medium text-page shadow-sm transition-transform hover:-translate-y-px hover:shadow-md"
+    >
+      {children}
+      <span aria-hidden="true" className="transition-transform group-hover:translate-x-0.5">→</span>
+    </Link>
+  );
+}

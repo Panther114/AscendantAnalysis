@@ -3,13 +3,16 @@ import type { Metadata } from "next";
 import { ColumnChart } from "@/components/charts/ColumnChart";
 import { MetricHistory } from "@/components/charts/MetricHistory";
 import { Card, InfoNote, PageHeader } from "@/components/ui";
-import { history, labs, leaderboard, rankedLabs } from "@/lib/data";
+import { history, labName, labs, leaderboard, rankedLabs, releases } from "@/lib/data";
 import { fmtDate } from "@/lib/format";
+import { leaderSpans, raceEvents, SURGE_POINTS } from "@/lib/race";
 
 export const metadata: Metadata = { title: "Trends" };
 
 export default function TrendsPage() {
   const ranked = rankedLabs();
+  const leaders = leaderSpans(history, labName);
+  const events = raceEvents(history, releases, labName);
   const n = history.dates.length;
   const idx13 = Math.max(0, n - 92);
   const changes = leaderboard
@@ -33,6 +36,8 @@ export default function TrendsPage() {
         <MetricHistory
           dates={history.dates}
           initial={ranked.slice(0, 5)}
+          leaders={leaders}
+          events={events}
           labs={ranked.map((lab) => ({
             lab,
             name: labs[lab].name,
@@ -45,6 +50,13 @@ export default function TrendsPage() {
             },
           }))}
         />
+        <p className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-xs text-ink-3">
+          <span className="text-ink-2">{events.length} releases moved the race:</span>
+          <span className="flex items-center gap-1.5"><span className="inline-block h-3 w-6 rounded-full bg-ink" /> took #1 in health</span>
+          <span className="flex items-center gap-1.5"><span className="inline-block h-3 w-6 rounded-full border border-ink-2" /> entered the top 3</span>
+          <span className="flex items-center gap-1.5"><span className="inline-block h-3 w-6 rounded-full border border-rule" /> surged {SURGE_POINTS}+ points in a day into the top 8</span>
+          <span>· hover a release for details · the band above shows the #1 lab each day</span>
+        </p>
         <InfoNote>
           Replay starts {fmtDate(history.dates[0])}. Before that, many now-deprecated models lack prices and speeds in the source
           data, which would make tiers and cost leads unreliable. Gaps mean the lab wasn&apos;t ranked that day.
