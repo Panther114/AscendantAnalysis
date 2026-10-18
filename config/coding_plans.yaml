@@ -1,0 +1,2573 @@
+# Coding-plan subsidies for the Cost & Plans chart. Hand-reviewed: NEVER updated automatically.
+# Every plan cites dated sources; `ascendant plans-check` (daily in CI) compares Devforth's
+# crowd-measured limits against `devforth_baseline` (the value Devforth showed at review time),
+# probes every source URL and flags entries older than `stale_after_days`. Flags need a person.
+# multiplier: per model; falls back to the plan's default_multiplier. release: AA release slug
+# (null = not a model AA tracks). confidence: official | measured | derived | estimate | unknown.
+version: 1
+reviewed: '2026-10-18'
+min_price_usd: 10
+stale_after_days: 90
+fx:
+  CNY: 7.1
+definition: Subsidy = API-equivalent value of the plan's monthly allowance for a model ÷ the plan's monthly price. Cost through
+  a plan = API cost per task ÷ the best eligible plan's subsidy for that model.
+plans:
+- id: anthropic-claude-pro
+  provider: Anthropic
+  product: Claude Code
+  plan: Pro
+  region: global
+  price_usd: 20
+  billing: $20/month, or $17/month billed annually
+  quota: 5-hour session window plus a weekly limit, shared with Claude chat. Anthropic publishes no dollar or token quota.
+    Claude Fable models are not in the Pro allowance (paid usage credits only).
+  tools:
+  - Claude Code
+  - Claude apps
+  verified: '2026-10-18'
+  confidence: measured
+  devforth: anthropic-claude-pro
+  devforth_baseline: 60.9
+  default_multiplier: 58.9
+  default_basis: 'SemiAnalysis metered the weekly limit on Opus 5.5 with an agentic, cache-heavy token mix: $1,178/month API-equivalent
+    ÷ $20 = ×58.9. The weekly window binds. Devforth''s crowd measurement ($280/week ≈ $1,217/month, ×60.9) agrees within
+    3%.'
+  caveats: Independent real-traffic data (Wokey, 559 accounts) is ~40% lower ($170/week, ×36.5); the chart uses the controlled
+    saturation test because the subsidy is defined at the full allowance.
+  sources:
+  - url: https://www.orcarouter.ai/blog/claude-opus-5-5-vs-gpt-6-1-sol-subscription-value
+    title: OrcaRouter, reporting SemiAnalysis's metered limit tests (Oct 5)
+    date: '2026-10-06'
+  - url: https://devforth.io/agents-for-code/
+    title: 'Devforth: The Real Token Value of Coding Agent Plans (crowd-measured with letmecode)'
+    date: '2026-10-15'
+  - url: https://wokey.ai/claude-usage-limits
+    title: 'Wokey: Claude usage limits measured across real accounts'
+    date: '2026-10-12'
+  - url: https://claude.com/pricing
+    title: Claude pricing (official)
+    date: 2026-10
+  - url: https://www.growthcab.com/claude-max-usage-limits
+    title: 'GrowthCab: Claude Max usage limits'
+    date: '2026-10-12'
+  models:
+  - name: Claude Opus 5.5
+    release: claude-opus-5-5
+    confidence: measured
+  - name: Claude Sonnet 5.5
+    release: claude-sonnet-5-5
+    basis: Allowance assumed cost-weighted across Claude models (SemiAnalysis measures Sonnet 5.5 within 7% of Opus 5.5 in
+      dollar terms); not measured for this model.
+    confidence: derived
+  - name: Claude Haiku 5.5
+    release: claude-haiku-5-5
+    basis: Allowance assumed cost-weighted across Claude models (SemiAnalysis measures Sonnet 5.5 within 7% of Opus 5.5 in
+      dollar terms); not measured for this model.
+    confidence: derived
+- id: anthropic-claude-max-5x
+  provider: Anthropic
+  product: Claude Code
+  plan: Max 5x
+  region: global
+  price_usd: 100
+  billing: $100/month
+  quota: 5× Pro per 5-hour session (official), a weekly limit, and a separate weekly cap for Claude Fable models (up to 50%
+    of the weekly limit).
+  tools:
+  - Claude Code
+  - Claude apps
+  verified: '2026-10-18'
+  confidence: measured
+  devforth: anthropic-claude-max-5x
+  devforth_baseline: 60.9
+  default_multiplier: 57.2
+  default_basis: 'SemiAnalysis: $5,725/month API-equivalent on Opus 5.5 ÷ $100 = ×57.2. Devforth ($1,400/week, ×60.9) and
+    FinOpsLLM (≥$1,217/week, never capped) agree.'
+  sources:
+  - url: https://www.orcarouter.ai/blog/claude-opus-5-5-vs-gpt-6-1-sol-subscription-value
+    title: OrcaRouter, reporting SemiAnalysis's metered limit tests (Oct 5)
+    date: '2026-10-06'
+  - url: https://devforth.io/agents-for-code/
+    title: 'Devforth: The Real Token Value of Coding Agent Plans (crowd-measured with letmecode)'
+    date: '2026-10-15'
+  - url: https://finopsllm.com/research/claude-max-20x-vs-5x-weekly-limit
+    title: 'FinOpsLLM: Claude Max 20x vs 5x weekly limit'
+    date: '2026-10-10'
+  - url: https://claude.com/pricing
+    title: Claude pricing (official)
+    date: 2026-10
+  - url: https://support.claude.com/en/articles/11145838
+    title: 'Claude Help Center: usage limits (official)'
+    date: 2026-10
+  models:
+  - name: Claude Opus 5.5
+    release: claude-opus-5-5
+    confidence: measured
+  - name: Claude Sonnet 5.5
+    release: claude-sonnet-5-5
+    basis: Allowance assumed cost-weighted across Claude models (SemiAnalysis measures Sonnet 5.5 within 7% of Opus 5.5 in
+      dollar terms); not measured for this model.
+    confidence: derived
+  - name: Claude Haiku 5.5
+    release: claude-haiku-5-5
+    basis: Allowance assumed cost-weighted across Claude models (SemiAnalysis measures Sonnet 5.5 within 7% of Opus 5.5 in
+      dollar terms); not measured for this model.
+    confidence: derived
+  - name: Claude Fable 5.1
+    release: claude-fable-5-1
+    multiplier: 12.7
+    basis: 'Fable has its own weekly cap: SemiAnalysis $1,273/month ÷ $100 = ×12.7 (Devforth''s $340/week Fable window ≈ ×14.8
+      agrees).'
+    confidence: measured
+- id: anthropic-claude-max-20x
+  provider: Anthropic
+  product: Claude Code
+  plan: Max 20x
+  region: global
+  price_usd: 200
+  billing: $200/month
+  quota: 20× Pro per 5-hour session (official), but the weekly limit is only about 10× Pro in practice; separate weekly cap
+    for Claude Fable models.
+  tools:
+  - Claude Code
+  - Claude apps
+  verified: '2026-10-18'
+  confidence: measured
+  devforth: anthropic-claude-max-20x
+  devforth_baseline: 121.7
+  default_multiplier: 58.6
+  default_basis: 'SemiAnalysis: $11,726/month API-equivalent on Opus 5.5 ÷ $200 = ×58.6 (about 10× Pro, matching Wokey''s
+    36 accounts at 10.3× Pro).'
+  caveats: Devforth lists $5,600/week (×122), exactly 4× its own Max 5x row and never confirmed; three independent measurements
+    put the weekly ceiling at $1.75k–2.7k, so Devforth is not used here. Real-traffic figures (Wokey $1,751/week, FinOpsLLM
+    ~$1,860/week) imply ×38.
+  sources:
+  - url: https://www.orcarouter.ai/blog/claude-opus-5-5-vs-gpt-6-1-sol-subscription-value
+    title: OrcaRouter, reporting SemiAnalysis's metered limit tests (Oct 5)
+    date: '2026-10-06'
+  - url: https://wokey.ai/claude-usage-limits
+    title: 'Wokey: Claude usage limits measured across real accounts'
+    date: '2026-10-12'
+  - url: https://finopsllm.com/research/claude-max-20x-vs-5x-weekly-limit
+    title: 'FinOpsLLM: Claude Max 20x vs 5x weekly limit'
+    date: '2026-10-10'
+  - url: https://devforth.io/agents-for-code/
+    title: 'Devforth: The Real Token Value of Coding Agent Plans (crowd-measured with letmecode)'
+    date: '2026-10-15'
+  - url: https://claude.com/pricing
+    title: Claude pricing (official)
+    date: 2026-10
+  - url: https://support.claude.com/en/articles/11145838
+    title: 'Claude Help Center: usage limits (official)'
+    date: 2026-10
+  models:
+  - name: Claude Opus 5.5
+    release: claude-opus-5-5
+    confidence: measured
+  - name: Claude Sonnet 5.5
+    release: claude-sonnet-5-5
+    multiplier: 62.6
+    basis: 'SemiAnalysis: $12,529/month ÷ $200 = ×62.6.'
+    confidence: measured
+  - name: Claude Haiku 5.5
+    release: claude-haiku-5-5
+    basis: Allowance assumed cost-weighted across Claude models (SemiAnalysis measures Sonnet 5.5 within 7% of Opus 5.5 in
+      dollar terms); not measured for this model.
+    confidence: derived
+  - name: Claude Fable 5.1
+    release: claude-fable-5-1
+    multiplier: 12.4
+    basis: 'Fable weekly cap: SemiAnalysis $2,485/month ÷ $200 = ×12.4.'
+    confidence: measured
+- id: openai-chatgpt-plus
+  provider: OpenAI
+  product: Codex
+  plan: ChatGPT Plus
+  region: global
+  price_usd: 20
+  billing: $20/month
+  quota: Messages per 5 hours by model (e.g. GPT-6.1 Sol 15–160, GPT-6 Astra 5–45) plus a weekly limit; the weekly limit binds.
+  tools:
+  - Codex CLI
+  - Codex app / IDE
+  - ChatGPT
+  verified: '2026-10-18'
+  confidence: measured
+  devforth: openai-chatgpt-plus-codex
+  devforth_baseline: 15.2
+  default_multiplier: 14.4
+  default_basis: 'FinOpsLLM median of 27 measured weekly windows on GPT-6.1 Sol: $67/week × 30/7 = $287/month ÷ $20 = ×14.4.
+    Devforth ($70/week, ×15.2) and InventiveHQ (~$66/week) agree.'
+  caveats: SemiAnalysis measured lower ($211/month, ×10.6).
+  sources:
+  - url: https://finopsllm.com/research/codex-usage-limits-chatgpt-pro
+    title: 'FinOpsLLM: Codex usage limits, 27 measured windows'
+    date: '2026-10-10'
+  - url: https://devforth.io/agents-for-code/
+    title: 'Devforth: The Real Token Value of Coding Agent Plans (crowd-measured with letmecode)'
+    date: '2026-10-15'
+  - url: https://inventivehq.com/blog/codex-subscription-usage-measured
+    title: 'InventiveHQ: Codex subscription usage, measured'
+    date: '2026-10-04'
+  - url: https://www.orcarouter.ai/blog/claude-opus-5-5-vs-gpt-6-1-sol-subscription-value
+    title: OrcaRouter, reporting SemiAnalysis's metered limit tests (Oct 5)
+    date: '2026-10-06'
+  - url: https://learn.chatgpt.com/docs/pricing
+    title: Codex pricing and credit rates (official)
+    date: 2026-10
+  models:
+  - name: GPT-6.1 Sol
+    release: gpt-6-1-sol
+    confidence: measured
+  - name: GPT-6 Astra
+    release: gpt-6-astra
+    multiplier: 8.1
+    basis: 'SemiAnalysis: $162/month ÷ $20 = ×8.1 (Astra drains the meter faster per API dollar).'
+    confidence: measured
+  - name: GPT-6 Luna
+    release: gpt-6-luna
+    basis: Codex credits are priced at API list rates, so the dollar allowance is the same as for GPT-6.1 Sol; assumed equal
+      (not measured for this model).
+    confidence: derived
+  - name: GPT-5.6 Terra
+    release: gpt-5-6-terra
+    basis: Codex credits are priced at API list rates, so the dollar allowance is the same as for GPT-6.1 Sol; assumed equal
+      (not measured for this model).
+    confidence: derived
+- id: openai-chatgpt-pro-100
+  provider: OpenAI
+  product: Codex
+  plan: ChatGPT Pro $100
+  region: global
+  price_usd: 100
+  billing: $100/month
+  quota: No 5-hour limit; weekly limit about 5× Plus.
+  tools:
+  - Codex CLI
+  - Codex app / IDE
+  - ChatGPT
+  verified: '2026-10-18'
+  confidence: measured
+  devforth: openai-chatgpt-pro-5x-codex
+  devforth_baseline: 15.2
+  default_multiplier: 15.2
+  default_basis: 'InventiveHQ measured two clean weekly windows on GPT-6: $330–380/week, midpoint $355 × 30/7 = $1,521/month
+    ÷ $100 = ×15.2. Devforth ($350/week) agrees.'
+  caveats: SemiAnalysis measured lower ($1,055/month, ×10.6).
+  sources:
+  - url: https://inventivehq.com/blog/codex-subscription-usage-measured
+    title: 'InventiveHQ: Codex subscription usage, measured'
+    date: '2026-10-04'
+  - url: https://devforth.io/agents-for-code/
+    title: 'Devforth: The Real Token Value of Coding Agent Plans (crowd-measured with letmecode)'
+    date: '2026-10-15'
+  - url: https://www.orcarouter.ai/blog/claude-opus-5-5-vs-gpt-6-1-sol-subscription-value
+    title: OrcaRouter, reporting SemiAnalysis's metered limit tests (Oct 5)
+    date: '2026-10-06'
+  - url: https://learn.chatgpt.com/docs/pricing
+    title: Codex pricing and credit rates (official)
+    date: 2026-10
+  models:
+  - name: GPT-6.1 Sol
+    release: gpt-6-1-sol
+    confidence: measured
+  - name: GPT-6 Astra
+    release: gpt-6-astra
+    multiplier: 13.2
+    basis: 'SemiAnalysis: $1,322/month ÷ $100 = ×13.2.'
+    confidence: measured
+  - name: GPT-6 Luna
+    release: gpt-6-luna
+    basis: Codex credits are priced at API list rates, so the dollar allowance is the same as for GPT-6.1 Sol; assumed equal
+      (not measured for this model).
+    confidence: derived
+  - name: GPT-5.6 Terra
+    release: gpt-5-6-terra
+    basis: Codex credits are priced at API list rates, so the dollar allowance is the same as for GPT-6.1 Sol; assumed equal
+      (not measured for this model).
+    confidence: derived
+- id: openai-chatgpt-pro-200
+  provider: OpenAI
+  product: Codex
+  plan: ChatGPT Pro $200
+  region: global
+  price_usd: 200
+  billing: $200/month
+  quota: No 5-hour limit; weekly limit about 10× Plus for new subscribers (the old 20× allowance ends Oct 29, 2026 for existing
+    ones).
+  tools:
+  - Codex CLI
+  - Codex app / IDE
+  - ChatGPT
+  verified: '2026-10-18'
+  confidence: measured
+  devforth: openai-chatgpt-pro-20x-codex
+  devforth_baseline: 55.7
+  default_multiplier: 14.0
+  default_basis: 'InventiveHQ measured two weekly windows on the 10× allowance: $640–670/week, midpoint $655 × 30/7 = $2,807/month
+    ÷ $200 = ×14.0.'
+  caveats: Devforth's $2,560/week (×56) describes the retired 20× allowance and was never confirmed. Grandfathered subscribers
+    get about ×28 until Oct 29.
+  sources:
+  - url: https://inventivehq.com/blog/codex-subscription-usage-measured
+    title: 'InventiveHQ: Codex subscription usage, measured'
+    date: '2026-10-04'
+  - url: https://threatfrontier.com/articles/chatgpt-pro-5x-vs-20x-for-codex-coding-which-tier-actually-fits-agentic-work
+    title: 'ThreatFrontier: ChatGPT Pro tiers for Codex (Pro $200 cut to 10x on Oct 30)'
+    date: 2026-10
+  - url: https://devforth.io/agents-for-code/
+    title: 'Devforth: The Real Token Value of Coding Agent Plans (crowd-measured with letmecode)'
+    date: '2026-10-15'
+  - url: https://www.orcarouter.ai/blog/claude-opus-5-5-vs-gpt-6-1-sol-subscription-value
+    title: OrcaRouter, reporting SemiAnalysis's metered limit tests (Oct 5)
+    date: '2026-10-06'
+  - url: https://learn.chatgpt.com/docs/pricing
+    title: Codex pricing and credit rates (official)
+    date: 2026-10
+  models:
+  - name: GPT-6.1 Sol
+    release: gpt-6-1-sol
+    confidence: measured
+  - name: GPT-6 Astra
+    release: gpt-6-astra
+    multiplier: 14.5
+    basis: 'SemiAnalysis (post-cut): $2,897/month ÷ $200 = ×14.5.'
+    confidence: measured
+  - name: GPT-6 Luna
+    release: gpt-6-luna
+    basis: Codex credits are priced at API list rates, so the dollar allowance is the same as for GPT-6.1 Sol; assumed equal
+      (not measured for this model).
+    confidence: derived
+  - name: GPT-5.6 Terra
+    release: gpt-5-6-terra
+    basis: Codex credits are priced at API list rates, so the dollar allowance is the same as for GPT-6.1 Sol; assumed equal
+      (not measured for this model).
+    confidence: derived
+- id: openai-chatgpt-pro-500
+  provider: OpenAI
+  product: Codex
+  plan: ChatGPT Pro $500
+  region: global
+  price_usd: 500
+  billing: $500/month
+  quota: Highest allowance, reported as ~25× Plus (not published by OpenAI).
+  tools:
+  - Codex CLI
+  - Codex app / IDE
+  - ChatGPT
+  verified: '2026-10-18'
+  confidence: estimate
+  default_multiplier: 14.2
+  default_basis: 'Projection only: InventiveHQ ~$1,640/week (~25× Plus) × 30/7 ≈ $7,030/month ÷ $500 = ×14.2.'
+  sources:
+  - url: https://inventivehq.com/blog/codex-subscription-usage-measured
+    title: 'InventiveHQ: Codex subscription usage, measured'
+    date: '2026-10-04'
+  - url: https://threatfrontier.com/articles/chatgpt-pro-5x-vs-20x-for-codex-coding-which-tier-actually-fits-agentic-work
+    title: 'ThreatFrontier: ChatGPT Pro tiers for Codex (Pro $200 cut to 10x on Oct 30)'
+    date: 2026-10
+  models:
+  - name: GPT-6.1 Sol
+    release: gpt-6-1-sol
+    confidence: estimate
+  - name: GPT-6 Luna
+    release: gpt-6-luna
+    basis: Codex credits are priced at API list rates, so the dollar allowance is the same as for GPT-6.1 Sol; assumed equal
+      (not measured for this model).
+    confidence: estimate
+  - name: GPT-5.6 Terra
+    release: gpt-5-6-terra
+    basis: Codex credits are priced at API list rates, so the dollar allowance is the same as for GPT-6.1 Sol; assumed equal
+      (not measured for this model).
+    confidence: estimate
+- id: openai-chatgpt-go
+  provider: OpenAI
+  product: Codex
+  plan: ChatGPT Go
+  region: global
+  price_usd: 8
+  quota: Light Codex access (mid/light models only).
+  tools:
+  - Codex
+  verified: '2026-10-18'
+  confidence: measured
+  devforth: openai-chatgpt-go-codex
+  default_multiplier: 0.25
+  default_basis: 'Devforth: ~$2 per 30 days ÷ $8 = ×0.25 (below API value).'
+  sources:
+  - url: https://devforth.io/agents-for-code/
+    title: 'Devforth: The Real Token Value of Coding Agent Plans (crowd-measured with letmecode)'
+    date: '2026-10-15'
+  models:
+  - name: GPT-6 Luna
+    release: gpt-6-luna
+    confidence: measured
+- id: google-ai-pro
+  provider: Google
+  product: Antigravity
+  plan: Google AI Pro
+  region: global
+  price_usd: 19.99
+  billing: $19.99/month
+  quota: Usage refreshes every 5 hours up to a weekly ceiling; Gemini models (Main) and third-party models (Other) have separate
+    pools. Absolute limits are not published; Ultra tiers are 5× / 20× Pro.
+  tools:
+  - Antigravity
+  - Antigravity CLI
+  - Gemini CLI
+  verified: '2026-10-18'
+  confidence: estimate
+  devforth: google-antigravity-ai-pro
+  devforth_class: Main
+  devforth_baseline: 8.7
+  default_multiplier: 8.6
+  default_basis: Devforth's crowd-measured Main-pool weekly limit × 30/7 ÷ $19.99 = ×8.6. Single numeric source, never confirmed.
+  caveats: Only Devforth publishes dollar figures; Google confirms the 5×/20× ratios between tiers. Gemini 4 Argon availability
+    on AI Pro is disputed across sources. Google raised limits twice in 2026, so these move.
+  sources:
+  - url: https://devforth.io/agents-for-code/
+    title: 'Devforth: The Real Token Value of Coding Agent Plans (crowd-measured with letmecode)'
+    date: '2026-10-15'
+  - url: https://www.cloudzero.com/blog/google-antigravity-pricing/
+    title: 'CloudZero: Google Antigravity pricing'
+    date: '2026-09-18'
+  - url: https://antigravitylab.net/en/articles/antigravity/usage-and-pricing
+    title: 'Antigravity Lab: usage and pricing'
+    date: '2026-10-17'
+  - url: https://smartscope.blog/en/blog/antigravity-argon-five-hour-quota-ultra-2026/
+    title: 'SmartScope: Antigravity Argon quotas on Pro and Ultra'
+    date: '2026-10-14'
+  models:
+  - name: Gemini 4 Argon
+    release: gemini-4-argon
+    confidence: estimate
+  - name: Gemini 3.8 Flash
+    release: gemini-3-8-flash
+    confidence: estimate
+  - name: Gemini 3.1 Pro Preview
+    release: gemini-3-1-pro-preview
+    confidence: estimate
+  - name: Claude Sonnet 5.5 (Other pool)
+    release: claude-sonnet-5-5
+    multiplier: 2.1
+    basis: Devforth Other-pool weekly limit × 30/7 ÷ $19.99.
+    confidence: estimate
+  - name: gpt-oss-120b (Other pool)
+    release: gpt-oss-120b
+    multiplier: 2.1
+    basis: Devforth Other-pool weekly limit × 30/7 ÷ $19.99.
+    confidence: estimate
+- id: google-ai-ultra-5x
+  provider: Google
+  product: Antigravity
+  plan: Google AI Ultra 5x
+  region: global
+  price_usd: 99.99
+  billing: $99.99/month
+  quota: Usage refreshes every 5 hours up to a weekly ceiling; Gemini models (Main) and third-party models (Other) have separate
+    pools. Absolute limits are not published; Ultra tiers are 5× / 20× Pro.
+  tools:
+  - Antigravity
+  - Antigravity CLI
+  - Gemini CLI
+  verified: '2026-10-18'
+  confidence: estimate
+  devforth: google-antigravity-ai-ultra-5x
+  devforth_class: Main
+  devforth_baseline: 8.7
+  default_multiplier: 8.6
+  default_basis: Devforth's crowd-measured Main-pool weekly limit × 30/7 ÷ $99.99 = ×8.6. Single numeric source, never confirmed.
+  caveats: Only Devforth publishes dollar figures; Google confirms the 5×/20× ratios between tiers. Gemini 4 Argon availability
+    on AI Pro is disputed across sources. Google raised limits twice in 2026, so these move.
+  sources:
+  - url: https://devforth.io/agents-for-code/
+    title: 'Devforth: The Real Token Value of Coding Agent Plans (crowd-measured with letmecode)'
+    date: '2026-10-15'
+  - url: https://www.cloudzero.com/blog/google-antigravity-pricing/
+    title: 'CloudZero: Google Antigravity pricing'
+    date: '2026-09-18'
+  - url: https://antigravitylab.net/en/articles/antigravity/usage-and-pricing
+    title: 'Antigravity Lab: usage and pricing'
+    date: '2026-10-17'
+  - url: https://smartscope.blog/en/blog/antigravity-argon-five-hour-quota-ultra-2026/
+    title: 'SmartScope: Antigravity Argon quotas on Pro and Ultra'
+    date: '2026-10-14'
+  models:
+  - name: Gemini 4 Argon
+    release: gemini-4-argon
+    confidence: estimate
+  - name: Gemini 3.8 Flash
+    release: gemini-3-8-flash
+    confidence: estimate
+  - name: Gemini 3.1 Pro Preview
+    release: gemini-3-1-pro-preview
+    confidence: estimate
+  - name: Claude Sonnet 5.5 (Other pool)
+    release: claude-sonnet-5-5
+    multiplier: 2.1
+    basis: Devforth Other-pool weekly limit × 30/7 ÷ $99.99.
+    confidence: estimate
+  - name: gpt-oss-120b (Other pool)
+    release: gpt-oss-120b
+    multiplier: 2.1
+    basis: Devforth Other-pool weekly limit × 30/7 ÷ $99.99.
+    confidence: estimate
+- id: google-ai-ultra-20x
+  provider: Google
+  product: Antigravity
+  plan: Google AI Ultra 20x
+  region: global
+  price_usd: 199.99
+  billing: $199.99/month
+  quota: Usage refreshes every 5 hours up to a weekly ceiling; Gemini models (Main) and third-party models (Other) have separate
+    pools. Absolute limits are not published; Ultra tiers are 5× / 20× Pro.
+  tools:
+  - Antigravity
+  - Antigravity CLI
+  - Gemini CLI
+  verified: '2026-10-18'
+  confidence: estimate
+  devforth: google-antigravity-ai-ultra-20x
+  devforth_class: Main
+  devforth_baseline: 17.4
+  default_multiplier: 17.1
+  default_basis: Devforth's crowd-measured Main-pool weekly limit × 30/7 ÷ $199.99 = ×17.1. Single numeric source, never confirmed.
+  caveats: Only Devforth publishes dollar figures; Google confirms the 5×/20× ratios between tiers. Gemini 4 Argon availability
+    on AI Pro is disputed across sources. Google raised limits twice in 2026, so these move.
+  sources:
+  - url: https://devforth.io/agents-for-code/
+    title: 'Devforth: The Real Token Value of Coding Agent Plans (crowd-measured with letmecode)'
+    date: '2026-10-15'
+  - url: https://www.cloudzero.com/blog/google-antigravity-pricing/
+    title: 'CloudZero: Google Antigravity pricing'
+    date: '2026-09-18'
+  - url: https://antigravitylab.net/en/articles/antigravity/usage-and-pricing
+    title: 'Antigravity Lab: usage and pricing'
+    date: '2026-10-17'
+  - url: https://smartscope.blog/en/blog/antigravity-argon-five-hour-quota-ultra-2026/
+    title: 'SmartScope: Antigravity Argon quotas on Pro and Ultra'
+    date: '2026-10-14'
+  models:
+  - name: Gemini 4 Argon
+    release: gemini-4-argon
+    confidence: estimate
+  - name: Gemini 3.8 Flash
+    release: gemini-3-8-flash
+    confidence: estimate
+  - name: Gemini 3.1 Pro Preview
+    release: gemini-3-1-pro-preview
+    confidence: estimate
+  - name: Claude Sonnet 5.5 (Other pool)
+    release: claude-sonnet-5-5
+    multiplier: 4.3
+    basis: Devforth Other-pool weekly limit × 30/7 ÷ $199.99.
+    confidence: estimate
+  - name: gpt-oss-120b (Other pool)
+    release: gpt-oss-120b
+    multiplier: 4.3
+    basis: Devforth Other-pool weekly limit × 30/7 ÷ $199.99.
+    confidence: estimate
+- id: xai-supergrok
+  provider: xAI
+  product: Grok Build
+  plan: SuperGrok
+  region: global
+  price_usd: 30
+  quota: Shared weekly usage pool across chat, Imagine, voice and Grok Build; no numbers published.
+  tools:
+  - Grok Build
+  - Cursor (X Subscription)
+  verified: '2026-10-18'
+  confidence: unknown
+  default_basis: The provider publishes no dollar, token or request quota that can be converted to API value, and no independent
+    measurement was found.
+  sources:
+  - url: https://justinmckelvey.com/blog/supergrok-pricing
+    title: SuperGrok pricing tiers
+    date: '2026-10-15'
+  - url: https://www.ai-toolbox.co/grok-models/grok-pricing-plans-api-2026
+    title: 'AI Toolbox: Grok plans and Grok Build'
+    date: 2026-10
+  models:
+  - name: Grok 4.7
+    release: grok-4-7
+    confidence: unknown
+- id: xai-supergrok-plus
+  provider: xAI
+  product: Grok Build
+  plan: SuperGrok Plus
+  region: global
+  price_usd: 100
+  quota: Shared weekly usage pool across chat, Imagine, voice and Grok Build; no numbers published.
+  tools:
+  - Grok Build
+  - Cursor (X Subscription)
+  verified: '2026-10-18'
+  confidence: unknown
+  default_basis: The provider publishes no dollar, token or request quota that can be converted to API value, and no independent
+    measurement was found.
+  sources:
+  - url: https://justinmckelvey.com/blog/supergrok-pricing
+    title: SuperGrok pricing tiers
+    date: '2026-10-15'
+  - url: https://www.ai-toolbox.co/grok-models/grok-pricing-plans-api-2026
+    title: 'AI Toolbox: Grok plans and Grok Build'
+    date: 2026-10
+  models:
+  - name: Grok 4.7
+    release: grok-4-7
+    confidence: unknown
+- id: xai-supergrok-heavy
+  provider: xAI
+  product: Grok Build
+  plan: SuperGrok Heavy
+  region: global
+  price_usd: 300
+  quota: Shared weekly usage pool across chat, Imagine, voice and Grok Build; no numbers published.
+  tools:
+  - Grok Build
+  - Cursor (X Subscription)
+  verified: '2026-10-18'
+  confidence: unknown
+  default_basis: The provider publishes no dollar, token or request quota that can be converted to API value, and no independent
+    measurement was found.
+  sources:
+  - url: https://justinmckelvey.com/blog/supergrok-pricing
+    title: SuperGrok pricing tiers
+    date: '2026-10-15'
+  - url: https://www.ai-toolbox.co/grok-models/grok-pricing-plans-api-2026
+    title: 'AI Toolbox: Grok plans and Grok Build'
+    date: 2026-10
+  models:
+  - name: Grok 4.7
+    release: grok-4-7
+    confidence: unknown
+- id: mistral-vibe-pro
+  provider: Mistral
+  product: Mistral Vibe
+  plan: Le Chat Pro
+  region: global
+  price_usd: 14.99
+  quota: Up to 6× Free; 100 Vibe Code web sessions/day; CLI draws from an unquantified monthly budget.
+  tools:
+  - Mistral Vibe CLI
+  - Vibe Code web
+  verified: '2026-10-18'
+  confidence: unknown
+  default_basis: The provider publishes no dollar, token or request quota that can be converted to API value, and no independent
+    measurement was found.
+  sources:
+  - url: https://omidsaffari.com/blog/mistral-pricing
+    title: Mistral Le Chat / Vibe pricing
+    date: '2026-10-06'
+  models:
+  - name: Mistral Medium 3.5
+    release: mistral-medium-3-5
+    confidence: unknown
+- id: meta-muse-code-high
+  provider: Meta
+  product: Muse Code
+  plan: High
+  region: global
+  price_usd: 15
+  quota: Prompts per 5-hour window (multiples of the $5 tier; sources disagree on the multiples).
+  tools:
+  - Muse Code CLI
+  verified: '2026-10-18'
+  confidence: unknown
+  default_basis: Prompt counts cannot be converted to API value without a tokens-per-prompt measurement.
+  sources:
+  - url: https://www.orcarouter.ai/blog/muse-code
+    title: 'OrcaRouter: Muse Code plans'
+    date: '2026-10-14'
+  models:
+  - name: Muse Spark 1.3
+    release: muse-spark-1-3
+    confidence: unknown
+- id: meta-muse-code-power
+  provider: Meta
+  product: Muse Code
+  plan: Power
+  region: global
+  price_usd: 50
+  quota: Prompts per 5-hour window (multiples of the $5 tier; sources disagree on the multiples).
+  tools:
+  - Muse Code CLI
+  verified: '2026-10-18'
+  confidence: unknown
+  default_basis: Prompt counts cannot be converted to API value without a tokens-per-prompt measurement.
+  sources:
+  - url: https://www.orcarouter.ai/blog/muse-code
+    title: 'OrcaRouter: Muse Code plans'
+    date: '2026-10-14'
+  models:
+  - name: Muse Spark 1.3
+    release: muse-spark-1-3
+    confidence: unknown
+  - name: Muse Wonder
+    release: muse-wonder
+    confidence: unknown
+- id: meta-muse-code-max
+  provider: Meta
+  product: Muse Code
+  plan: Max
+  region: global
+  price_usd: 200
+  quota: Prompts per 5-hour window (multiples of the $5 tier; sources disagree on the multiples).
+  tools:
+  - Muse Code CLI
+  verified: '2026-10-18'
+  confidence: unknown
+  default_basis: Prompt counts cannot be converted to API value without a tokens-per-prompt measurement.
+  sources:
+  - url: https://www.orcarouter.ai/blog/muse-code
+    title: 'OrcaRouter: Muse Code plans'
+    date: '2026-10-14'
+  models:
+  - name: Muse Spark 1.3
+    release: muse-spark-1-3
+    confidence: unknown
+  - name: Muse Wonder
+    release: muse-wonder
+    confidence: unknown
+- id: github-copilot-pro
+  provider: GitHub
+  product: GitHub Copilot
+  plan: Pro
+  region: global
+  price_usd: 10
+  billing: $10/month
+  quota: 1,500 AI credits a month (1 credit = $0.01; base credits equal the price, the rest is a variable flex allotment).
+    Models bill at API list price; completions unlimited.
+  tools:
+  - VS Code
+  - JetBrains
+  - Copilot CLI
+  - Copilot coding agent
+  verified: '2026-10-18'
+  confidence: official
+  devforth: github-copilot-pro
+  devforth_baseline: 1.5
+  default_multiplier: 1.5
+  default_basis: 'Official: 1,500 credits × $0.01 = $15 of API-priced usage ÷ $10 = ×1.5. Only the base credits (×1.0) are
+    guaranteed.'
+  caveats: Per-plan model availability not verified for every model; Auto model selection takes a further 10% off.
+  sources:
+  - url: https://docs.github.com/en/copilot/get-started/plans
+    title: GitHub Copilot plans (official)
+    date: '2026-10-18'
+  - url: https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-individuals
+    title: Copilot usage-based billing (official)
+    date: '2026-10-18'
+  - url: https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing
+    title: Copilot models and pricing (official)
+    date: '2026-10-18'
+  models:
+  - name: Claude Opus 5.5
+    release: claude-opus-5-5
+    confidence: official
+  - name: Claude Sonnet 5.5
+    release: claude-sonnet-5-5
+    confidence: official
+  - name: Claude Fable 5.1
+    release: claude-fable-5-1
+    confidence: official
+  - name: Claude Haiku 5.5
+    release: claude-haiku-5-5
+    confidence: official
+  - name: GPT-6 Astra
+    release: gpt-6-astra
+    confidence: official
+  - name: GPT-6.1 Sol
+    release: gpt-6-1-sol
+    confidence: official
+  - name: GPT-6 Luna
+    release: gpt-6-luna
+    confidence: official
+  - name: Gemini 4 Argon
+    release: gemini-4-argon
+    confidence: official
+  - name: Grok 4.7
+    release: grok-4-7
+    confidence: official
+  - name: Kimi K3
+    release: kimi-k3
+    confidence: official
+- id: github-copilot-pro-plus
+  provider: GitHub
+  product: GitHub Copilot
+  plan: Pro+
+  region: global
+  price_usd: 39
+  billing: $39/month
+  quota: 7,000 AI credits a month (1 credit = $0.01; base credits equal the price, the rest is a variable flex allotment).
+    Models bill at API list price; completions unlimited.
+  tools:
+  - VS Code
+  - JetBrains
+  - Copilot CLI
+  - Copilot coding agent
+  verified: '2026-10-18'
+  confidence: official
+  devforth: github-copilot-pro-plus
+  devforth_baseline: 1.79
+  default_multiplier: 1.79
+  default_basis: 'Official: 7,000 credits × $0.01 = $70 of API-priced usage ÷ $39 = ×1.79. Only the base credits (×1.0) are
+    guaranteed.'
+  caveats: Per-plan model availability not verified for every model; Auto model selection takes a further 10% off.
+  sources:
+  - url: https://docs.github.com/en/copilot/get-started/plans
+    title: GitHub Copilot plans (official)
+    date: '2026-10-18'
+  - url: https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-individuals
+    title: Copilot usage-based billing (official)
+    date: '2026-10-18'
+  - url: https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing
+    title: Copilot models and pricing (official)
+    date: '2026-10-18'
+  models:
+  - name: Claude Opus 5.5
+    release: claude-opus-5-5
+    confidence: official
+  - name: Claude Sonnet 5.5
+    release: claude-sonnet-5-5
+    confidence: official
+  - name: Claude Fable 5.1
+    release: claude-fable-5-1
+    confidence: official
+  - name: Claude Haiku 5.5
+    release: claude-haiku-5-5
+    confidence: official
+  - name: GPT-6 Astra
+    release: gpt-6-astra
+    confidence: official
+  - name: GPT-6.1 Sol
+    release: gpt-6-1-sol
+    confidence: official
+  - name: GPT-6 Luna
+    release: gpt-6-luna
+    confidence: official
+  - name: Gemini 4 Argon
+    release: gemini-4-argon
+    confidence: official
+  - name: Grok 4.7
+    release: grok-4-7
+    confidence: official
+  - name: Kimi K3
+    release: kimi-k3
+    confidence: official
+- id: github-copilot-max
+  provider: GitHub
+  product: GitHub Copilot
+  plan: Max
+  region: global
+  price_usd: 100
+  billing: $100/month
+  quota: 20,000 AI credits a month (1 credit = $0.01; base credits equal the price, the rest is a variable flex allotment).
+    Models bill at API list price; completions unlimited.
+  tools:
+  - VS Code
+  - JetBrains
+  - Copilot CLI
+  - Copilot coding agent
+  verified: '2026-10-18'
+  confidence: official
+  devforth: github-copilot-max
+  devforth_baseline: 2.0
+  default_multiplier: 2.0
+  default_basis: 'Official: 20,000 credits × $0.01 = $200 of API-priced usage ÷ $100 = ×2.0. Only the base credits (×1.0)
+    are guaranteed.'
+  caveats: Per-plan model availability not verified for every model; Auto model selection takes a further 10% off.
+  sources:
+  - url: https://docs.github.com/en/copilot/get-started/plans
+    title: GitHub Copilot plans (official)
+    date: '2026-10-18'
+  - url: https://docs.github.com/en/copilot/concepts/billing/usage-based-billing-for-individuals
+    title: Copilot usage-based billing (official)
+    date: '2026-10-18'
+  - url: https://docs.github.com/en/copilot/reference/copilot-billing/models-and-pricing
+    title: Copilot models and pricing (official)
+    date: '2026-10-18'
+  models:
+  - name: Claude Opus 5.5
+    release: claude-opus-5-5
+    confidence: official
+  - name: Claude Sonnet 5.5
+    release: claude-sonnet-5-5
+    confidence: official
+  - name: Claude Fable 5.1
+    release: claude-fable-5-1
+    confidence: official
+  - name: Claude Haiku 5.5
+    release: claude-haiku-5-5
+    confidence: official
+  - name: GPT-6 Astra
+    release: gpt-6-astra
+    confidence: official
+  - name: GPT-6.1 Sol
+    release: gpt-6-1-sol
+    confidence: official
+  - name: GPT-6 Luna
+    release: gpt-6-luna
+    confidence: official
+  - name: Gemini 4 Argon
+    release: gemini-4-argon
+    confidence: official
+  - name: Grok 4.7
+    release: grok-4-7
+    confidence: official
+  - name: Kimi K3
+    release: kimi-k3
+    confidence: official
+- id: opencode-go
+  provider: OpenCode
+  product: OpenCode
+  plan: Go
+  region: global
+  price_usd: 10
+  billing: $10/month; single-member workspaces
+  quota: Each model has its own monthly dollar cap at OpenCode's token prices; the 5-hour limit is 20% and the weekly limit
+    50% of it, so the monthly cap binds. Caps are separate per model.
+  tools:
+  - OpenCode
+  - any OpenAI/Anthropic-compatible coding agent
+  verified: '2026-10-18'
+  confidence: official
+  default_basis: Official per-model monthly cap ÷ plan price, re-valued at the model's list price where OpenCode's token price
+    differs.
+  caveats: Promotions (Step 5 Preview 4×, Gemini Argon Contributor 2×) are excluded. Because caps are per model, mixing models
+    yields more total value than any single model's subsidy.
+  sources:
+  - url: https://opencode.ai/docs/go/
+    title: 'OpenCode Go docs: per-model monthly limits and token prices (official)'
+    date: '2026-10-18'
+  models:
+  - name: GLM-5.3
+    release: glm-5-3
+    multiplier: 1.5
+    basis: $15/month cap ÷ $10 = ×1.5.
+    confidence: official
+  - name: GLM-5.3-Flash
+    release: glm-5-3-flash
+    multiplier: 6.0
+    basis: $60/month cap ÷ $10 = ×6.
+    confidence: official
+  - name: Kimi K3
+    release: kimi-k3
+    multiplier: 1.5
+    basis: $15/month cap ÷ $10 = ×1.5.
+    confidence: official
+  - name: Kimi K2.7 Code
+    release: kimi-k2-7-code
+    multiplier: 6.0
+    basis: $60/month cap ÷ $10 = ×6.
+    confidence: official
+  - name: LongCat-2.0
+    release: longcat-2-0
+    multiplier: 14.86
+    basis: $60/month cap ÷ $10 = ×6, re-valued at list price (OpenCode charges $0.3/$1.2 vs list $0.75/$2.95 per 1M, ×2.48).
+    confidence: official
+  - name: Step 5 Preview
+    release: step-5-preview
+    multiplier: 1.5
+    basis: $15/month cap ÷ $10 = ×1.5.
+    confidence: official
+  - name: MiMo-V2.6-Pro
+    release: mimo-v2-6-pro
+    multiplier: 1.5
+    basis: $15/month cap ÷ $10 = ×1.5.
+    confidence: official
+  - name: MiMo-V2.6-Flash
+    release: mimo-v2-6-flash
+    multiplier: 6.0
+    basis: $60/month cap ÷ $10 = ×6.
+    confidence: official
+  - name: MiniMax M3
+    release: minimax-m3
+    multiplier: 6.0
+    basis: $60/month cap ÷ $10 = ×6.
+    confidence: official
+  - name: Qwen3.8 Max
+    release: qwen3-8-max-0902
+    multiplier: 1.5
+    basis: $15/month cap ÷ $10 = ×1.5.
+    confidence: official
+  - name: Qwen3.8 Flash
+    release: qwen3-8-flash-next
+    multiplier: 3.0
+    basis: $30/month cap ÷ $10 = ×3; OpenCode's 'Qwen3.8 Flash' matched to AA's Qwen3.8-Flash-Next by identical pricing.
+    confidence: official
+  - name: Qwen3.7 Plus
+    release: qwen3-7-plus
+    multiplier: 6.0
+    basis: $60/month cap ÷ $10 = ×6.
+    confidence: official
+  - name: DeepSeek V4.1 Flash
+    release: deepseek-v4-1-flash
+    multiplier: 8.0
+    basis: $80/month cap ÷ $10 = ×8; peak-hour price used (off-peak tokens cost half, doubling the allowance).
+    confidence: official
+  - name: DeepSeek V4 Pro
+    release: deepseek-v4-pro
+    multiplier: 1.5
+    basis: $15/month cap ÷ $10 = ×1.5; peak-hour price used (off-peak tokens cost half, doubling the allowance).
+    confidence: official
+  - name: Hy3
+    release: hy3
+    multiplier: 5.78
+    basis: $60/month cap ÷ $10 = ×6, re-valued at list price (OpenCode charges $0.14/$0.58 vs list $0.136/$0.555 per 1M, ×0.96).
+    confidence: official
+  - name: Grok 4.7
+    release: grok-4-7
+    multiplier: 1.5
+    basis: $15/month cap ÷ $10 = ×1.5.
+    confidence: official
+  - name: GPT 6 Luna
+    release: gpt-6-luna
+    multiplier: 1.5
+    basis: $15/month cap ÷ $10 = ×1.5.
+    confidence: official
+  - name: Claude Haiku 5.5
+    release: claude-haiku-5-5
+    multiplier: 1.5
+    basis: $15/month cap ÷ $10 = ×1.5.
+    confidence: official
+  - name: Gemini 4 Argon Contributor
+    release: null
+    basis: Contributor variant priced at $4/$20 (2× list); not treated as the AA model.
+    confidence: official
+  - name: Muse Spark 1.3 Contributor
+    release: null
+    basis: Contributor variant at $0.10/$0.20 in limited regions; not comparable to the AA model.
+    confidence: official
+  - name: LongCat 2.5 Preview Free / Beam Free
+    release: null
+    basis: Free for a limited time; promotions are not counted.
+    confidence: official
+- id: opencode-go-plus
+  provider: OpenCode
+  product: OpenCode
+  plan: Go Plus
+  region: global
+  price_usd: 40
+  billing: $40/month; single-member workspaces
+  quota: Each model has its own monthly dollar cap at OpenCode's token prices; the 5-hour limit is 20% and the weekly limit
+    50% of it, so the monthly cap binds. Caps are separate per model.
+  tools:
+  - OpenCode
+  - any OpenAI/Anthropic-compatible coding agent
+  verified: '2026-10-18'
+  confidence: official
+  default_basis: Official per-model monthly cap ÷ plan price, re-valued at the model's list price where OpenCode's token price
+    differs.
+  caveats: Promotions (Step 5 Preview 4×, Gemini Argon Contributor 2×) are excluded. Because caps are per model, mixing models
+    yields more total value than any single model's subsidy.
+  sources:
+  - url: https://opencode.ai/docs/go/
+    title: 'OpenCode Go docs: per-model monthly limits and token prices (official)'
+    date: '2026-10-18'
+  models:
+  - name: GLM-5.3
+    release: glm-5-3
+    multiplier: 3.0
+    basis: $120/month cap ÷ $40 = ×3.
+    confidence: official
+  - name: GLM-5.3-Flash
+    release: glm-5-3-flash
+    multiplier: 4.5
+    basis: $180/month cap ÷ $40 = ×4.5.
+    confidence: official
+  - name: Kimi K3
+    release: kimi-k3
+    multiplier: 1.5
+    basis: $60/month cap ÷ $40 = ×1.5.
+    confidence: official
+  - name: Kimi K2.7 Code
+    release: kimi-k2-7-code
+    multiplier: 4.5
+    basis: $180/month cap ÷ $40 = ×4.5.
+    confidence: official
+  - name: LongCat-2.0
+    release: longcat-2-0
+    multiplier: 14.86
+    basis: $240/month cap ÷ $40 = ×6, re-valued at list price (OpenCode charges $0.3/$1.2 vs list $0.75/$2.95 per 1M, ×2.48).
+    confidence: official
+  - name: Step 5 Preview
+    release: step-5-preview
+    multiplier: 1.5
+    basis: $60/month cap ÷ $40 = ×1.5.
+    confidence: official
+  - name: MiMo-V2.6-Pro
+    release: mimo-v2-6-pro
+    multiplier: 1.5
+    basis: $60/month cap ÷ $40 = ×1.5.
+    confidence: official
+  - name: MiMo-V2.6-Flash
+    release: mimo-v2-6-flash
+    multiplier: 3.0
+    basis: $120/month cap ÷ $40 = ×3.
+    confidence: official
+  - name: MiniMax M3
+    release: minimax-m3
+    multiplier: 4.5
+    basis: $180/month cap ÷ $40 = ×4.5.
+    confidence: official
+  - name: Qwen3.8 Max
+    release: qwen3-8-max-0902
+    multiplier: 1.5
+    basis: $60/month cap ÷ $40 = ×1.5.
+    confidence: official
+  - name: Qwen3.8 Flash
+    release: qwen3-8-flash-next
+    multiplier: 2.25
+    basis: $90/month cap ÷ $40 = ×2.25; OpenCode's 'Qwen3.8 Flash' matched to AA's Qwen3.8-Flash-Next by identical pricing.
+    confidence: official
+  - name: Qwen3.7 Plus
+    release: qwen3-7-plus
+    multiplier: 4.5
+    basis: $180/month cap ÷ $40 = ×4.5.
+    confidence: official
+  - name: DeepSeek V4.1 Flash
+    release: deepseek-v4-1-flash
+    multiplier: 4.0
+    basis: $160/month cap ÷ $40 = ×4; peak-hour price used (off-peak tokens cost half, doubling the allowance).
+    confidence: official
+  - name: DeepSeek V4 Pro
+    release: deepseek-v4-pro
+    multiplier: 1.5
+    basis: $60/month cap ÷ $40 = ×1.5; peak-hour price used (off-peak tokens cost half, doubling the allowance).
+    confidence: official
+  - name: Hy3
+    release: hy3
+    multiplier: 5.78
+    basis: $240/month cap ÷ $40 = ×6, re-valued at list price (OpenCode charges $0.14/$0.58 vs list $0.136/$0.555 per 1M,
+      ×0.96).
+    confidence: official
+  - name: Grok 4.7
+    release: grok-4-7
+    multiplier: 1.5
+    basis: $60/month cap ÷ $40 = ×1.5.
+    confidence: official
+  - name: GPT 6 Luna
+    release: gpt-6-luna
+    multiplier: 1.5
+    basis: $60/month cap ÷ $40 = ×1.5.
+    confidence: official
+  - name: Claude Haiku 5.5
+    release: claude-haiku-5-5
+    multiplier: 1.5
+    basis: $60/month cap ÷ $40 = ×1.5.
+    confidence: official
+  - name: Gemini 4 Argon Contributor
+    release: null
+    basis: Contributor variant priced at $4/$20 (2× list); not treated as the AA model.
+    confidence: official
+  - name: Muse Spark 1.3 Contributor
+    release: null
+    basis: Contributor variant at $0.10/$0.20 in limited regions; not comparable to the AA model.
+    confidence: official
+  - name: LongCat 2.5 Preview Free / Beam Free
+    release: null
+    basis: Free for a limited time; promotions are not counted.
+    confidence: official
+- id: commandcode-go
+  provider: Command Code
+  product: Command Code
+  plan: Go
+  region: global
+  price_usd: 1
+  quota: $10 of credits; $10 per-model allowances on a few open models.
+  tools:
+  - Command Code CLI
+  verified: '2026-10-18'
+  confidence: official
+  default_multiplier: 10
+  default_basis: $10 credits ÷ $1 = ×10.
+  sources:
+  - url: https://commandcode.ai/pricing
+    title: Command Code pricing (official)
+    date: '2026-10-18'
+  models:
+  - name: DeepSeek V4.1 Flash
+    release: deepseek-v4-1-flash
+    confidence: official
+  - name: Hy3
+    release: hy3
+    confidence: official
+  - name: Qwen3.8 27B
+    release: qwen3-8-27b
+    confidence: official
+  - name: Qwen3.7 Plus
+    release: qwen3-7-plus
+    confidence: official
+- id: commandcode-goat
+  provider: Command Code
+  product: Command Code
+  plan: GOAT
+  region: global
+  price_usd: 10
+  billing: $10/month + processing fee
+  quota: '$70 of monthly credits (compare table; the plan card says $80), with per-model allowances: $60 on DeepSeek V4.1
+    Flash and GLM-5.3 Flash, $70 on Hy3 and Qwen 3.8 27B, and 34 more models.'
+  tools:
+  - Command Code CLI
+  - API (OpenAI/Anthropic compatible)
+  verified: '2026-10-18'
+  confidence: official
+  default_basis: Monthly credits spent at API list price (no markup); 'deals' beyond the credits are not guaranteed and not
+    counted.
+  caveats: The official page is internally inconsistent ($70 vs $80 credits); the lower figure is used. Allowances for the
+    other 34 models are not itemised, so they are not counted.
+  sources:
+  - url: https://commandcode.ai/pricing
+    title: Command Code pricing (official)
+    date: '2026-10-18'
+  models:
+  - name: DeepSeek V4.1 Flash
+    release: deepseek-v4-1-flash
+    multiplier: 6.0
+    basis: $60 per-model allowance ÷ $10.
+    confidence: official
+  - name: GLM-5.3-Flash
+    release: glm-5-3-flash
+    multiplier: 6.0
+    basis: $60 per-model allowance ÷ $10.
+    confidence: official
+  - name: Hy3
+    release: hy3
+    multiplier: 7.0
+    basis: $70 per-model allowance ÷ $10.
+    confidence: official
+  - name: Qwen3.8 27B
+    release: qwen3-8-27b
+    multiplier: 7.0
+    basis: $70 per-model allowance ÷ $10.
+    confidence: official
+  - name: MiniMax M3
+    release: minimax-m3
+    multiplier: 4.7
+    basis: Stated effective usage $47 ÷ $10.
+    confidence: official
+- id: commandcode-pro
+  provider: Command Code
+  product: Command Code
+  plan: Pro
+  region: global
+  price_usd: 20
+  billing: $20/month + processing fee
+  quota: $80 of monthly credits at API list price across open and premium (Claude, GPT, Gemini) models.
+  tools:
+  - Command Code CLI
+  - API (OpenAI/Anthropic compatible)
+  verified: '2026-10-18'
+  confidence: official
+  default_multiplier: 4.0
+  default_basis: $80 credits ÷ $20 = ×4. Monthly credits spent at API list price (no markup); 'deals' beyond the credits are
+    not guaranteed and not counted.
+  sources:
+  - url: https://commandcode.ai/pricing
+    title: Command Code pricing (official)
+    date: '2026-10-18'
+  models:
+  - name: Claude Opus 5.5
+    release: claude-opus-5-5
+    confidence: official
+  - name: Claude Sonnet 5.5
+    release: claude-sonnet-5-5
+    confidence: official
+  - name: Claude Fable 5.1
+    release: claude-fable-5-1
+    confidence: official
+  - name: GPT-6.1 Sol
+    release: gpt-6-1-sol
+    confidence: official
+  - name: Gemini 4 Argon
+    release: gemini-4-argon
+    confidence: official
+  - name: MiniMax M3
+    release: minimax-m3
+    multiplier: 2.85
+    basis: Stated effective usage $57 ÷ $20.
+    confidence: official
+- id: commandcode-max-10x
+  provider: Command Code
+  product: Command Code
+  plan: Max 10×
+  region: global
+  price_usd: 100
+  billing: $100/month + processing fee
+  quota: $150 of monthly credits at API list price across open and premium (Claude, GPT, Gemini) models.
+  tools:
+  - Command Code CLI
+  - API (OpenAI/Anthropic compatible)
+  verified: '2026-10-18'
+  confidence: official
+  default_multiplier: 1.5
+  default_basis: $150 credits ÷ $100 = ×1.5. Monthly credits spent at API list price (no markup); 'deals' beyond the credits
+    are not guaranteed and not counted.
+  sources:
+  - url: https://commandcode.ai/pricing
+    title: Command Code pricing (official)
+    date: '2026-10-18'
+  models:
+  - name: Claude Opus 5.5
+    release: claude-opus-5-5
+    confidence: official
+  - name: Claude Sonnet 5.5
+    release: claude-sonnet-5-5
+    confidence: official
+  - name: Claude Fable 5.1
+    release: claude-fable-5-1
+    confidence: official
+  - name: GPT-6.1 Sol
+    release: gpt-6-1-sol
+    confidence: official
+  - name: Gemini 4 Argon
+    release: gemini-4-argon
+    confidence: official
+  - name: MiniMax M3
+    release: minimax-m3
+    multiplier: 3.0
+    basis: Stated effective usage $300 ÷ $100.
+    confidence: official
+- id: commandcode-max-20x
+  provider: Command Code
+  product: Command Code
+  plan: Max 20×
+  region: global
+  price_usd: 200
+  billing: $200/month + processing fee
+  quota: $300 of monthly credits at API list price across open and premium (Claude, GPT, Gemini) models.
+  tools:
+  - Command Code CLI
+  - API (OpenAI/Anthropic compatible)
+  verified: '2026-10-18'
+  confidence: official
+  default_multiplier: 1.5
+  default_basis: $300 credits ÷ $200 = ×1.5. Monthly credits spent at API list price (no markup); 'deals' beyond the credits
+    are not guaranteed and not counted.
+  sources:
+  - url: https://commandcode.ai/pricing
+    title: Command Code pricing (official)
+    date: '2026-10-18'
+  models:
+  - name: Claude Opus 5.5
+    release: claude-opus-5-5
+    confidence: official
+  - name: Claude Sonnet 5.5
+    release: claude-sonnet-5-5
+    confidence: official
+  - name: Claude Fable 5.1
+    release: claude-fable-5-1
+    confidence: official
+  - name: GPT-6.1 Sol
+    release: gpt-6-1-sol
+    confidence: official
+  - name: Gemini 4 Argon
+    release: gemini-4-argon
+    confidence: official
+  - name: MiniMax M3
+    release: minimax-m3
+    multiplier: 3.0
+    basis: Stated effective usage $600 ÷ $200.
+    confidence: official
+- id: ollama-pro
+  provider: Ollama
+  product: Ollama Cloud
+  plan: Pro
+  region: global
+  price_usd: 20
+  billing: $20/month
+  quota: $60 of usage credits a month at Ollama's per-model token prices; no 5-hour or weekly limits stated.
+  tools:
+  - Ollama
+  - any OpenAI-compatible coding agent
+  verified: '2026-10-18'
+  confidence: official
+  default_multiplier: 3.0
+  default_basis: $60 credits ÷ $20 = ×3; Ollama's prices equal list for these models. Off-peak DeepSeek pricing (half price)
+    is not counted.
+  caveats: Open-weight models only.
+  sources:
+  - url: https://ollama.com/pricing
+    title: Ollama Cloud pricing (official)
+    date: '2026-10-18'
+  models:
+  - name: GLM-5.3
+    release: glm-5-3
+    confidence: official
+  - name: GLM-5.3-Flash
+    release: glm-5-3-flash
+    confidence: official
+  - name: Kimi K3
+    release: kimi-k3
+    confidence: official
+  - name: Kimi K2.7 Code
+    release: kimi-k2-7-code
+    confidence: official
+  - name: DeepSeek V4.1 Flash
+    release: deepseek-v4-1-flash
+    confidence: official
+  - name: DeepSeek V4 Pro
+    release: deepseek-v4-pro
+    confidence: official
+  - name: Muse Spark Open
+    release: muse-spark-open
+    confidence: official
+  - name: MiniMax M3
+    release: minimax-m3
+    multiplier: 1.5
+    basis: Ollama charges 2× list ($0.60/$2.40), halving the value.
+    confidence: official
+  - name: Mistral Large 4
+    release: mistral-large-4
+    multiplier: 6.0
+    basis: Ollama charges half of list ($0.68/$2.09), doubling the value.
+    confidence: derived
+- id: ollama-max
+  provider: Ollama
+  product: Ollama Cloud
+  plan: Max
+  region: global
+  price_usd: 100
+  billing: $100/month
+  quota: $300 of usage credits a month at Ollama's per-model token prices; no 5-hour or weekly limits stated.
+  tools:
+  - Ollama
+  - any OpenAI-compatible coding agent
+  verified: '2026-10-18'
+  confidence: official
+  default_multiplier: 3.0
+  default_basis: $300 credits ÷ $100 = ×3; Ollama's prices equal list for these models. Off-peak DeepSeek pricing (half price)
+    is not counted.
+  caveats: Open-weight models only.
+  sources:
+  - url: https://ollama.com/pricing
+    title: Ollama Cloud pricing (official)
+    date: '2026-10-18'
+  models:
+  - name: GLM-5.3
+    release: glm-5-3
+    confidence: official
+  - name: GLM-5.3-Flash
+    release: glm-5-3-flash
+    confidence: official
+  - name: Kimi K3
+    release: kimi-k3
+    confidence: official
+  - name: Kimi K2.7 Code
+    release: kimi-k2-7-code
+    confidence: official
+  - name: DeepSeek V4.1 Flash
+    release: deepseek-v4-1-flash
+    confidence: official
+  - name: DeepSeek V4 Pro
+    release: deepseek-v4-pro
+    confidence: official
+  - name: Muse Spark Open
+    release: muse-spark-open
+    confidence: official
+  - name: MiniMax M3
+    release: minimax-m3
+    multiplier: 1.5
+    basis: Ollama charges 2× list ($0.60/$2.40), halving the value.
+    confidence: official
+  - name: Mistral Large 4
+    release: mistral-large-4
+    multiplier: 6.0
+    basis: Ollama charges half of list ($0.68/$2.09), doubling the value.
+    confidence: derived
+- id: synthetic-standard
+  provider: Synthetic
+  product: Synthetic
+  plan: Standard
+  region: global
+  price_usd: 30
+  billing: $30/month
+  quota: Weekly credit limit stated as 'up to $300 of usage per month vs API list prices'.
+  tools:
+  - any OpenAI/Anthropic-compatible coding agent
+  verified: '2026-10-18'
+  confidence: derived
+  default_multiplier: 10
+  default_basis: Stated $300/month at list ÷ $30 = ×10 (a generic figure, not per model).
+  caveats: Per-model discounts mean real per-model value differs from the generic figure.
+  sources:
+  - url: https://synthetic.new/pricing
+    title: Synthetic pricing (official)
+    date: '2026-10-18'
+  models:
+  - name: GLM-5.3
+    release: glm-5-3
+    confidence: derived
+  - name: GLM-5.3-Flash
+    release: glm-5-3-flash
+    confidence: derived
+  - name: Kimi K3
+    release: kimi-k3
+    confidence: derived
+  - name: DeepSeek V4.1 Flash
+    release: deepseek-v4-1-flash
+    confidence: derived
+  - name: Qwen3.8 27B
+    release: qwen3-8-27b
+    confidence: derived
+- id: atlas-starter
+  provider: Atlas Cloud
+  product: Atlas Coding Plan
+  plan: Starter
+  region: global
+  price_usd: 10
+  billing: $10/month
+  quota: 16.5M points a week; points = input tokens × input weight + output tokens × output weight.
+  tools:
+  - Claude Code
+  - Cursor
+  - Codex
+  - OpenCode
+  verified: '2026-10-18'
+  confidence: official
+  default_basis: 'Atlas''s stated saving vs official price per model, s: subsidy = 1 / (1 − s). Same rate on every tier.'
+  sources:
+  - url: https://www.atlascloud.ai/coding-plan
+    title: Atlas Cloud Coding Plan (official)
+    date: '2026-10-18'
+  models:
+  - name: DeepSeek V4.1 Flash
+    release: deepseek-v4-1-flash
+    multiplier: 2.0
+    basis: Stated saving 50% vs official → ×2.00.
+    confidence: official
+  - name: DeepSeek V4 Pro
+    release: deepseek-v4-pro
+    multiplier: 2.0
+    basis: Stated saving 50% vs official → ×2.00.
+    confidence: official
+  - name: GLM-5.3-Flash
+    release: glm-5-3-flash
+    multiplier: 1.25
+    basis: Stated saving 20% vs official → ×1.25.
+    confidence: official
+  - name: Qwen3.8 Max
+    release: qwen3-8-max-0902
+    multiplier: 1.67
+    basis: Stated saving 40% vs official → ×1.67.
+    confidence: official
+  - name: Kimi K2.7 Code
+    release: kimi-k2-7-code
+    multiplier: 1.82
+    basis: Stated saving 45% vs official → ×1.82.
+    confidence: official
+  - name: MiniMax M3
+    release: minimax-m3
+    multiplier: 2.22
+    basis: Stated saving 55% vs official → ×2.22.
+    confidence: official
+- id: atlas-lite
+  provider: Atlas Cloud
+  product: Atlas Coding Plan
+  plan: Lite
+  region: global
+  price_usd: 20
+  billing: $20/month
+  quota: 33M points a week; points = input tokens × input weight + output tokens × output weight.
+  tools:
+  - Claude Code
+  - Cursor
+  - Codex
+  - OpenCode
+  verified: '2026-10-18'
+  confidence: official
+  default_basis: 'Atlas''s stated saving vs official price per model, s: subsidy = 1 / (1 − s). Same rate on every tier.'
+  sources:
+  - url: https://www.atlascloud.ai/coding-plan
+    title: Atlas Cloud Coding Plan (official)
+    date: '2026-10-18'
+  models:
+  - name: DeepSeek V4.1 Flash
+    release: deepseek-v4-1-flash
+    multiplier: 2.0
+    basis: Stated saving 50% vs official → ×2.00.
+    confidence: official
+  - name: DeepSeek V4 Pro
+    release: deepseek-v4-pro
+    multiplier: 2.0
+    basis: Stated saving 50% vs official → ×2.00.
+    confidence: official
+  - name: GLM-5.3-Flash
+    release: glm-5-3-flash
+    multiplier: 1.25
+    basis: Stated saving 20% vs official → ×1.25.
+    confidence: official
+  - name: Qwen3.8 Max
+    release: qwen3-8-max-0902
+    multiplier: 1.67
+    basis: Stated saving 40% vs official → ×1.67.
+    confidence: official
+  - name: Kimi K2.7 Code
+    release: kimi-k2-7-code
+    multiplier: 1.82
+    basis: Stated saving 45% vs official → ×1.82.
+    confidence: official
+  - name: MiniMax M3
+    release: minimax-m3
+    multiplier: 2.22
+    basis: Stated saving 55% vs official → ×2.22.
+    confidence: official
+- id: atlas-plus
+  provider: Atlas Cloud
+  product: Atlas Coding Plan
+  plan: Plus
+  region: global
+  price_usd: 50
+  billing: $50/month
+  quota: 82.5M points a week; points = input tokens × input weight + output tokens × output weight.
+  tools:
+  - Claude Code
+  - Cursor
+  - Codex
+  - OpenCode
+  verified: '2026-10-18'
+  confidence: official
+  default_basis: 'Atlas''s stated saving vs official price per model, s: subsidy = 1 / (1 − s). Same rate on every tier.'
+  sources:
+  - url: https://www.atlascloud.ai/coding-plan
+    title: Atlas Cloud Coding Plan (official)
+    date: '2026-10-18'
+  models:
+  - name: DeepSeek V4.1 Flash
+    release: deepseek-v4-1-flash
+    multiplier: 2.0
+    basis: Stated saving 50% vs official → ×2.00.
+    confidence: official
+  - name: DeepSeek V4 Pro
+    release: deepseek-v4-pro
+    multiplier: 2.0
+    basis: Stated saving 50% vs official → ×2.00.
+    confidence: official
+  - name: GLM-5.3-Flash
+    release: glm-5-3-flash
+    multiplier: 1.25
+    basis: Stated saving 20% vs official → ×1.25.
+    confidence: official
+  - name: Qwen3.8 Max
+    release: qwen3-8-max-0902
+    multiplier: 1.67
+    basis: Stated saving 40% vs official → ×1.67.
+    confidence: official
+  - name: Kimi K2.7 Code
+    release: kimi-k2-7-code
+    multiplier: 1.82
+    basis: Stated saving 45% vs official → ×1.82.
+    confidence: official
+  - name: MiniMax M3
+    release: minimax-m3
+    multiplier: 2.22
+    basis: Stated saving 55% vs official → ×2.22.
+    confidence: official
+- id: atlas-max
+  provider: Atlas Cloud
+  product: Atlas Coding Plan
+  plan: Max
+  region: global
+  price_usd: 100
+  billing: $100/month
+  quota: 165M points a week; points = input tokens × input weight + output tokens × output weight.
+  tools:
+  - Claude Code
+  - Cursor
+  - Codex
+  - OpenCode
+  verified: '2026-10-18'
+  confidence: official
+  default_basis: 'Atlas''s stated saving vs official price per model, s: subsidy = 1 / (1 − s). Same rate on every tier.'
+  sources:
+  - url: https://www.atlascloud.ai/coding-plan
+    title: Atlas Cloud Coding Plan (official)
+    date: '2026-10-18'
+  models:
+  - name: DeepSeek V4.1 Flash
+    release: deepseek-v4-1-flash
+    multiplier: 2.0
+    basis: Stated saving 50% vs official → ×2.00.
+    confidence: official
+  - name: DeepSeek V4 Pro
+    release: deepseek-v4-pro
+    multiplier: 2.0
+    basis: Stated saving 50% vs official → ×2.00.
+    confidence: official
+  - name: GLM-5.3-Flash
+    release: glm-5-3-flash
+    multiplier: 1.25
+    basis: Stated saving 20% vs official → ×1.25.
+    confidence: official
+  - name: Qwen3.8 Max
+    release: qwen3-8-max-0902
+    multiplier: 1.67
+    basis: Stated saving 40% vs official → ×1.67.
+    confidence: official
+  - name: Kimi K2.7 Code
+    release: kimi-k2-7-code
+    multiplier: 1.82
+    basis: Stated saving 45% vs official → ×1.82.
+    confidence: official
+  - name: MiniMax M3
+    release: minimax-m3
+    multiplier: 2.22
+    basis: Stated saving 55% vs official → ×2.22.
+    confidence: official
+- id: atlas-ultra
+  provider: Atlas Cloud
+  product: Atlas Coding Plan
+  plan: Ultra
+  region: global
+  price_usd: 200
+  billing: $200/month
+  quota: 330M points a week; points = input tokens × input weight + output tokens × output weight.
+  tools:
+  - Claude Code
+  - Cursor
+  - Codex
+  - OpenCode
+  verified: '2026-10-18'
+  confidence: official
+  default_basis: 'Atlas''s stated saving vs official price per model, s: subsidy = 1 / (1 − s). Same rate on every tier.'
+  sources:
+  - url: https://www.atlascloud.ai/coding-plan
+    title: Atlas Cloud Coding Plan (official)
+    date: '2026-10-18'
+  models:
+  - name: DeepSeek V4.1 Flash
+    release: deepseek-v4-1-flash
+    multiplier: 2.0
+    basis: Stated saving 50% vs official → ×2.00.
+    confidence: official
+  - name: DeepSeek V4 Pro
+    release: deepseek-v4-pro
+    multiplier: 2.0
+    basis: Stated saving 50% vs official → ×2.00.
+    confidence: official
+  - name: GLM-5.3-Flash
+    release: glm-5-3-flash
+    multiplier: 1.25
+    basis: Stated saving 20% vs official → ×1.25.
+    confidence: official
+  - name: Qwen3.8 Max
+    release: qwen3-8-max-0902
+    multiplier: 1.67
+    basis: Stated saving 40% vs official → ×1.67.
+    confidence: official
+  - name: Kimi K2.7 Code
+    release: kimi-k2-7-code
+    multiplier: 1.82
+    basis: Stated saving 45% vs official → ×1.82.
+    confidence: official
+  - name: MiniMax M3
+    release: minimax-m3
+    multiplier: 2.22
+    basis: Stated saving 55% vs official → ×2.22.
+    confidence: official
+- id: factory-pro
+  provider: Factory
+  product: Factory Droid
+  plan: Pro
+  region: global
+  price_usd: 20
+  quota: Rolling 5-hour / 7-day / 30-day limits in 'Standard usage' with per-model weights (e.g. Opus 5.5 ×1.6, Fable 5.1
+    ×4, Haiku 5.5 ×0.04); the base allowance is not published.
+  tools:
+  - Droid CLI
+  - IDE
+  verified: '2026-10-18'
+  confidence: unknown
+  default_basis: The provider publishes no dollar, token or request quota that can be converted to API value, and no independent
+    measurement was found.
+  sources:
+  - url: https://docs.factory.ai/pricing
+    title: Factory pricing (official)
+    date: '2026-10-18'
+  models:
+  - name: Claude Opus 5.5
+    release: claude-opus-5-5
+    confidence: unknown
+  - name: Claude Sonnet 5.5
+    release: claude-sonnet-5-5
+    confidence: unknown
+  - name: GPT-6.1 Sol
+    release: gpt-6-1-sol
+    confidence: unknown
+- id: cursor-pro
+  provider: Cursor
+  product: Cursor
+  plan: Pro
+  region: global
+  price_usd: 20
+  quota: Included usage for third-party models is billed at API list price (no subsidy); a separate pool covers Grok models
+    through the X subscription.
+  tools:
+  - Cursor
+  verified: '2026-10-18'
+  confidence: official
+  default_multiplier: 1.0
+  default_basis: 'Third-party models at API list price: ×1.'
+  sources:
+  - url: https://cursor.com/pricing
+    title: Cursor pricing (official)
+    date: '2026-10-18'
+  models:
+  - name: Claude Opus 5.5
+    release: claude-opus-5-5
+    confidence: official
+  - name: GPT-6.1 Sol
+    release: gpt-6-1-sol
+    confidence: official
+  - name: Gemini 4 Argon
+    release: gemini-4-argon
+    confidence: official
+- id: windsurf-pro
+  provider: Cognition
+  product: Windsurf / Devin
+  plan: Pro
+  region: global
+  price_usd: 20
+  quota: Daily and weekly refreshing allowance with no dollar figure; extra usage at API pricing.
+  tools:
+  - Windsurf
+  - Devin
+  verified: '2026-10-18'
+  confidence: unknown
+  default_basis: The provider publishes no dollar, token or request quota that can be converted to API value, and no independent
+    measurement was found.
+  sources:
+  - url: https://windsurf.com/pricing
+    title: Windsurf pricing (official)
+    date: '2026-10-18'
+  models: []
+- id: kilo-pass-starter
+  provider: Kilo Code
+  product: Kilo Pass
+  plan: Starter
+  region: global
+  price_usd: 19
+  quota: Up to $26.60 a month of gateway credits for $19 (with the maximum bonus).
+  tools:
+  - Kilo Code
+  verified: '2026-10-18'
+  confidence: official
+  default_multiplier: 1.4
+  default_basis: $26.60 ÷ $19 = ×1.4 at gateway (list) prices, any model.
+  sources:
+  - url: https://kilo.ai/pricing
+    title: Kilo Pass pricing (official)
+    date: '2026-10-18'
+  models: []
+- id: nanogpt-pro
+  provider: NanoGPT
+  product: NanoGPT
+  plan: Pro
+  region: global
+  price_usd: 12
+  quota: 60M input tokens a week on included open-weight models; 5% off paid models.
+  tools:
+  - any OpenAI-compatible coding agent
+  verified: '2026-10-18'
+  confidence: unknown
+  default_basis: Input-only token quota with no output allowance stated; not convertible.
+  sources:
+  - url: https://nano-gpt.com/pricing
+    title: NanoGPT pricing (official)
+    date: '2026-10-18'
+  models: []
+- id: zai-glm-lite
+  provider: Z.ai
+  product: GLM Coding Plan
+  plan: Lite
+  region: global
+  price_usd: 18
+  billing: $18/month (quarterly −20%, yearly −30%)
+  quota: 2,000 credits per 5 hours and 10,000 per week. Off-peak (outside Mon–Fri 14:00–18:00 UTC+8) costs half the credits.
+  tools:
+  - Claude Code
+  - OpenCode
+  - Codex
+  - Cline
+  - ZCode
+  - 20+ tools
+  verified: '2026-10-18'
+  confidence: derived
+  default_multiplier: 4.05
+  default_basis: 'Weekly credits × 30/7 (the weekly cap binds), valued at Novita''s metered $0.0017 per credit for a cache-heavy
+    GLM-5.3 agent turn (credit weights 6.9 fresh in / 1.7 cached / 24 out per 10k tokens at $1.40/$0.26/$4.40 list). Peak
+    rate: the standing 50% off-peak discount is not counted. 10,000 × 30/7 × $0.0017 ÷ $18 = ×4.05.'
+  caveats: Off-peak use doubles the allowance (×8.1); a time-uniform user averages ~×7.2. Z.ai's own price page could not
+    be read; prices from Novita and codingplan.org, which agree.
+  sources:
+  - url: https://docs.z.ai/devpack/overview
+    title: 'Z.ai GLM Coding Plan docs: credits per 5h/week and per-model credit weights (official)'
+    date: '2026-10-18'
+  - url: https://blogs.novita.ai/z-ai-coding-plan-pricing/
+    title: 'Novita: Z.ai Coding Plan pricing and a metered agent turn'
+    date: '2026-10-10'
+  - url: https://codingplan.org/en
+    title: codingplan.org plan comparison
+    date: '2026-09-24'
+  models:
+  - name: GLM-5.3
+    release: glm-5-3
+    confidence: derived
+  - name: GLM-5.3-Flash
+    release: glm-5-3-flash
+    multiplier: 1.52
+    basis: Flash credit weights 2.3/0.56/8 valued at a 3:1 uncached blend of $0.15/$0.50 ($0.000638 per credit), peak rate.
+    confidence: derived
+- id: zai-glm-pro
+  provider: Z.ai
+  product: GLM Coding Plan
+  plan: Pro
+  region: global
+  price_usd: 80
+  billing: $80/month (quarterly −20%, yearly −30%)
+  quota: 12,000 credits per 5 hours and 60,000 per week. Off-peak (outside Mon–Fri 14:00–18:00 UTC+8) costs half the credits.
+  tools:
+  - Claude Code
+  - OpenCode
+  - Codex
+  - Cline
+  - ZCode
+  - 20+ tools
+  verified: '2026-10-18'
+  confidence: derived
+  default_multiplier: 5.46
+  default_basis: 'Weekly credits × 30/7 (the weekly cap binds), valued at Novita''s metered $0.0017 per credit for a cache-heavy
+    GLM-5.3 agent turn (credit weights 6.9 fresh in / 1.7 cached / 24 out per 10k tokens at $1.40/$0.26/$4.40 list). Peak
+    rate: the standing 50% off-peak discount is not counted. 60,000 × 30/7 × $0.0017 ÷ $80 = ×5.46.'
+  caveats: Off-peak use doubles the allowance (×10.9); a time-uniform user averages ~×9.7. Z.ai's own price page could not
+    be read; prices from Novita and codingplan.org, which agree.
+  sources:
+  - url: https://docs.z.ai/devpack/overview
+    title: 'Z.ai GLM Coding Plan docs: credits per 5h/week and per-model credit weights (official)'
+    date: '2026-10-18'
+  - url: https://blogs.novita.ai/z-ai-coding-plan-pricing/
+    title: 'Novita: Z.ai Coding Plan pricing and a metered agent turn'
+    date: '2026-10-10'
+  - url: https://codingplan.org/en
+    title: codingplan.org plan comparison
+    date: '2026-09-24'
+  models:
+  - name: GLM-5.3
+    release: glm-5-3
+    confidence: derived
+  - name: GLM-5.3-Flash
+    release: glm-5-3-flash
+    multiplier: 2.05
+    basis: Flash credit weights 2.3/0.56/8 valued at a 3:1 uncached blend of $0.15/$0.50 ($0.000638 per credit), peak rate.
+    confidence: derived
+- id: zai-glm-max
+  provider: Z.ai
+  product: GLM Coding Plan
+  plan: Max
+  region: global
+  price_usd: 168
+  billing: $168/month (quarterly −20%, yearly −30%)
+  quota: 28,000 credits per 5 hours and 140,000 per week. Off-peak (outside Mon–Fri 14:00–18:00 UTC+8) costs half the credits.
+  tools:
+  - Claude Code
+  - OpenCode
+  - Codex
+  - Cline
+  - ZCode
+  - 20+ tools
+  verified: '2026-10-18'
+  confidence: derived
+  default_multiplier: 6.07
+  default_basis: 'Weekly credits × 30/7 (the weekly cap binds), valued at Novita''s metered $0.0017 per credit for a cache-heavy
+    GLM-5.3 agent turn (credit weights 6.9 fresh in / 1.7 cached / 24 out per 10k tokens at $1.40/$0.26/$4.40 list). Peak
+    rate: the standing 50% off-peak discount is not counted. 140,000 × 30/7 × $0.0017 ÷ $168 = ×6.07.'
+  caveats: Off-peak use doubles the allowance (×12.1); a time-uniform user averages ~×10.8. Z.ai's own price page could not
+    be read; prices from Novita and codingplan.org, which agree.
+  sources:
+  - url: https://docs.z.ai/devpack/overview
+    title: 'Z.ai GLM Coding Plan docs: credits per 5h/week and per-model credit weights (official)'
+    date: '2026-10-18'
+  - url: https://blogs.novita.ai/z-ai-coding-plan-pricing/
+    title: 'Novita: Z.ai Coding Plan pricing and a metered agent turn'
+    date: '2026-10-10'
+  - url: https://codingplan.org/en
+    title: codingplan.org plan comparison
+    date: '2026-09-24'
+  models:
+  - name: GLM-5.3
+    release: glm-5-3
+    confidence: derived
+  - name: GLM-5.3-Flash
+    release: glm-5-3-flash
+    multiplier: 2.28
+    basis: Flash credit weights 2.3/0.56/8 valued at a 3:1 uncached blend of $0.15/$0.50 ($0.000638 per credit), peak rate.
+    confidence: derived
+- id: zhipu-glm-pro
+  provider: Zhipu
+  product: GLM Coding Plan (China)
+  plan: Pro
+  region: china
+  price_usd: 20.99
+  price_local: ¥149/month
+  quota: Same credit windows and weights as the global plan per the official China docs.
+  tools:
+  - Claude Code
+  - OpenCode
+  - Codex
+  - Cline
+  - ZCode
+  - 20+ tools
+  verified: '2026-10-18'
+  confidence: unknown
+  default_basis: Credit windows match the global plan, but the current CNY price could not be confirmed on bigmodel.cn (only
+    an August third-party figure), so no subsidy is asserted.
+  caveats: If the ¥ price is current, the subsidy would be several times the global plan's.
+  sources:
+  - url: https://docs.bigmodel.cn/cn/coding-plan/overview
+    title: Zhipu bigmodel.cn GLM Coding Plan docs (official, China)
+    date: '2026-10-18'
+  - url: https://codepick.dev/zh/guides/glm-53-coding-plan-review/
+    title: 'CodePick: GLM-5.3 Coding Plan review (China prices)'
+    date: '2026-08-14'
+  models:
+  - name: GLM-5.3
+    release: glm-5-3
+    confidence: unknown
+  - name: GLM-5.3-Flash
+    release: glm-5-3-flash
+    confidence: unknown
+- id: zhipu-glm-max
+  provider: Zhipu
+  product: GLM Coding Plan (China)
+  plan: Max
+  region: china
+  price_usd: 66.06
+  price_local: ¥469/month
+  quota: Same credit windows and weights as the global plan per the official China docs.
+  tools:
+  - Claude Code
+  - OpenCode
+  - Codex
+  - Cline
+  - ZCode
+  - 20+ tools
+  verified: '2026-10-18'
+  confidence: unknown
+  default_basis: Credit windows match the global plan, but the current CNY price could not be confirmed on bigmodel.cn (only
+    an August third-party figure), so no subsidy is asserted.
+  caveats: If the ¥ price is current, the subsidy would be several times the global plan's.
+  sources:
+  - url: https://docs.bigmodel.cn/cn/coding-plan/overview
+    title: Zhipu bigmodel.cn GLM Coding Plan docs (official, China)
+    date: '2026-10-18'
+  - url: https://codepick.dev/zh/guides/glm-53-coding-plan-review/
+    title: 'CodePick: GLM-5.3 Coding Plan review (China prices)'
+    date: '2026-08-14'
+  models:
+  - name: GLM-5.3
+    release: glm-5-3
+    confidence: unknown
+  - name: GLM-5.3-Flash
+    release: glm-5-3-flash
+    confidence: unknown
+- id: kimi-code-plus
+  provider: Moonshot AI
+  product: Kimi Code
+  plan: Plus
+  region: china
+  price_usd: 13.94
+  price_local: ¥99/month
+  quota: Rolling 5-hour window plus a monthly credit pool shared with Kimi membership; no weekly cap on current plans. No
+    numeric quota is published.
+  tools:
+  - Kimi Code CLI
+  - VS Code
+  - third-party agents
+  verified: '2026-10-18'
+  confidence: unknown
+  default_basis: The provider publishes no dollar, token or request quota that can be converted to API value, and no independent
+    measurement was found.
+  sources:
+  - url: https://www.kimi.com/en/help/membership/membership-pricing
+    title: Kimi membership pricing (official)
+    date: '2026-10-12'
+  - url: https://www.kimi.com/zh-cn/help/kimi-code/benefits
+    title: Kimi Code benefits (official)
+    date: 2026-10
+  models:
+  - name: Kimi K3
+    release: kimi-k3
+    confidence: unknown
+  - name: Kimi K2.7 Code
+    release: kimi-k2-7-code
+    confidence: unknown
+- id: kimi-code-pro
+  provider: Moonshot AI
+  product: Kimi Code
+  plan: Pro
+  region: china
+  price_usd: 28.03
+  price_local: ¥199/month
+  quota: Rolling 5-hour window plus a monthly credit pool shared with Kimi membership; no weekly cap on current plans. No
+    numeric quota is published.
+  tools:
+  - Kimi Code CLI
+  - VS Code
+  - third-party agents
+  verified: '2026-10-18'
+  confidence: unknown
+  default_basis: The provider publishes no dollar, token or request quota that can be converted to API value, and no independent
+    measurement was found.
+  sources:
+  - url: https://www.kimi.com/en/help/membership/membership-pricing
+    title: Kimi membership pricing (official)
+    date: '2026-10-12'
+  - url: https://www.kimi.com/zh-cn/help/kimi-code/benefits
+    title: Kimi Code benefits (official)
+    date: 2026-10
+  models:
+  - name: Kimi K3
+    release: kimi-k3
+    confidence: unknown
+  - name: Kimi K2.7 Code
+    release: kimi-k2-7-code
+    confidence: unknown
+- id: kimi-code-max
+  provider: Moonshot AI
+  product: Kimi Code
+  plan: Max
+  region: china
+  price_usd: 98.45
+  price_local: ¥699/month
+  quota: Rolling 5-hour window plus a monthly credit pool shared with Kimi membership; no weekly cap on current plans. No
+    numeric quota is published.
+  tools:
+  - Kimi Code CLI
+  - VS Code
+  - third-party agents
+  verified: '2026-10-18'
+  confidence: unknown
+  default_basis: The provider publishes no dollar, token or request quota that can be converted to API value, and no independent
+    measurement was found.
+  sources:
+  - url: https://www.kimi.com/en/help/membership/membership-pricing
+    title: Kimi membership pricing (official)
+    date: '2026-10-12'
+  - url: https://www.kimi.com/zh-cn/help/kimi-code/benefits
+    title: Kimi Code benefits (official)
+    date: 2026-10
+  models:
+  - name: Kimi K3
+    release: kimi-k3
+    confidence: unknown
+  - name: Kimi K2.7 Code
+    release: kimi-k2-7-code
+    confidence: unknown
+- id: minimax-token-go
+  provider: MiniMax
+  product: MiniMax Token Plan
+  plan: Plus (Go)
+  region: global
+  price_usd: 22
+  billing: $22/month (raised 10% on Aug 26, 2026)
+  quota: 5-hour and weekly windows; about 1.7B tokens a month per third-party sources (MiniMax publishes no figure).
+  tools:
+  - MiniMax Code
+  - Claude Code
+  - OpenCode
+  - Cline
+  verified: '2026-10-18'
+  confidence: estimate
+  default_multiplier: 8.2
+  default_basis: Third-party monthly token figure × a cache-heavy agent mix (90% cache reads at $0.06, 7.5% fresh input at
+    $0.30, 2.5% output at $1.20 = $0.1065 per 1M), the same kind of mix the Claude and Codex measurements use. An uncached
+    3:1 mix would give about 5× more. 1.7B × $0.1065/1M ÷ $22 = ×8.2.
+  caveats: The token figure's origin was not found and may or may not count cache reads; treat as rough.
+  sources:
+  - url: https://codingplan.org/en
+    title: codingplan.org plan comparison
+    date: '2026-09-24'
+  - url: https://usagepricing.com/blueprint/activity/minimax-2026-08-26-price-change
+    title: 'UsagePricing: MiniMax Token Plan price change (Aug 26)'
+    date: '2026-08-26'
+  - url: https://platform.minimax.io/docs/guides/pricing-paygo
+    title: MiniMax pay-as-you-go prices (official)
+    date: '2026-10-18'
+  models:
+  - name: MiniMax-M3
+    release: minimax-m3
+    confidence: estimate
+- id: minimax-token-explore
+  provider: MiniMax
+  product: MiniMax Token Plan
+  plan: Max (Explore)
+  region: global
+  price_usd: 55
+  billing: $55/month (raised 10% on Aug 26, 2026)
+  quota: 5-hour and weekly windows; about 5.1B tokens a month per third-party sources (MiniMax publishes no figure).
+  tools:
+  - MiniMax Code
+  - Claude Code
+  - OpenCode
+  - Cline
+  verified: '2026-10-18'
+  confidence: estimate
+  default_multiplier: 9.9
+  default_basis: Third-party monthly token figure × a cache-heavy agent mix (90% cache reads at $0.06, 7.5% fresh input at
+    $0.30, 2.5% output at $1.20 = $0.1065 per 1M), the same kind of mix the Claude and Codex measurements use. An uncached
+    3:1 mix would give about 5× more. 5.1B × $0.1065/1M ÷ $55 = ×9.9.
+  caveats: The token figure's origin was not found and may or may not count cache reads; treat as rough.
+  sources:
+  - url: https://codingplan.org/en
+    title: codingplan.org plan comparison
+    date: '2026-09-24'
+  - url: https://usagepricing.com/blueprint/activity/minimax-2026-08-26-price-change
+    title: 'UsagePricing: MiniMax Token Plan price change (Aug 26)'
+    date: '2026-08-26'
+  - url: https://platform.minimax.io/docs/guides/pricing-paygo
+    title: MiniMax pay-as-you-go prices (official)
+    date: '2026-10-18'
+  models:
+  - name: MiniMax-M3
+    release: minimax-m3
+    confidence: estimate
+- id: minimax-token-build
+  provider: MiniMax
+  product: MiniMax Token Plan
+  plan: Ultra (Build)
+  region: global
+  price_usd: 132
+  billing: $132/month (raised 10% on Aug 26, 2026)
+  quota: 5-hour and weekly windows; about 12.5B tokens a month per third-party sources (MiniMax publishes no figure).
+  tools:
+  - MiniMax Code
+  - Claude Code
+  - OpenCode
+  - Cline
+  verified: '2026-10-18'
+  confidence: estimate
+  default_multiplier: 10.1
+  default_basis: Third-party monthly token figure × a cache-heavy agent mix (90% cache reads at $0.06, 7.5% fresh input at
+    $0.30, 2.5% output at $1.20 = $0.1065 per 1M), the same kind of mix the Claude and Codex measurements use. An uncached
+    3:1 mix would give about 5× more. 12.5B × $0.1065/1M ÷ $132 = ×10.1.
+  caveats: The token figure's origin was not found and may or may not count cache reads; treat as rough.
+  sources:
+  - url: https://codingplan.org/en
+    title: codingplan.org plan comparison
+    date: '2026-09-24'
+  - url: https://usagepricing.com/blueprint/activity/minimax-2026-08-26-price-change
+    title: 'UsagePricing: MiniMax Token Plan price change (Aug 26)'
+    date: '2026-08-26'
+  - url: https://platform.minimax.io/docs/guides/pricing-paygo
+    title: MiniMax pay-as-you-go prices (official)
+    date: '2026-10-18'
+  models:
+  - name: MiniMax-M3
+    release: minimax-m3
+    confidence: estimate
+- id: xiaomi-mimo-standard
+  provider: Xiaomi
+  product: MiMo Token Plan
+  plan: Standard
+  region: global
+  price_usd: 16
+  price_local: ¥99/month
+  quota: 'Fixed monthly pool of 11B credits, no 5-hour or weekly limits. Per token: MiMo-V2.6-Pro 300 (input) / 600 (output)
+    / 2.5 (cache hit); Flash 100 / 200 / 2.'
+  tools:
+  - Claude Code
+  - OpenCode
+  verified: '2026-10-18'
+  confidence: official
+  default_basis: 'Credits are proportional to list price, so the pool is worth about its price: credits ÷ credits per token
+    × list price ÷ plan price.'
+  caveats: Cache hits cost only 2.5 credits a token, so cache-heavy agent use is worth more than shown; off-peak (00:00–08:00
+    Beijing) uses 0.8×.
+  sources:
+  - url: https://mimo.mi.com/docs/en-US/tokenplan/Token%20Plan/subscription
+    title: 'Xiaomi MiMo Token Plan: credit pools and per-token credit costs (official)'
+    date: '2026-09-22'
+  models:
+  - name: MiMo-V2.6-Pro
+    release: mimo-v2-6-pro
+    multiplier: 1.0
+    basis: 11B ÷ 300 credits per input token × $0.435/1M ÷ $16.
+    confidence: official
+  - name: MiMo-V2.6-Flash
+    release: mimo-v2-6-flash
+    multiplier: 0.96
+    basis: 11B ÷ 100 credits per input token × $0.14/1M ÷ $16.
+    confidence: official
+- id: xiaomi-mimo-pro
+  provider: Xiaomi
+  product: MiMo Token Plan
+  plan: Pro
+  region: global
+  price_usd: 50
+  price_local: ¥329/month
+  quota: 'Fixed monthly pool of 38B credits, no 5-hour or weekly limits. Per token: MiMo-V2.6-Pro 300 (input) / 600 (output)
+    / 2.5 (cache hit); Flash 100 / 200 / 2.'
+  tools:
+  - Claude Code
+  - OpenCode
+  verified: '2026-10-18'
+  confidence: official
+  default_basis: 'Credits are proportional to list price, so the pool is worth about its price: credits ÷ credits per token
+    × list price ÷ plan price.'
+  caveats: Cache hits cost only 2.5 credits a token, so cache-heavy agent use is worth more than shown; off-peak (00:00–08:00
+    Beijing) uses 0.8×.
+  sources:
+  - url: https://mimo.mi.com/docs/en-US/tokenplan/Token%20Plan/subscription
+    title: 'Xiaomi MiMo Token Plan: credit pools and per-token credit costs (official)'
+    date: '2026-09-22'
+  models:
+  - name: MiMo-V2.6-Pro
+    release: mimo-v2-6-pro
+    multiplier: 1.1
+    basis: 38B ÷ 300 credits per input token × $0.435/1M ÷ $50.
+    confidence: official
+  - name: MiMo-V2.6-Flash
+    release: mimo-v2-6-flash
+    multiplier: 1.06
+    basis: 38B ÷ 100 credits per input token × $0.14/1M ÷ $50.
+    confidence: official
+- id: xiaomi-mimo-max
+  provider: Xiaomi
+  product: MiMo Token Plan
+  plan: Max
+  region: global
+  price_usd: 100
+  price_local: ¥659/month
+  quota: 'Fixed monthly pool of 82B credits, no 5-hour or weekly limits. Per token: MiMo-V2.6-Pro 300 (input) / 600 (output)
+    / 2.5 (cache hit); Flash 100 / 200 / 2.'
+  tools:
+  - Claude Code
+  - OpenCode
+  verified: '2026-10-18'
+  confidence: official
+  default_basis: 'Credits are proportional to list price, so the pool is worth about its price: credits ÷ credits per token
+    × list price ÷ plan price.'
+  caveats: Cache hits cost only 2.5 credits a token, so cache-heavy agent use is worth more than shown; off-peak (00:00–08:00
+    Beijing) uses 0.8×.
+  sources:
+  - url: https://mimo.mi.com/docs/en-US/tokenplan/Token%20Plan/subscription
+    title: 'Xiaomi MiMo Token Plan: credit pools and per-token credit costs (official)'
+    date: '2026-09-22'
+  models:
+  - name: MiMo-V2.6-Pro
+    release: mimo-v2-6-pro
+    multiplier: 1.19
+    basis: 82B ÷ 300 credits per input token × $0.435/1M ÷ $100.
+    confidence: official
+  - name: MiMo-V2.6-Flash
+    release: mimo-v2-6-flash
+    multiplier: 1.15
+    basis: 82B ÷ 100 credits per input token × $0.14/1M ÷ $100.
+    confidence: official
+- id: alibaba-token-standard
+  provider: Alibaba Cloud
+  product: Model Studio Token Plan
+  plan: Standard
+  region: global
+  price_usd: 18
+  price_local: null
+  quota: 10,000 credits per week (the weekly cap binds); one subscription across Qwen and partner models.
+  tools:
+  - Claude Code
+  - Qwen Code
+  - OpenClaw
+  - Cherry Studio
+  verified: '2026-10-18'
+  confidence: estimate
+  default_multiplier: 2.9
+  default_basis: Alibaba's own claim of 'approximately 3× more usage than pay-as-you-go', × 0.95 because the weekly cap allows
+    95% of the monthly credit figure. Per-model credit coefficients are not published.
+  caveats: Vendor marketing figure, not a measurement. Night-time discounts are not counted.
+  sources:
+  - url: https://www.alibabacloud.com/blog/model-studio-token-plan-for-individual-one-subscription-for-every-ai-model-up-to-3x-more-value_603426
+    title: 'Alibaba Cloud: Model Studio Token Plan for individuals, ''up to 3x more value'' (official)'
+    date: '2026-08-04'
+  - url: https://www.alibabacloud.com/en/campaign/ai-landing-page-token?_p_lc=1
+    title: Alibaba Cloud Token Plan campaign page (official)
+    date: '2026-10-18'
+  - url: https://codingplan.org/en
+    title: codingplan.org plan comparison
+    date: '2026-09-24'
+  models:
+  - name: Qwen3.8 Max
+    release: qwen3-8-max-0902
+    confidence: estimate
+  - name: Qwen3.7 Plus
+    release: qwen3-7-plus
+    confidence: estimate
+- id: alibaba-token-pro
+  provider: Alibaba Cloud
+  product: Model Studio Token Plan
+  plan: Pro
+  region: global
+  price_usd: 68
+  price_local: null
+  quota: 40,000 credits per week (the weekly cap binds); one subscription across Qwen and partner models.
+  tools:
+  - Claude Code
+  - Qwen Code
+  - OpenClaw
+  - Cherry Studio
+  verified: '2026-10-18'
+  confidence: estimate
+  default_multiplier: 2.9
+  default_basis: Alibaba's own claim of 'approximately 3× more usage than pay-as-you-go', × 0.95 because the weekly cap allows
+    95% of the monthly credit figure. Per-model credit coefficients are not published.
+  caveats: Vendor marketing figure, not a measurement. Night-time discounts are not counted.
+  sources:
+  - url: https://www.alibabacloud.com/blog/model-studio-token-plan-for-individual-one-subscription-for-every-ai-model-up-to-3x-more-value_603426
+    title: 'Alibaba Cloud: Model Studio Token Plan for individuals, ''up to 3x more value'' (official)'
+    date: '2026-08-04'
+  - url: https://www.alibabacloud.com/en/campaign/ai-landing-page-token?_p_lc=1
+    title: Alibaba Cloud Token Plan campaign page (official)
+    date: '2026-10-18'
+  - url: https://codingplan.org/en
+    title: codingplan.org plan comparison
+    date: '2026-09-24'
+  models:
+  - name: Qwen3.8 Max
+    release: qwen3-8-max-0902
+    confidence: estimate
+  - name: Qwen3.7 Plus
+    release: qwen3-7-plus
+    confidence: estimate
+- id: aliyun-token-standard
+  provider: Alibaba Cloud
+  product: Model Studio Token Plan (China)
+  plan: Standard
+  region: china
+  price_usd: 19.58
+  price_local: ¥139/month
+  quota: 10,000 credits per week (the weekly cap binds); one subscription across Qwen and partner models.
+  tools:
+  - Claude Code
+  - Qwen Code
+  - OpenClaw
+  - Cherry Studio
+  verified: '2026-10-18'
+  confidence: estimate
+  default_multiplier: 2.9
+  default_basis: Alibaba's own claim of 'approximately 3× more usage than pay-as-you-go', × 0.95 because the weekly cap allows
+    95% of the monthly credit figure. Per-model credit coefficients are not published.
+  caveats: Vendor marketing figure, not a measurement. Night-time discounts are not counted.
+  sources:
+  - url: https://www.alibabacloud.com/blog/model-studio-token-plan-for-individual-one-subscription-for-every-ai-model-up-to-3x-more-value_603426
+    title: 'Alibaba Cloud: Model Studio Token Plan for individuals, ''up to 3x more value'' (official)'
+    date: '2026-08-04'
+  - url: https://www.alibabacloud.com/en/campaign/ai-landing-page-token?_p_lc=1
+    title: Alibaba Cloud Token Plan campaign page (official)
+    date: '2026-10-18'
+  - url: https://codingplan.org/en
+    title: codingplan.org plan comparison
+    date: '2026-09-24'
+  models:
+  - name: Qwen3.8 Max
+    release: qwen3-8-max-0902
+    confidence: estimate
+  - name: Qwen3.7 Plus
+    release: qwen3-7-plus
+    confidence: estimate
+- id: aliyun-token-pro
+  provider: Alibaba Cloud
+  product: Model Studio Token Plan (China)
+  plan: Pro
+  region: china
+  price_usd: 70.28
+  price_local: ¥499/month
+  quota: 40,000 credits per week (the weekly cap binds); one subscription across Qwen and partner models.
+  tools:
+  - Claude Code
+  - Qwen Code
+  - OpenClaw
+  - Cherry Studio
+  verified: '2026-10-18'
+  confidence: estimate
+  default_multiplier: 2.9
+  default_basis: Alibaba's own claim of 'approximately 3× more usage than pay-as-you-go', × 0.95 because the weekly cap allows
+    95% of the monthly credit figure. Per-model credit coefficients are not published.
+  caveats: Vendor marketing figure, not a measurement. Night-time discounts are not counted.
+  sources:
+  - url: https://www.alibabacloud.com/blog/model-studio-token-plan-for-individual-one-subscription-for-every-ai-model-up-to-3x-more-value_603426
+    title: 'Alibaba Cloud: Model Studio Token Plan for individuals, ''up to 3x more value'' (official)'
+    date: '2026-08-04'
+  - url: https://www.alibabacloud.com/en/campaign/ai-landing-page-token?_p_lc=1
+    title: Alibaba Cloud Token Plan campaign page (official)
+    date: '2026-10-18'
+  - url: https://codingplan.org/en
+    title: codingplan.org plan comparison
+    date: '2026-09-24'
+  models:
+  - name: Qwen3.8 Max
+    release: qwen3-8-max-0902
+    confidence: estimate
+  - name: Qwen3.7 Plus
+    release: qwen3-7-plus
+    confidence: estimate
+- id: tencent-token-standard
+  provider: Tencent Cloud
+  product: Token Plan
+  plan: Standard
+  region: china
+  price_usd: 13.94
+  price_local: ¥99/month
+  quota: Monthly credits (20 per ¥ at every tier) across Hunyuan and partner models; per-model deduction coefficients are
+    not published.
+  tools:
+  - CodeBuddy
+  - Claude Code
+  verified: '2026-10-18'
+  confidence: unknown
+  default_basis: The provider publishes no dollar, token or request quota that can be converted to API value, and no independent
+    measurement was found.
+  sources:
+  - url: https://cloud.tencent.com/act/pro/tokenplan
+    title: Tencent Cloud Token Plan (official)
+    date: '2026-10-18'
+  models:
+  - name: Hy3
+    release: hy3
+    confidence: unknown
+  - name: GLM-5.3
+    release: glm-5-3
+    confidence: unknown
+  - name: Kimi K3
+    release: kimi-k3
+    confidence: unknown
+- id: tencent-token-pro
+  provider: Tencent Cloud
+  product: Token Plan
+  plan: Pro
+  region: china
+  price_usd: 42.11
+  price_local: ¥299/month
+  quota: Monthly credits (20 per ¥ at every tier) across Hunyuan and partner models; per-model deduction coefficients are
+    not published.
+  tools:
+  - CodeBuddy
+  - Claude Code
+  verified: '2026-10-18'
+  confidence: unknown
+  default_basis: The provider publishes no dollar, token or request quota that can be converted to API value, and no independent
+    measurement was found.
+  sources:
+  - url: https://cloud.tencent.com/act/pro/tokenplan
+    title: Tencent Cloud Token Plan (official)
+    date: '2026-10-18'
+  models:
+  - name: Hy3
+    release: hy3
+    confidence: unknown
+  - name: GLM-5.3
+    release: glm-5-3
+    confidence: unknown
+  - name: Kimi K3
+    release: kimi-k3
+    confidence: unknown

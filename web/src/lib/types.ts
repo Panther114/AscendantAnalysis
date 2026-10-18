@@ -187,3 +187,89 @@ export interface Sensitivity {
   }[];
   runs: { param: string; factor: number; top: string[] }[];
 }
+
+// ---------------------------------------------------------------- Cost & Plans (cost.json)
+
+export type Effort = "Max" | "Xhigh" | "High" | "Medium" | "Low" | "Minimal" | "Reasoning" | "Non-reasoning" | "Default";
+
+export interface CostModel {
+  slug: string;
+  name: string;
+  release: string;
+  release_name: string;
+  lab: string;
+  effort: Effort;
+  intelligence: number;
+  estimated: boolean;
+  cost_per_task: number;
+  price_in: number | null;
+  price_out: number | null;
+  open_weights: boolean;
+}
+
+export interface PlanSource {
+  url: string;
+  title: string;
+  date: string;
+  used_for?: string;
+}
+
+export interface PlanModel {
+  name: string;
+  release: string | null;
+  in_snapshot: boolean;
+  multiplier: number | null;
+  basis: string | null;
+  confidence: string | null;
+}
+
+export interface CodingPlan {
+  id: string;
+  provider: string;
+  product: string;
+  plan: string;
+  region: "global" | "china";
+  price_usd: number;
+  price_local: string | null;
+  billing: string | null;
+  quota: string | null;
+  tools: string[];
+  verified: string;
+  confidence: string | null;
+  default_multiplier: number | null;
+  default_basis: string | null;
+  caveats: string | null;
+  sources: PlanSource[];
+  devforth: string | null;
+  eligible: boolean;
+  exclude_reason: string | null;
+  models: PlanModel[];
+}
+
+export interface PlanCheck {
+  checked: string;
+  devforth: { url: string; error: string | null; plans: number };
+  drift_tolerance: number;
+  stale_after_days: number;
+  sources: { total: number; unreachable: number };
+  plans: {
+    id: string;
+    verified: string;
+    age_days: number;
+    flags: string[];
+    dead_sources: string[];
+    devforth?: { implied: number | null; drift?: number; class: string; confirmed: string | null; monthly_value_usd: Record<string, number> };
+  }[];
+}
+
+export interface CostData {
+  date: string;
+  reviewed: string;
+  min_price_usd: number;
+  fx: Record<string, number>;
+  definition: string | null;
+  models: CostModel[];
+  plans: CodingPlan[];
+  best: Record<string, { plan: string; multiplier: number; cost_per_task: number }>;
+  check: PlanCheck | null;
+}

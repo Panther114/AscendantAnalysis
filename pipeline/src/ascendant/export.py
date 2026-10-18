@@ -15,7 +15,7 @@ import math
 from pathlib import Path
 from typing import Any
 
-from ascendant import stats
+from ascendant import plans, stats
 from ascendant.config import Config
 from ascendant.field import TIERS
 from ascendant.normalize import Universe
@@ -216,7 +216,8 @@ def perception_diff(scores: list[LabScore], series, cfg: Config) -> list[dict]:
     return out
 
 
-def build(u: Universe, cfg: Config, manifest: dict, with_sensitivity: bool = True) -> dict[str, bytes]:
+def build(u: Universe, cfg: Config, manifest: dict, with_sensitivity: bool = True,
+          raw: tuple[dict, dict] | None = None) -> dict[str, bytes]:
     engine = Engine(u, cfg)
     series = run_replay(engine)
     today = u.snapshot_date
@@ -273,6 +274,8 @@ def build(u: Universe, cfg: Config, manifest: dict, with_sensitivity: bool = Tru
         "ownership.json": _ownership(engine, today),
         "perception.json": perception_diff(scores, series, cfg),
     }
+    if raw is not None:
+        files["cost.json"] = plans.build(raw[0], raw[1], cfg, today)
     if with_sensitivity:
         files["sensitivity.json"] = sensitivity(u, cfg)
     out = {name: _dump(obj) for name, obj in files.items()}

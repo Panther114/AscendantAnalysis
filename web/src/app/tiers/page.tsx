@@ -20,7 +20,7 @@ export default function TiersPage() {
   const [midMin, frontierMin] = field.price_breaks;
   return (
     <div className="rise">
-      <PageHeader eyebrow="Tiers" title="Head-to-head, tier by tier">
+      <PageHeader eyebrow="Lab Index · Tiers" title="Head-to-head, tier by tier">
         Each lab&apos;s best active release in each tier, scored 50% intelligence, 40% value (intelligence above what its cost
         predicts) and 10% speed, each as a soft win rate against rival labs (close to the percentile, but graded by the size of the gap). Tiers come from fixed cut-offs on a release&apos;s own blended price ({fmtUsd(midMin)} and
         {fmtUsd(frontierMin)} per 1M tokens), so they never depend on other models.

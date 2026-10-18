@@ -5,8 +5,10 @@ import { notFound } from "next/navigation";
 import { ColumnChart } from "@/components/charts/ColumnChart";
 import { HealthChart } from "@/components/charts/HealthChart";
 import { ReleaseTimeline, type TimelinePoint } from "@/components/charts/ReleaseTimeline";
-import { BandBadge, Card, Delta, InfoNote, Meter, LabLogo } from "@/components/ui";
-import { field, history, labs, leaderboard, meta, releases, variantName } from "@/lib/data";
+import { BandBadge, Card, Delta, InfoNote, Meter, LabLogo, MoreLink } from "@/components/ui";
+import { cost, field, history, labs, leaderboard, meta, releases, variantName } from "@/lib/data";
+import { bestPlan, fmtX, usdTask } from "@/lib/plans";
+import type { CostModel } from "@/lib/types";
 import { describeLead, recentReleases, changeDrivers } from "@/lib/explain";
 import { AXIS_LABEL, fmtDate, fmtHealth, fmtMult, fmtPct, fmtSigned, TIER_LABEL } from "@/lib/format";
 import { labColor } from "@/lib/palette";
@@ -40,6 +42,9 @@ export default async function LabPage(props: PageProps<"/labs/[lab]">) {
   const s = leaderboard.find((x) => x.lab === lab);
   if (!s) notFound();
   const m = labs[lab];
+  const idx = leaderboard.indexOf(s);
+  const prevLab = idx > 0 ? leaderboard[idx - 1].lab : null;
+  const nextLab = idx < leaderboard.length - 1 ? leaderboard[idx + 1].lab : null;
   const color = labColor(lab);
   const cfg = meta.methodology_config as Record<string, Record<string, number>>;
   const coreMw = cfg.core.max_weight;
@@ -59,6 +64,12 @@ export default async function LabPage(props: PageProps<"/labs/[lab]">) {
       material: p.material,
       intelligence: releases[p.release].intelligence,
     }));
+  const heads = new Map<string, CostModel>();
+  for (const cm of cost.models.filter((x) => x.lab === lab)) {
+    const cur = heads.get(cm.release);
+    if (!cur || cm.intelligence > cur.intelligence) heads.set(cm.release, cm);
+  }
+  const costRows = [...heads.values()].sort((a, b) => b.intelligence - a.intelligence).map((cm) => ({ m: cm, pick: bestPlan(cm, cost.plans) }));
   const active = field.releases.filter((r) => r.lab === lab).sort((a, b) => b.intelligence - a.intelligence);
   const steps = [
     { label: "Leadership", value: s.leadership * 100, note: "best-of + breadth over 4 axes" },
@@ -72,7 +83,15 @@ export default async function LabPage(props: PageProps<"/labs/[lab]">) {
     <div className="rise">
       <div className="relative -mx-4 mb-8 px-4 pt-8 sm:-mx-6 sm:px-6 sm:pt-12">
         <div aria-hidden="true" className="paper-grid pointer-events-none absolute inset-0 -z-10" />
-        <Link href="/" className="text-xs text-ink-3 hover:text-ink">← Leaderboard</Link>
+        <nav aria-label="Breadcrumb" className="flex flex-wrap items-center gap-x-3 gap-y-1 text-xs text-ink-3">
+          <Link href="/labs/" className="hover:text-ink">Labs</Link>
+          <span aria-hidden="true">/</span>
+          <span className="text-ink-2">{m.name}</span>
+          <span className="ml-auto flex gap-3">
+            {prevLab && <Link href={`/labs/${prevLab}/`} className="hover:text-ink">← #{s.rank - 1} {labs[prevLab]?.name}</Link>}
+            {nextLab && <Link href={`/labs/${nextLab}/`} className="hover:text-ink">#{s.rank + 1} {labs[nextLab]?.name} →</Link>}
+          </span>
+        </nav>
         <div className="mt-4 flex flex-wrap items-center justify-between gap-6">
           <div className="min-w-0">
             <div className="flex items-center gap-4">
@@ -231,6 +250,42 @@ export default async function LabPage(props: PageProps<"/labs/[lab]">) {
           <ColumnChart data={active.slice(0, 10).map((r) => ({ lab, value: r.intelligence, label: r.name, detail: `${r.tier ? TIER_LABEL[r.tier] : "Untiered"} · ${fmtDate(r.date)}` }))} />
         </Card>
       </div>
+
+      {costRows.length > 0 && (
+        <Card
+          className="mt-4"
+          pad={false}
+          title="Cost through coding plans"
+          keyColor="orange"
+          subtitle="Each current model at its highest-scoring effort · API cost per Intelligence Index task vs. the best eligible coding plan"
+          action={<MoreLink href="/cost/">Cost &amp; Plans</MoreLink>}
+        >
+          <div className="mt-3 overflow-x-auto">
+            <table className="w-full min-w-[620px] border-collapse text-sm">
+              <thead>
+                <tr className="border-b border-rule text-left text-[11px] uppercase tracking-[0.08em] text-ink-3">
+                  <th className="px-5 py-2 font-normal">Model</th>
+                  <th className="px-3 py-2 text-right font-normal">Index</th>
+                  <th className="px-3 py-2 text-right font-normal">API $/task</th>
+                  <th className="px-3 py-2 font-normal">Best plan</th>
+                  <th className="px-5 py-2 text-right font-normal">Plan $/task</th>
+                </tr>
+              </thead>
+              <tbody>
+                {costRows.map(({ m, pick }) => (
+                  <tr key={m.release} className="border-b border-rule-soft last:border-0">
+                    <td className="px-5 py-2 font-medium">{m.name}</td>
+                    <td className="tabular px-3 py-2 text-right">{m.intelligence.toFixed(1)}</td>
+                    <td className="tabular px-3 py-2 text-right text-ink-2">{usdTask(m.cost_per_task)}</td>
+                    <td className="px-3 py-2 text-ink-2">{pick ? <>{pick.plan.product} {pick.plan.plan} · {fmtX(pick.multiplier)}</> : <span className="text-ink-3">none: API only</span>}</td>
+                    <td className="tabular px-5 py-2 text-right font-medium">{usdTask(pick ? pick.cost : m.cost_per_task)}</td>
+                  </tr>
+                ))}
+              </tbody>
+            </table>
+          </div>
+        </Card>
+      )}
     </div>
   );
 }

@@ -55,6 +55,14 @@ jobs:
           [ -n "$AA_API_KEY" ] || { echo "::error::Repository secret AA_API_KEY is not set"; exit 1; }
           uv run --frozen ascendant ingest
 
+      # Audits the hand-maintained coding-plan data (never edits it): Devforth drift, dead source
+      # URLs, stale reviews. Flags become workflow annotations and show on the Cost & Plans page.
+      - name: Audit coding-plan data
+        if: env.FETCH == 'true'
+        working-directory: pipeline
+        continue-on-error: true
+        run: uv run --frozen ascendant plans-check
+
       - name: Tests
         working-directory: pipeline
         run: uv run --frozen pytest -q
@@ -70,7 +78,7 @@ jobs:
       - name: Commit data
         if: env.FETCH == 'true'
         run: |
-          git add data/snapshots web/public/data
+          git add data/snapshots data/plans web/public/data
           if git diff --cached --quiet; then
             echo "No data changes."
             exit 0

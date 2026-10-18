@@ -1,20 +1,30 @@
 # Ascendant Analysis
 
-A deterministic **health index for AI labs**: how strong, competitive and current each lab's
-model lineup is against its rivals, computed only from [Artificial Analysis](https://artificialanalysis.ai)
-benchmarks, prices and speeds.
+Two lenses on the same AI models, built from [Artificial Analysis](https://artificialanalysis.ai) data:
 
-![Leaderboard](docs/screenshots/home.png)
+- **Lab Index:** a deterministic health index for AI labs: how strong, competitive and current each
+  lab's model lineup is against its rivals.
+- **Cost & Plans:** Artificial Analysis's Intelligence vs. cost-per-task chart, with a switch that
+  re-prices every model through the best coding-plan subscription that serves it (Claude Code,
+  Codex, OpenCode Go, GLM Coding Plan, ...), plus a catalog of every plan's price, subsidy, lineup,
+  limits and sources.
 
-| Lab page | Frontier map |
+![Overview](docs/screenshots/home.png)
+
+| Cost & Plans, API prices | Cost & Plans, through coding plans |
 |---|---|
-| ![Anthropic](docs/screenshots/lab-anthropic.png) | ![Frontier](docs/screenshots/frontier.png) |
+| ![API prices](docs/screenshots/cost.png) | ![Coding plans](docs/screenshots/cost-plans.png) |
+
+| Leaderboard | Lab page |
+|---|---|
+| ![Leaderboard](docs/screenshots/leaderboard.png) | ![Anthropic](docs/screenshots/lab-anthropic.png) |
 
 ```
 pipeline/   Python: ingest → normalize → score → replay → export (uv)
 web/        Next.js static site that renders the exported JSON
-config/     methodology.v1.yaml (every constant), labs, overrides, perception reference
-data/       content-hashed snapshots (committed)
+config/     methodology.v1.yaml (every constant), labs, overrides, perception reference,
+            coding_plans.yaml (hand-reviewed coding-plan subsidies, with sources)
+data/       content-hashed snapshots, plans/check.json (latest plan audit), all committed
 update.ps1  local refresh: snapshot → test → export → commit → push
 .github/    workflow: daily snapshot → test → export → commit → build → GitHub Pages
 ```
@@ -36,6 +46,22 @@ update.ps1  local refresh: snapshot → test → export → commit → push
 
 The full write-up is on the site's Methodology page.
 
+## Cost & Plans
+
+- **Models:** every current model variant with a measured cost per Intelligence Index task (from the
+  same leaderboard snapshot), one dot per reasoning effort.
+- **Subsidy** of plan *p* for model *m* = API-equivalent value of *p*'s monthly allowance for *m* ÷
+  *p*'s monthly price. Cost through a plan = API cost per task ÷ the best eligible plan's subsidy.
+  Only plans at **$10/month or more** count, and a plan only reprices models in its own lineup.
+- **Data:** `config/coding_plans.yaml` is reviewed by hand and **never updated automatically**. Each
+  plan cites dated sources and says how its multiplier was derived (official / measured / derived /
+  estimate). Per-model multipliers are kept where they differ (OpenCode Go's per-model caps, Claude
+  Fable's separate cap, GLM's credit weights, ...).
+- **Audit:** `uv run ascendant plans-check` (daily in CI, non-blocking) compares the pinned values with
+  Devforth's crowd-measured limits (`devforth_baseline` = what Devforth showed at review time), probes
+  every source URL and flags plans not re-verified for 90 days. Flags appear as workflow annotations
+  and on the site; a person decides what to change.
+
 ## Run it
 
 ```bash
@@ -44,6 +70,7 @@ uv sync
 uv run ascendant ingest        # needs AA_API_KEY (env var or ../.env)
 uv run ascendant score         # print today's table
 uv run ascendant verify        # determinism gate (shuffled inputs → identical hashes)
+uv run ascendant plans-check   # audit coding-plan data (network; never edits it)
 uv run ascendant export        # writes web/public/data/*.json
 uv run pytest
 ```

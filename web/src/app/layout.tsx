@@ -13,9 +13,9 @@ const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"]
 const instrument = Instrument_Serif({ variable: "--font-instrument", subsets: ["latin"], weight: "400", style: ["normal", "italic"] });
 
 export const metadata: Metadata = {
-  title: { default: "Ascendant Analysis: AI Lab Health Index", template: "%s · Ascendant Analysis" },
+  title: { default: "Ascendant Analysis: AI Lab Index and Coding-Plan Costs", template: "%s · Ascendant Analysis" },
   description:
-    "A deterministic index of how strong and competitive each AI lab's model lineup is against its rivals, computed from Artificial Analysis benchmarks.",
+    "A deterministic index of how strong and competitive each AI lab's model lineup is, and what every model really costs per task through the best coding-plan subscription. Built on Artificial Analysis data.",
 };
 
 // Sets the theme before first paint so there's no flash; the toggle updates the same attribute.

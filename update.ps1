@@ -16,7 +16,12 @@ function Step($name, [scriptblock]$cmd) {
 
 Push-Location "$root\pipeline"
 try {
-  if (-not $NoFetch) { Step "Fetch snapshot from Artificial Analysis" { uv run ascendant ingest } }
+  if (-not $NoFetch) {
+    Step "Fetch snapshot from Artificial Analysis" { uv run ascendant ingest }
+    # Audit only: flags drift, dead sources and stale reviews; never edits config/coding_plans.yaml.
+    Write-Host "==> Audit coding-plan data" -ForegroundColor Cyan
+    uv run ascendant plans-check
+  }
   Step "Tests" { uv run pytest -q }
   Step "Determinism check" { uv run ascendant verify }
   Step "Export site data" { uv run ascendant export }
@@ -27,7 +32,7 @@ try { Step "Build check" { npm run build } } finally { Pop-Location }
 
 Push-Location $root
 try {
-  git add data/snapshots web/public/data
+  git add data/snapshots data/plans web/public/data
   git diff --cached --quiet
   if ($LASTEXITCODE -eq 0) { Write-Host "No data changes; nothing to publish."; exit 0 }
   $date = (Get-ChildItem data/snapshots -Directory | Sort-Object Name | Select-Object -Last 1).Name

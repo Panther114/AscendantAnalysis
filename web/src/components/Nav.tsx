@@ -1,6 +1,6 @@
 import Link from "next/link";
 
-import { NavLinks } from "./NavLinks";
+import { NavLinks, SubNav } from "./NavLinks";
 import { ThemeToggle } from "./ThemeToggle";
 
 export function Nav() {
@@ -28,6 +28,7 @@ export function Nav() {
           <ThemeToggle />
         </div>
       </div>
+      <SubNav />
     </header>
   );
 }

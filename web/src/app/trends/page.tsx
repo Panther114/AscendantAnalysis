@@ -27,7 +27,7 @@ export default function TrendsPage() {
 
   return (
     <div className="rise">
-      <PageHeader eyebrow="Trends" title="Health over time">
+      <PageHeader eyebrow="Lab Index · Trends" title="Health over time">
         Every day is rescored using only the models released by then. History is reconstructed from today&apos;s snapshot, so
         all days share one Intelligence Index version and current prices.
       </PageHeader>

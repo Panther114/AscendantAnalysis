@@ -4,7 +4,7 @@ import type { Metadata } from "next";
 import type { ReactNode } from "react";
 
 import { Card, LabLink, PageHeader } from "@/components/ui";
-import { labName, meta, perception, sensitivity } from "@/lib/data";
+import { cost, labName, meta, perception, sensitivity } from "@/lib/data";
 import { fmtDate, fmtHealth } from "@/lib/format";
 
 export const metadata: Metadata = { title: "Methodology" };
@@ -38,7 +38,7 @@ export default function MethodologyPage() {
   return (
     <div className="rise grid gap-10 lg:grid-cols-[1fr_300px]">
       <article className="min-w-0 space-y-8">
-        <PageHeader eyebrow={`Methodology v${meta.methodology}`} title="How the Health Index works">
+        <PageHeader eyebrow={`Methodology v${meta.methodology}`} title="How the numbers work">
           A lab is healthy when its models lead rivals on <em>something</em> (intelligence, cost-efficiency, value or speed), when it
           fields a competitive lineup across tiers, when its releases are getting better relative to the field, and when it ships
           recently. Every input comes from Artificial Analysis. There is no sentiment, no news and no manual scoring.
@@ -201,12 +201,59 @@ export default function MethodologyPage() {
             </table>
           </div>
         </Section>
+
+        <Section n={9} title="Cost and coding plans">
+          <p>
+            The <strong>Cost &amp; Plans</strong> chart is separate from the Health Index and does not feed into it. It plots every current
+            model variant for which Artificial Analysis publishes a measured <strong>cost per Intelligence Index task</strong> (its cost to run
+            the index divided by the number of tasks, at the model&apos;s API list price). Nothing is imputed: a model without a measured cost
+            per task is not drawn.
+          </p>
+          <p>
+            A coding plan&apos;s <strong>subsidy</strong> for a model is the API-equivalent value of the plan&apos;s monthly allowance for that
+            model divided by the plan&apos;s monthly price:
+          </p>
+          <TeX block>{String.raw`M_{p,m} = \frac{\text{API-equivalent value of the monthly allowance of } p \text{ for } m}{\text{monthly price of } p}, \qquad \text{cost}_{\text{plan}} = \frac{\text{cost per task}_{\text{API}}}{\max_{p \,\ni\, m}\; M_{p,m}}`}</TeX>
+          <p>
+            Allowances are converted to dollars the way each plan states them: dollar caps directly (OpenCode Go, GitHub Copilot, Ollama),
+            token or credit quotas at the model&apos;s API prices using the provider&apos;s own credit weights (GLM, Qwen, MiniMax), and
+            unpublished limits (Claude, ChatGPT, Gemini) from independent metering of real accounts. Where a plan prices tokens below the
+            model&apos;s list price, the allowance is re-valued at list price. When a plan has a 5-hour and a weekly window, the monthly
+            allowance is the binding one (usually weekly × 30/7). Promotions and off-peak discounts are not counted.
+          </p>
+          <p>
+            Only plans costing <strong>${cost.min_price_usd}/month or more</strong> are eligible: very cheap tiers can carry large nominal
+            subsidies but are not usable at scale. Each plan only serves the models in its lineup, so a large subsidy on one lab&apos;s plan
+            never reprices a rival&apos;s model. Subsidies are measured for agentic coding traffic, which is cache-heavy; applying them to
+            Artificial Analysis&apos;s benchmark token mix assumes the plan&apos;s discount is similar for both. Treat them as estimates with
+            the confidence shown per model.
+          </p>
+          <p>
+            Plan data is reviewed by hand and <strong>never updated automatically</strong>: no public source both covers the plans and is
+            reliable enough to trust blindly (the best crowd-measured source disagrees with independent measurements by 2–3× on some plans).
+            A daily job compares the pinned values with Devforth&apos;s crowd-measured limits, probes every cited source and flags stale
+            entries; flagged plans are marked for review on the Cost &amp; Plans page. Plan data last reviewed {fmtDate(cost.reviewed)}.
+          </p>
+        </Section>
       </article>
 
       <aside className="hidden lg:block">
-        <div className="sticky top-20">
+        <div className="sticky top-20 space-y-4">
+          <nav aria-label="On this page" className="rounded-lg border border-rule bg-surface p-4 text-sm">
+            <p className="mb-2 text-xs uppercase tracking-[0.1em] text-ink-3">On this page</p>
+            <ol className="space-y-1.5">
+              {["Data", "Tiers", "Pillar A: Frontier leadership", "Pillar B: Lineup", "Core, momentum and freshness", "Determinism", "Robustness", "Model vs. perception", "Cost and coding plans"].map((t, i) => (
+                <li key={t}>
+                  <a href={`#${t.toLowerCase().replace(/\W+/g, "-")}`} className="flex gap-2 text-ink-2 hover:text-ink">
+                    <span className="tabular w-5 text-xs text-ink-3">{String(i + 1).padStart(2, "0")}</span>
+                    {t}
+                  </a>
+                </li>
+              ))}
+            </ol>
+          </nav>
           <Card title="Configuration" keyColor="ink" subtitle="Every constant, as used in this build">
-            <pre className="max-h-[70vh] overflow-auto font-mono text-[11px] leading-relaxed text-ink-2">
+            <pre className="max-h-[45vh] overflow-auto font-mono text-[11px] leading-relaxed text-ink-2">
               {JSON.stringify(meta.methodology_config, null, 1)}
             </pre>
           </Card>

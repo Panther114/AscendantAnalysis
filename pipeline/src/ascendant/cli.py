@@ -8,7 +8,7 @@ import sys
 from pathlib import Path
 
 from ascendant import config, export, normalize
-from ascendant.ingest import snapshot
+from ascendant.ingest import plans_check, snapshot
 from ascendant.paths import SNAPSHOTS, WEB_DATA
 from ascendant.scoring import Engine
 
@@ -25,7 +25,7 @@ def _universe(arg: str | None, shuffle_seed: int | None = None):
         rng.shuffle(board["models"])
         rng.shuffle(board["releases"])
     cfg = config.load()
-    return manifest, normalize.build(manifest, api, board, cfg), cfg
+    return manifest, normalize.build(manifest, api, board, cfg), cfg, (api, board)
 
 
 def cmd_ingest(args: argparse.Namespace) -> None:
@@ -34,7 +34,7 @@ def cmd_ingest(args: argparse.Namespace) -> None:
 
 
 def cmd_score(args: argparse.Namespace) -> None:
-    _, u, cfg = _universe(args.snapshot)
+    _, u, cfg, _ = _universe(args.snapshot)
     date = dt.date.fromisoformat(args.date) if args.date else u.snapshot_date
     scores = Engine(u, cfg).score_all(date)
     print(f"Ascendant Health Index  methodology {cfg.version}  as of {date}\n")
@@ -46,8 +46,8 @@ def cmd_score(args: argparse.Namespace) -> None:
 
 
 def cmd_export(args: argparse.Namespace) -> None:
-    manifest, u, cfg = _universe(args.snapshot)
-    files = export.build(u, cfg, manifest, with_sensitivity=not args.fast)
+    manifest, u, cfg, raw = _universe(args.snapshot)
+    files = export.build(u, cfg, manifest, with_sensitivity=not args.fast, raw=raw)
     out = Path(args.out) if args.out else WEB_DATA
     export.write(files, out)
     h = json.loads(files["manifest.json"])["hash"]
@@ -57,12 +57,25 @@ def cmd_export(args: argparse.Namespace) -> None:
 def cmd_verify(args: argparse.Namespace) -> int:
     hashes = []
     for seed in (None, 1, 2):
-        manifest, u, cfg = _universe(args.snapshot, seed)
-        files = export.build(u, cfg, manifest, with_sensitivity=False)
+        manifest, u, cfg, raw = _universe(args.snapshot, seed)
+        files = export.build(u, cfg, manifest, with_sensitivity=False, raw=raw)
         hashes.append(json.loads(files["manifest.json"])["hash"])
     ok = len(set(hashes)) == 1
     print(("OK" if ok else "FAIL") + f": export hashes {hashes}")
     return 0 if ok else 1
+
+
+def cmd_plans_check(args: argparse.Namespace) -> int:
+    result = plans_check.run()
+    plans_check.write(result)
+    flagged = [p for p in result["plans"] if p["flags"]]
+    df = result["devforth"]
+    print(f"coding plans checked {result['checked']}: devforth "
+          f"{'unavailable: ' + df['error'] if df['error'] else str(df['plans']) + ' plans'}, "
+          f"{result['sources']['unreachable']}/{result['sources']['total']} sources unreachable")
+    for p in flagged:  # GitHub Actions turns these into annotations
+        print(f"::warning title=coding plan {p['id']}::" + "; ".join(p["flags"]))
+    return 1 if args.strict and flagged else 0
 
 
 def main(argv: list[str] | None = None) -> int:
@@ -88,6 +101,10 @@ def main(argv: list[str] | None = None) -> int:
     s = sub.add_parser("verify", help="determinism gate: identical output under shuffled input")
     s.add_argument("--snapshot")
     s.set_defaults(fn=cmd_verify)
+
+    s = sub.add_parser("plans-check", help="audit coding_plans.yaml against Devforth + probe sources")
+    s.add_argument("--strict", action="store_true", help="exit 1 when any plan is flagged")
+    s.set_defaults(fn=cmd_plans_check)
 
     args = p.parse_args(argv)
     return args.fn(args) or 0

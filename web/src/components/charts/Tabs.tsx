@@ -3,7 +3,7 @@
 import { useLayoutEffect, useRef, useState } from "react";
 
 /** Pill tabs with a sliding indicator. */
-export function Tabs({ options, value, onChange }: { options: { key: string; label: string }[]; value: string; onChange: (key: string) => void }) {
+export function Tabs({ options, value, onChange, className = "mb-4" }: { options: { key: string; label: string }[]; value: string; onChange: (key: string) => void; className?: string }) {
   const wrap = useRef<HTMLDivElement>(null);
   const [pill, setPill] = useState<{ left: number; width: number } | null>(null);
 
@@ -13,7 +13,7 @@ export function Tabs({ options, value, onChange }: { options: { key: string; lab
   }, [value, options.length]);
 
   return (
-    <div className="mb-4 flex max-w-full overflow-x-auto [scrollbar-width:none]">
+    <div className={`${className} flex max-w-full overflow-x-auto [scrollbar-width:none]`}>
       <div ref={wrap} className="relative inline-flex shrink-0 rounded-full bg-sunken p-1 text-[13px]" role="tablist">
         {pill && (
           <span

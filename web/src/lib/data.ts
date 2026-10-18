@@ -1,5 +1,6 @@
 // Server-only data access. JSON is statically imported, so every page is pre-rendered at
 // build time from the pipeline export and no data is fetched at runtime.
+import costJson from "@data/cost.json";
 import fieldJson from "@data/field.json";
 import historyJson from "@data/history.json";
 import labsJson from "@data/labs.json";
@@ -11,6 +12,7 @@ import releasesJson from "@data/releases.json";
 import sensitivityJson from "@data/sensitivity.json";
 
 import type {
+  CostData,
   FieldOut,
   History,
   LabMeta,
@@ -34,6 +36,7 @@ export const ownership = ownershipJson as unknown as {
 export const perception = perceptionJson as unknown as PerceptionRow[];
 export const releases = releasesJson as unknown as Record<string, ReleaseIndexEntry>;
 export const sensitivity = sensitivityJson as unknown as Sensitivity;
+export const cost = costJson as unknown as CostData;
 
 export function labName(slug: string | null | undefined): string {
   if (!slug) return "—";

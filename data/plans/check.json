@@ -1,0 +1,659 @@
+{
+  "checked": "2026-10-18",
+  "devforth": {
+    "error": null,
+    "plans": 26,
+    "url": "https://devforth.io/agents-for-code/__data.json"
+  },
+  "drift_tolerance": 0.25,
+  "plans": [
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "alibaba-token-pro",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "alibaba-token-standard",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "aliyun-token-pro",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "aliyun-token-standard",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "devforth": {
+        "baseline": 121.7,
+        "class": "All",
+        "confirmed": null,
+        "drift": 0.0,
+        "implied": 121.75,
+        "monthly_value_usd": {
+          "All": 24350.0
+        },
+        "multiplier": {
+          "All": 121.75
+        },
+        "pinned": 58.6,
+        "price_usd": 200,
+        "updated": "2026-07-16T00:00:00.000Z"
+      },
+      "flags": [],
+      "id": "anthropic-claude-max-20x",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "devforth": {
+        "baseline": 60.9,
+        "class": "All",
+        "confirmed": null,
+        "drift": -0.0,
+        "implied": 60.875,
+        "monthly_value_usd": {
+          "All": 6087.5,
+          "Fable": 1478.39
+        },
+        "multiplier": {
+          "All": 60.875,
+          "Fable": 14.784
+        },
+        "pinned": 57.2,
+        "price_usd": 100,
+        "updated": "2026-09-16T08:19:47.352Z"
+      },
+      "flags": [],
+      "id": "anthropic-claude-max-5x",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "devforth": {
+        "baseline": 60.9,
+        "class": "All",
+        "confirmed": null,
+        "drift": -0.0,
+        "implied": 60.875,
+        "monthly_value_usd": {
+          "All": 1217.5
+        },
+        "multiplier": {
+          "All": 60.875
+        },
+        "pinned": 58.9,
+        "price_usd": 20,
+        "updated": "2026-09-17T10:03:43.286Z"
+      },
+      "flags": [],
+      "id": "anthropic-claude-pro",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "atlas-lite",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "atlas-max",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "atlas-plus",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "atlas-starter",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "atlas-ultra",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "commandcode-go",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "commandcode-goat",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "commandcode-max-10x",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "commandcode-max-20x",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "commandcode-pro",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "cursor-pro",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "factory-pro",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "devforth": {
+        "baseline": 2.0,
+        "class": "All",
+        "confirmed": null,
+        "drift": 0.014,
+        "implied": 2.029,
+        "monthly_value_usd": {
+          "All": 202.92
+        },
+        "multiplier": {
+          "All": 2.029
+        },
+        "pinned": 2.0,
+        "price_usd": 100,
+        "updated": "2026-07-16T00:00:00.000Z"
+      },
+      "flags": [],
+      "id": "github-copilot-max",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "devforth": {
+        "baseline": 1.5,
+        "class": "All",
+        "confirmed": null,
+        "drift": 0.015,
+        "implied": 1.522,
+        "monthly_value_usd": {
+          "All": 15.22
+        },
+        "multiplier": {
+          "All": 1.522
+        },
+        "pinned": 1.5,
+        "price_usd": 10,
+        "updated": "2026-07-16T00:00:00.000Z"
+      },
+      "flags": [],
+      "id": "github-copilot-pro",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "devforth": {
+        "baseline": 1.79,
+        "class": "All",
+        "confirmed": null,
+        "drift": 0.017,
+        "implied": 1.821,
+        "monthly_value_usd": {
+          "All": 71.02
+        },
+        "multiplier": {
+          "All": 1.821
+        },
+        "pinned": 1.79,
+        "price_usd": 39,
+        "updated": "2026-07-16T00:00:00.000Z"
+      },
+      "flags": [],
+      "id": "github-copilot-pro-plus",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "devforth": {
+        "baseline": 8.7,
+        "class": "Main",
+        "confirmed": null,
+        "drift": 0.0,
+        "implied": 8.701,
+        "monthly_value_usd": {
+          "Main": 173.93,
+          "Other": 43.48
+        },
+        "multiplier": {
+          "Main": 8.701,
+          "Other": 2.175
+        },
+        "pinned": 8.6,
+        "price_usd": 19.99,
+        "updated": "2026-09-15T20:57:04.303Z"
+      },
+      "flags": [],
+      "id": "google-ai-pro",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "devforth": {
+        "baseline": 17.4,
+        "class": "Main",
+        "confirmed": null,
+        "drift": -0.0,
+        "implied": 17.394,
+        "monthly_value_usd": {
+          "Main": 3478.57,
+          "Other": 869.64
+        },
+        "multiplier": {
+          "Main": 17.394,
+          "Other": 4.348
+        },
+        "pinned": 17.1,
+        "price_usd": 199.99,
+        "updated": "2026-09-15T20:57:15.138Z"
+      },
+      "flags": [],
+      "id": "google-ai-ultra-20x",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "devforth": {
+        "baseline": 8.7,
+        "class": "Main",
+        "confirmed": null,
+        "drift": -0.0,
+        "implied": 8.697,
+        "monthly_value_usd": {
+          "Main": 869.64,
+          "Other": 217.41
+        },
+        "multiplier": {
+          "Main": 8.697,
+          "Other": 2.174
+        },
+        "pinned": 8.6,
+        "price_usd": 99.99,
+        "updated": "2026-09-15T20:57:09.885Z"
+      },
+      "flags": [],
+      "id": "google-ai-ultra-5x",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "kilo-pass-starter",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "kimi-code-max",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "kimi-code-plus",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "kimi-code-pro",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "meta-muse-code-high",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "meta-muse-code-max",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "meta-muse-code-power",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "minimax-token-build",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "minimax-token-explore",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "minimax-token-go",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "mistral-vibe-pro",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "nanogpt-pro",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "ollama-max",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "ollama-pro",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "devforth": {
+        "baseline": 0.25,
+        "class": "All",
+        "confirmed": "2026-09-16",
+        "drift": 0.016,
+        "implied": 0.254,
+        "monthly_value_usd": {
+          "All": 2.03
+        },
+        "multiplier": {
+          "All": 0.254
+        },
+        "pinned": 0.25,
+        "price_usd": 8,
+        "updated": "2026-09-17T10:03:43.286Z"
+      },
+      "flags": [],
+      "id": "openai-chatgpt-go",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "devforth": {
+        "baseline": 15.2,
+        "class": "All",
+        "confirmed": "2026-09-17",
+        "drift": 0.001,
+        "implied": 15.219,
+        "monthly_value_usd": {
+          "All": 304.38
+        },
+        "multiplier": {
+          "All": 15.219
+        },
+        "pinned": 14.4,
+        "price_usd": 20,
+        "updated": "2026-09-17T10:35:47.298Z"
+      },
+      "flags": [],
+      "id": "openai-chatgpt-plus",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "devforth": {
+        "baseline": 15.2,
+        "class": "All",
+        "confirmed": "2026-09-17",
+        "drift": 0.001,
+        "implied": 15.219,
+        "monthly_value_usd": {
+          "All": 1521.88
+        },
+        "multiplier": {
+          "All": 15.219
+        },
+        "pinned": 15.2,
+        "price_usd": 100,
+        "updated": "2026-09-17T10:35:50.128Z"
+      },
+      "flags": [],
+      "id": "openai-chatgpt-pro-100",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "devforth": {
+        "baseline": 55.7,
+        "class": "All",
+        "confirmed": null,
+        "drift": -0.001,
+        "implied": 55.657,
+        "monthly_value_usd": {
+          "All": 11131.43
+        },
+        "multiplier": {
+          "All": 55.657
+        },
+        "pinned": 14.0,
+        "price_usd": 200,
+        "updated": "2026-09-17T10:03:43.286Z"
+      },
+      "flags": [],
+      "id": "openai-chatgpt-pro-200",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "openai-chatgpt-pro-500",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "opencode-go",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "opencode-go-plus",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "synthetic-standard",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "tencent-token-pro",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "tencent-token-standard",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "windsurf-pro",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "xai-supergrok",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "xai-supergrok-heavy",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "xai-supergrok-plus",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "xiaomi-mimo-max",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "xiaomi-mimo-pro",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "xiaomi-mimo-standard",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "zai-glm-lite",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "zai-glm-max",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "zai-glm-pro",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "zhipu-glm-max",
+      "verified": "2026-10-18"
+    },
+    {
+      "age_days": 0,
+      "dead_sources": [],
+      "flags": [],
+      "id": "zhipu-glm-pro",
+      "verified": "2026-10-18"
+    }
+  ],
+  "sources": {
+    "total": 44,
+    "unreachable": 0
+  },
+  "stale_after_days": 90
+}
