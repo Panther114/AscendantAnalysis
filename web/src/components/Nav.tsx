@@ -32,13 +32,24 @@ export function Nav() {
   );
 }
 
-/** Ascent mark: three rising steps and a peak. */
+/** Brand icon (same artwork as app/icon.svg): three rising bars on a dark tile. */
 function Mark() {
   return (
-    <svg width="20" height="20" viewBox="0 0 20 20" aria-hidden="true">
-      <rect x="2" y="12" width="4" height="6" rx="1" fill="currentColor" opacity="0.55" />
-      <rect x="8" y="8" width="4" height="10" rx="1" fill="currentColor" opacity="0.8" />
-      <rect x="14" y="3" width="4" height="15" rx="1" fill="currentColor" />
+    <svg width="24" height="24" viewBox="0 0 64 64" aria-hidden="true">
+      <defs>
+        <linearGradient id="mark-bg" x1="0" y1="0" x2="0" y2="1">
+          <stop offset="0" stopColor="#1d1d26" />
+          <stop offset="1" stopColor="#0b0b10" />
+        </linearGradient>
+        <linearGradient id="mark-peak" x1="0" y1="1" x2="0" y2="0">
+          <stop offset="0" stopColor="#f2733b" />
+          <stop offset="1" stopColor="#f2cf1d" />
+        </linearGradient>
+      </defs>
+      <rect width="64" height="64" rx="14" fill="url(#mark-bg)" />
+      <rect x="9" y="34" width="12" height="20" rx="3" fill="#2f6bf6" />
+      <rect x="26" y="23" width="12" height="31" rx="3" fill="#7351f5" />
+      <rect x="43" y="9" width="12" height="45" rx="3" fill="url(#mark-peak)" />
     </svg>
   );
 }
