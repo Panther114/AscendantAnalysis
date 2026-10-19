@@ -1,5 +1,5 @@
 {
-  "checked": "2026-10-18",
+  "checked": "2026-10-19",
   "devforth": {
     "error": null,
     "plans": 26,
@@ -8,35 +8,35 @@
   "drift_tolerance": 0.25,
   "plans": [
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "alibaba-token-pro",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "alibaba-token-standard",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "aliyun-token-pro",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "aliyun-token-standard",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "devforth": {
         "baseline": 121.7,
@@ -59,7 +59,7 @@
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "devforth": {
         "baseline": 60.9,
@@ -84,7 +84,7 @@
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "devforth": {
         "baseline": 60.9,
@@ -107,91 +107,91 @@
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "atlas-lite",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "atlas-max",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "atlas-plus",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "atlas-starter",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "atlas-ultra",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "commandcode-go",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "commandcode-goat",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "commandcode-max-10x",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "commandcode-max-20x",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "commandcode-pro",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "cursor-pro",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "factory-pro",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "devforth": {
         "baseline": 2.0,
@@ -214,7 +214,7 @@
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "devforth": {
         "baseline": 1.5,
@@ -237,7 +237,7 @@
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "devforth": {
         "baseline": 1.79,
@@ -260,7 +260,7 @@
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "devforth": {
         "baseline": 8.7,
@@ -285,7 +285,7 @@
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "devforth": {
         "baseline": 17.4,
@@ -310,7 +310,7 @@
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "devforth": {
         "baseline": 8.7,
@@ -335,105 +335,117 @@
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "kilo-pass-starter",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "kimi-code-max",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "kimi-code-plus",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "kimi-code-pro",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "meta-muse-code-high",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "meta-muse-code-max",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "meta-muse-code-power",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
-      "dead_sources": [],
-      "flags": [],
+      "age_days": 1,
+      "dead_sources": [
+        "https://usagepricing.com/blueprint/activity/minimax-2026-08-26-price-change"
+      ],
+      "flags": [
+        "1 source URL(s) unreachable"
+      ],
       "id": "minimax-token-build",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
-      "dead_sources": [],
-      "flags": [],
+      "age_days": 1,
+      "dead_sources": [
+        "https://usagepricing.com/blueprint/activity/minimax-2026-08-26-price-change"
+      ],
+      "flags": [
+        "1 source URL(s) unreachable"
+      ],
       "id": "minimax-token-explore",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
-      "dead_sources": [],
-      "flags": [],
+      "age_days": 1,
+      "dead_sources": [
+        "https://usagepricing.com/blueprint/activity/minimax-2026-08-26-price-change"
+      ],
+      "flags": [
+        "1 source URL(s) unreachable"
+      ],
       "id": "minimax-token-go",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "mistral-vibe-pro",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "nanogpt-pro",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "ollama-max",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "ollama-pro",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "devforth": {
         "baseline": 0.25,
@@ -456,7 +468,7 @@
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "devforth": {
         "baseline": 15.2,
@@ -479,7 +491,7 @@
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "devforth": {
         "baseline": 15.2,
@@ -502,7 +514,7 @@
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "devforth": {
         "baseline": 55.7,
@@ -525,126 +537,126 @@
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "openai-chatgpt-pro-500",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "opencode-go",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "opencode-go-plus",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "synthetic-standard",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "tencent-token-pro",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "tencent-token-standard",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "windsurf-pro",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "xai-supergrok",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "xai-supergrok-heavy",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "xai-supergrok-plus",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "xiaomi-mimo-max",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "xiaomi-mimo-pro",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "xiaomi-mimo-standard",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "zai-glm-lite",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "zai-glm-max",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "zai-glm-pro",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "zhipu-glm-max",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 0,
+      "age_days": 1,
       "dead_sources": [],
       "flags": [],
       "id": "zhipu-glm-pro",
@@ -653,7 +665,7 @@
   ],
   "sources": {
     "total": 44,
-    "unreachable": 0
+    "unreachable": 1
   },
   "stale_after_days": 90
 }
