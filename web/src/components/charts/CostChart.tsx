@@ -2,7 +2,7 @@
 
 import { scaleLinear, scaleLog } from "d3-scale";
 import { useRouter } from "next/navigation";
-import { useEffect, useId, useMemo, useRef, useState, useSyncExternalStore } from "react";
+import { useEffect, useId, useLayoutEffect, useMemo, useRef, useState, useSyncExternalStore } from "react";
 
 import { labColor } from "@/lib/palette";
 import { bestPlan, EFFORT_ORDER, fmtX, pareto, type PlanPick, type Region } from "@/lib/plans";
@@ -81,6 +81,36 @@ const ageFrac = (age: number, maxAge: number) => (maxAge > 0 ? Math.sqrt(Math.mi
 const AGE_TICKS: [number, string][] = [[0, "Release day"], [30, "1 mo"], [90, "3 mo"], [180, "6 mo"], [365, "1 yr"], [730, "2 yr"]];
 
 const fmtLongDate = (n: number) => new Date(n * DAY).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" });
+
+type Verts = [number, number][];
+const FRONT_SAMPLES = 200;
+const FRONT_MS = 520;
+
+/** Height of a left-to-right polyline at x (flat beyond its ends). */
+function polyY(v: Verts, x: number) {
+  if (x <= v[0][0]) return v[0][1];
+  for (let i = 1; i < v.length; i++) {
+    if (x <= v[i][0]) {
+      const [x0, y0] = v[i - 1];
+      const [x1, y1] = v[i];
+      return x1 === x0 ? y1 : y0 + ((y1 - y0) * (x - x0)) / (x1 - x0);
+    }
+  }
+  return v[v.length - 1][1];
+}
+
+/** The line part-way (k in 0..1) between two frontiers: sampled, with ends and heights eased. */
+function blendFront(a: Verts, b: Verts, k: number) {
+  const x0 = a[0][0] + (b[0][0] - a[0][0]) * k;
+  const x1 = a[a.length - 1][0] + (b[b.length - 1][0] - a[a.length - 1][0]) * k;
+  let d = "";
+  for (let i = 0; i <= FRONT_SAMPLES; i++) {
+    const x = x0 + ((x1 - x0) * i) / FRONT_SAMPLES;
+    const ya = polyY(a, x);
+    d += `${i ? "L" : "M"}${r2(x)},${r2(ya + (polyY(b, x) - ya) * k)}`;
+  }
+  return d;
+}
 
 const r2 = (v: number) => Math.round(v * 100) / 100;
 
@@ -230,7 +260,7 @@ export function CostChart({ models: current, archive, plans, names, labs, initia
   const [frontier, setFrontier] = useState(true);
   const [labels, setLabels] = useState(true);
   const [selLabs, setSelLabs] = useState<string[]>(initialLabs);
-  const [past, setPast] = useState(false); // include retired models
+  const [past, setPast] = useState(true); // include retired models: the whole documented lineup by default
   const allModels = useMemo(() => (past ? [...current, ...archive] : current), [past, current, archive]);
   const retired = useMemo(() => new Set(archive.map((m) => m.slug)), [archive]);
   const [relevantOnly, setRelevantOnly] = useState(false);
@@ -328,29 +358,26 @@ export function CostChart({ models: current, archive, plans, names, labs, initia
   const iw = width - MG.left - MG.right;
   const ih = HEIGHT - MG.top - MG.bottom;
 
-  // Scales follow AA's rules: the log axis runs from the cheapest dot to ~2.4x the dearest
-  // (headroom for labels), the index axis pads one 5-point step beyond the data. One domain
-  // spans both states, so switching subsidies on visibly slides dots left.
-  // The domain follows the pricing state and eases with the dots: switching subsidies on refits the
-  // axes to the (much cheaper) plan costs instead of leaving every dot packed at the left.
-  const apiX = visible.map((v) => v.m.cost_per_task);
-  const planX = visible.map((v) => v.pick?.cost ?? v.m.cost_per_task);
-  const lerpLog = (a: number, b: number) => Math.exp(Math.log(a) + (Math.log(b) - Math.log(a)) * t);
-  const lo = apiX.length ? lerpLog(Math.min(...apiX), Math.min(...planX)) : 0.01;
-  const hi = apiX.length ? lerpLog(Math.max(...apiX), Math.max(...planX)) : 10;
-  // Linear axis: fit the bulk, not the stragglers. A few dear outliers (models with no plan keep
-  // their API price) would otherwise squash everything else; they are pinned to the right edge.
-  const fitHi = (a: number[]) => {
-    const v = [...a].sort((x, y) => x - y);
-    const q = v[Math.floor(0.93 * (v.length - 1))];
-    return v[v.length - 1] <= q * 1.6 ? v[v.length - 1] : q * 1.15;
-  };
-  const hiLin = apiX.length ? lerpLog(fitHi(apiX), fitHi(planX)) : 10;
-  const ys = visible.map((v) => v.m.intelligence);
-  const yLo = Math.max(0, Math.floor((ys.length ? Math.min(...ys) : 0) / 5) * 5 - 5);
-  const yHi = Math.ceil((ys.length ? Math.max(...ys) : 60) / 5) * 5 + 5;
+  // Both axes are locked to the whole documented universe (every model ever, at API and best-plan
+  // prices), so no filter, date, window or pricing switch ever rescales them: dots only appear,
+  // fade or (for the pricing switch) slide along fixed rulers. The log axis runs from the cheapest
+  // dot to ~2.4x the dearest (headroom for labels); the index axis pads one 5-point step.
+  const lock = useMemo(() => {
+    const xs: number[] = [];
+    const ysAll: number[] = [];
+    for (const m of [...current, ...archive]) {
+      xs.push(m.cost_per_task);
+      const pk = bestPlan(m, plans, "all");
+      if (pk) xs.push(pk.cost);
+      ysAll.push(m.intelligence);
+    }
+    return { lo: Math.min(...xs), hi: Math.max(...xs), yLo: Math.min(...ysAll), yHi: Math.max(...ysAll) };
+  }, [current, archive, plans]);
+  const { lo, hi } = lock;
+  const yLo = Math.max(0, Math.floor(lock.yLo / 5) * 5 - 5);
+  const yHi = Math.ceil(lock.yHi / 5) * 5 + 5;
   const xLog = scaleLog().domain([lo * 0.99, hi * 2.4]).range([0, iw]).clamp(true); // clamp: linear ticks include $0
-  const xLin = scaleLinear().domain([0, hiLin * 1.06]).range([0, iw]);
+  const xLin = scaleLinear().domain([0, hi * 1.06]).range([0, iw]);
   const yS = scaleLinear().domain([yLo, yHi]).range([ih, 0]);
   const X = (v: number) => r2(xLin(v) + (xLog(v) - xLin(v)) * s);
   const Y = (v: number) => r2(yS(v));
@@ -374,7 +401,7 @@ export function CostChart({ models: current, archive, plans, names, labs, initia
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [base, selLabs, selEfforts, hidden, relevantOnly, relevant, t, s, iw, xLoD, xHiD, yLo, yHi, hi, hiLin, ageMode, ageLoD, ageHiD, asOfN, relDay],
+    [base, selLabs, selEfforts, hidden, relevantOnly, relevant, t, s, iw, xLoD, xHiD, yLo, yHi, hi, ageMode, ageLoD, ageHiD, asOfN, relDay],
   );
   const shownPts = pts.filter((p) => p.shown);
 
@@ -384,12 +411,38 @@ export function CostChart({ models: current, archive, plans, names, labs, initia
   // the whole lineup stays behind it as a faint mark, so the two can be compared as the window moves.
   const allFront = frontier ? pareto(pts) : [];
   const front = windowed ? pareto(pts.filter((p) => p.inAge)) : allFront;
+  const frontVerts: Verts = front.map((p) => [p.px, p.py]);
+  const frontSig = front.map((p) => p.m.slug).join();
   const ghostPath = windowed ? allFront.map((p, i) => `${i ? "L" : "M"}${p.px},${p.py}`).join("") : "";
   const frontSet = new Set(front.map((p) => p.m.slug));
   const frontPath = front.map((p, i) => `${i ? "L" : "M"}${p.px},${p.py}`).join("");
+  // The frontier glides between shapes when its members change (a model appears or goes), instead of snapping.
+  const lastFront = useRef<Verts>([]);
+  const [glide, setGlide] = useState<{ from: Verts; k: number } | null>(null);
+  useLayoutEffect(() => {
+    const from = lastFront.current;
+    if (from.length < 2 || frontVerts.length < 2) return;
+    const reduce = window.matchMedia("(prefers-reduced-motion: reduce)").matches;
+    const dur = reduce ? 1 : FRONT_MS;
+    const start = performance.now();
+    let raf = 0;
+    setGlide({ from, k: 0 });
+    const step = (now: number) => {
+      const k = easeInOutCubic(Math.min(1, (now - start) / dur));
+      setGlide(k < 1 ? { from, k } : null);
+      if (k < 1) raf = requestAnimationFrame(step);
+    };
+    raf = requestAnimationFrame(step);
+    const done = setTimeout(() => { cancelAnimationFrame(raf); setGlide(null); }, dur + 250);
+    return () => { cancelAnimationFrame(raf); clearTimeout(done); };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [frontSig]);
+  useEffect(() => {
+    lastFront.current = frontVerts;
+  });
+  const drawnFront = glide && frontVerts.length > 1 ? blendFront(glide.from, frontVerts, glide.k) : frontPath;
   const fadedPts = front.filter((p) => !p.shown && p.px > -DOT_R && p.px < iw + DOT_R && p.py > -DOT_R && p.py < ih + DOT_R);
 
-  const pinned = log ? 0 : shownPts.filter((p) => p.x > xLin.domain()[1]).length;
   const narrow = iw < 520;
   const logT = logTicks(xLog.domain()[0], xLog.domain()[1], narrow, (v) => xLog(v));
   const linT = xLin.ticks(narrow ? 4 : 6);
@@ -702,7 +755,7 @@ export function CostChart({ models: current, archive, plans, names, labs, initia
 
             {front.length > 1 && (
               <g clipPath={`url(#${clipId})`} pointerEvents="none">
-                <path key={front.map((p) => p.m.slug).join()} className={windowed ? "pf-in" : undefined} d={frontPath} fill="none" strokeWidth={2.5} strokeDasharray="0.1 6" strokeLinecap="round" strokeLinejoin="round" style={{ stroke: "var(--aa-pareto)" }} />
+                <path d={drawnFront} fill="none" strokeWidth={2.5} strokeDasharray="0.1 6" strokeLinecap="round" strokeLinejoin="round" style={{ stroke: "var(--aa-pareto)" }} />
               </g>
             )}
 
@@ -807,7 +860,6 @@ export function CostChart({ models: current, archive, plans, names, labs, initia
         <span>Faded dots on the line: cheapest-and-smartest models your filters hide</span>
         {subsidy && <span>Paler dots: no eligible plan, so they keep their API price</span>}
         <span>* estimated index</span>
-        {pinned > 0 && <span>{pinned} dearer {pinned === 1 ? "model is" : "models are"} pinned to the right edge: switch to the log axis to see {pinned === 1 ? "its" : "their"} true cost</span>}
       </p>
     </div>
   );

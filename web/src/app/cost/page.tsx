@@ -59,7 +59,7 @@ export default function CostPage() {
       </PageHeader>
 
       <section id="chart" className="scroll-mt-32">
-        <Card title="Intelligence vs. cost per task" keyColor="orange" subtitle={`${cost.models.length} current model variants with a measured cost per task · Up and left is better`}>
+        <Card title="Intelligence vs. cost per task" keyColor="orange" subtitle={`${cost.models.length + cost.archive.length} documented model variants (${cost.models.length} current) with a measured cost per task · Up and left is better`}>
           <CostChart models={cost.models} archive={cost.archive} plans={cost.plans} names={labNames()} labs={labs} initialLabs={labs} labPages={leaderboard.map((l) => l.lab)} meta={meta} today={cost.date} />
           <InfoNote>
             Cost per task is Artificial Analysis&apos;s cost to run its Intelligence Index divided by the number of tasks, at each
