@@ -48,7 +48,7 @@ interface PlacedLabel {
 // Geometry measured from Artificial Analysis's "Intelligence Index vs. Cost per Task" chart.
 const HEIGHT = 384;
 const MG = { top: 5, right: 5, bottom: 53, left: 65 };
-const DOT_R = 6;
+const DOT_R = 4.5;
 const HIT = 40; // px: the nearest dot within this distance owns the tooltip
 const LABEL_H = 11;
 const FADED = 0.25; // frontier members the filters have switched off

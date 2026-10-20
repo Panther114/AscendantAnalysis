@@ -31,8 +31,10 @@ export function plansFor(m: CostModel, plans: CodingPlan[], region: Region = "al
   return out.sort((a, b) => rankValue(b.multiplier, b.confidence) - rankValue(a.multiplier, a.confidence) || a.plan.price_usd - b.plan.price_usd || a.plan.id.localeCompare(b.plan.id));
 }
 
+/** The best plan, if it beats the API at all: a plan worth ×1 or less is no subsidy (matches the pipeline). */
 export function bestPlan(m: CostModel, plans: CodingPlan[], region: Region = "all"): PlanPick | null {
-  return plansFor(m, plans, region)[0] ?? null;
+  const top = plansFor(m, plans, region)[0];
+  return top && top.multiplier > 1 ? top : null;
 }
 
 /** Multiplier range a plan offers across its lineup, e.g. "×6" or "×1.5–×12". */

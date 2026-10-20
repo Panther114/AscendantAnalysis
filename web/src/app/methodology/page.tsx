@@ -222,6 +222,12 @@ export default function MethodologyPage() {
             allowance is the binding one (usually weekly × 30/7). Promotions and off-peak discounts are not counted.
           </p>
           <p>
+            Every plan carries <strong>one committed number</strong> per model, never a range or a blank: where sources disagree, the
+            figure is the best-supported single estimate and the basis says why. Tiers of one product that the provider scales with
+            price (&ldquo;5× the usage at 5× the price&rdquo;) share the same multiplier, so a ratio stated between tiers is always kept
+            exactly; tiers get different multipliers only where the provider gives more or less per dollar as the price rises.
+          </p>
+          <p>
             Only plans costing <strong>${cost.min_price_usd}/month or more</strong> are eligible: very cheap tiers can carry large nominal
             subsidies but are not usable at scale. Each plan only serves the models in its lineup, so a large subsidy on one lab&apos;s plan
             never reprices a rival&apos;s model. Subsidies are measured for agentic coding traffic, which is cache-heavy; applying them to

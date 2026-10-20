@@ -151,7 +151,8 @@ def best_plans(rows: list[dict], plans: list[dict]) -> dict[str, dict]:
                 if e["release"] == r["release"] and e["multiplier"]:
                     rank = rank_value(e["multiplier"], e.get("confidence"))
                     cands.append((-rank, p["price_usd"], p["id"], e["multiplier"]))
-        if cands:
+        # A best plan worth x1 or less is no subsidy: the model stays at its API cost.
+        if cands and min(cands)[3] > 1:
             c = min(cands)
             out[r["slug"]] = {"plan": c[2], "multiplier": c[3],
                               "cost_per_task": stats.rnd(r["cost_per_task"] / c[3])}

@@ -58,7 +58,9 @@ The full write-up is on the site's Methodology page.
 - **Data:** `config/coding_plans.yaml` is reviewed by hand and **never updated automatically**. Each
   plan cites dated sources and says how its multiplier was derived (official / measured / derived /
   estimate). Per-model multipliers are kept where they differ (OpenCode Go's per-model caps, Claude
-  Fable's separate cap, GLM's credit weights, ...).
+  Fable's separate cap, GLM's credit weights, ...). Every plan has one committed number per model
+  (no ranges or blanks), and tiers the provider scales linearly with price share one multiplier, so
+  a stated tier ratio (e.g. "5× Pro at 5× the price") is kept exactly.
 - **Audit:** `uv run ascendant plans-check` (daily in CI, non-blocking) compares the pinned values with
   Devforth's crowd-measured limits (`devforth_baseline` = what Devforth showed at review time), probes
   every source URL and flags plans not re-verified for 90 days. Flags appear as workflow annotations

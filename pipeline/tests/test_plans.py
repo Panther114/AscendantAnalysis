@@ -52,6 +52,12 @@ def test_plan_only_reprices_its_own_lineup():
     assert plans.best_plans(rows, [_plan("a", 20, 50)]) == {}
 
 
+def test_plan_below_api_value_is_no_subsidy():
+    rows = [{"slug": "v", "release": "r1", "cost_per_task": 2.0}]
+    assert plans.best_plans(rows, [_plan("a", 20, 0.7)]) == {}
+    assert plans.best_plans(rows, [_plan("a", 20, 1.0)]) == {}
+
+
 def test_unknown_multiplier_is_skipped():
     rows = [{"slug": "v", "release": "r1", "cost_per_task": 2.0}]
     assert plans.best_plans(rows, [_plan("a", 20, None)]) == {}
