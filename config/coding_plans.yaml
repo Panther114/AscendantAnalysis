@@ -1208,26 +1208,27 @@ plans:
   region: global
   price_usd: 10
   billing: $10/month + processing fee
-  quota: '$70 of monthly credits (compare table; the plan card says $80), with per-model allowances: $60 on DeepSeek V4.1
-    Flash and GLM-5.3 Flash, $70 on Hy3 and Qwen 3.8 27B, and 34 more models.'
+  quota: '$80 of monthly credits on the plan card and FAQ (the compare table says $70), with per-model allowances: $80 on DeepSeek V4.1
+    Flash, $60 on GLM-5.3 Flash, $70 on Hy3 and Qwen 3.8 27B, and 34 more models.'
   tools:
   - Command Code CLI
   - API (OpenAI/Anthropic compatible)
-  verified: '2026-10-18'
+  verified: '2026-10-20'
   confidence: official
   default_basis: Monthly credits spent at API list price (no markup); 'deals' beyond the credits are not guaranteed and not
     counted.
   caveats: The official page is internally inconsistent ($70 vs $80 credits); the lower figure is used. Allowances for the
-    other 34 models are not itemised, so they are not counted.
+    other 34 models (the page names DeepSeek, Kimi, MiniMax, Qwen, MiMo, Grok, GLM) are not itemised, so they are not counted;
+    DeepSeek V4 Pro is therefore absent although the plan may well serve it.
   sources:
   - url: https://commandcode.ai/pricing
     title: Command Code pricing (official)
-    date: '2026-10-18'
+    date: '2026-10-20'
   models:
   - name: DeepSeek V4.1 Flash
     release: deepseek-v4-1-flash
-    multiplier: 6.0
-    basis: $60 per-model allowance ÷ $10.
+    multiplier: 8.0
+    basis: $80 per-model allowance ÷ $10 (the page showed $60 when first reviewed on 2026-10-18).
     confidence: official
   - name: GLM-5.3-Flash
     release: glm-5-3-flash
@@ -1485,33 +1486,46 @@ plans:
   region: global
   price_usd: 30
   billing: $30/month
-  quota: Weekly credit limit stated as 'up to $300 of usage per month vs API list prices'.
+  quota: Weekly credit quota spent at discounted per-model rates. The pricing page states no dollar or request figure for the plan;
+    it only shows a per-model monthly token calculator with the API-equivalent dollar value of each model's allowance.
   tools:
   - any OpenAI/Anthropic-compatible coding agent
-  verified: '2026-10-18'
+  verified: '2026-10-20'
   confidence: derived
-  default_multiplier: 10
-  default_basis: Stated $300/month at list ÷ $30 = ×10 (a generic figure, not per model).
-  caveats: Per-model discounts mean real per-model value differs from the generic figure.
+  default_basis: 'Pricing-page calculator (the $30 tier it shows by default): API-equivalent $/month for the model ÷ $30. Models
+    missing from the calculator are not counted.'
+  caveats: The calculator does not label which tier it shows; $30 is inferred from the "Subscription Plan $30/month" selector
+    above it. An earlier flat ×10 ("$300 of usage vs list prices") appears nowhere on the official page and overstated every
+    model by 2-5×. DeepSeek V4.1 Flash is marked Beta.
   sources:
   - url: https://synthetic.new/pricing
-    title: Synthetic pricing (official)
-    date: '2026-10-18'
+    title: Synthetic pricing, per-model token calculator (official)
+    date: '2026-10-20'
   models:
   - name: GLM-5.3
     release: glm-5-3
+    multiplier: 3.33
+    basis: Calculator $100/month ÷ $30 = ×3.33 (Beta model).
     confidence: derived
   - name: GLM-5.3-Flash
     release: glm-5-3-flash
+    multiplier: 1.83
+    basis: Calculator $55/month ÷ $30 = ×1.83.
     confidence: derived
   - name: Kimi K3
     release: kimi-k3
+    multiplier: 1.97
+    basis: Calculator $59/month ÷ $30 = ×1.97.
     confidence: derived
   - name: DeepSeek V4.1 Flash
     release: deepseek-v4-1-flash
+    multiplier: 8.37
+    basis: Calculator $251/month ÷ $30 = ×8.37 (Beta model).
     confidence: derived
   - name: Qwen3.8 27B
     release: qwen3-8-27b
+    multiplier: 1.87
+    basis: Calculator $56/month ÷ $30 = ×1.87.
     confidence: derived
 - id: atlas-starter
   provider: Atlas Cloud

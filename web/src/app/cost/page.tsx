@@ -2,7 +2,7 @@ import type { Metadata } from "next";
 
 import { CostChart } from "@/components/charts/CostChart";
 import { Card, InfoNote, LabLogo, PageHeader } from "@/components/ui";
-import { cost, labName, labNames } from "@/lib/data";
+import { cost, labName, labNames, leaderboard } from "@/lib/data";
 import { fmtDate } from "@/lib/format";
 import { fmtX, multiplierRange, plansFor, usdTask } from "@/lib/plans";
 import type { CodingPlan, CostModel } from "@/lib/types";
@@ -56,7 +56,7 @@ export default function CostPage() {
 
       <section id="chart" className="scroll-mt-32">
         <Card title="Intelligence vs. cost per task" keyColor="orange" subtitle={`${cost.models.length} current model variants with a measured cost per task · Up and left is better`}>
-          <CostChart models={cost.models} plans={cost.plans} names={labNames()} labs={labs} initialLabs={labs} />
+          <CostChart models={cost.models} plans={cost.plans} names={labNames()} labs={labs} initialLabs={labs} labPages={leaderboard.map((l) => l.lab)} />
           <InfoNote>
             Cost per task is Artificial Analysis&apos;s cost to run its Intelligence Index divided by the number of tasks, at each
             model&apos;s API list price. Through a plan it is divided by that plan&apos;s subsidy for the model: the API-equivalent value

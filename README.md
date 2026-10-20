@@ -52,6 +52,8 @@ The full write-up is on the site's Methodology page.
   same leaderboard snapshot), one dot per reasoning effort.
 - **Subsidy** of plan *p* for model *m* = API-equivalent value of *p*'s monthly allowance for *m* ÷
   *p*'s monthly price. Cost through a plan = API cost per task ÷ the best eligible plan's subsidy.
+  "Best" ranks by multiplier × a confidence weight (official/measured 1.0, derived 0.85, estimate 0.6,
+  unknown 0.5), so a generic derived figure cannot win just by being bigger; the raw multiplier is shown.
   Only plans at **$10/month or more** count, and a plan only reprices models in its own lineup.
 - **Data:** `config/coding_plans.yaml` is reviewed by hand and **never updated automatically**. Each
   plan cites dated sources and says how its multiplier was derived (official / measured / derived /

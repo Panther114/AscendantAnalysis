@@ -27,6 +27,17 @@ from ascendant.paths import CONFIG, DATA
 PLANS_FILE = CONFIG / "coding_plans.yaml"
 CHECK_FILE = DATA / "plans" / "check.json"
 
+# How far a plan's multiplier is trusted when choosing a model's best plan. The chart still
+# shows the raw multiplier; the weight only decides who wins, so a derived or generic figure
+# (a marketing "up to $X") cannot outrank a measured or official per-model one by being bigger.
+CONFIDENCE_WEIGHT = {"official": 1.0, "measured": 1.0, "derived": 0.85, "estimate": 0.6, "unknown": 0.5}
+
+
+def rank_value(multiplier: float, confidence: str | None) -> float:
+    """Multiplier discounted by confidence; a plan with no stated confidence is taken at face value."""
+    return multiplier * CONFIDENCE_WEIGHT.get(confidence or "", 1.0)
+
+
 # Reasoning-effort labels as AA prints them inside a model name's parentheses.
 EFFORTS = ("Max", "Xhigh", "High", "Medium", "Low", "Minimal", "Reasoning", "Non-reasoning")
 _PAREN = re.compile(r"\(([^)]*)\)")
@@ -128,7 +139,8 @@ def _plan_payload(p: dict, known_releases: set[str], min_price: float) -> dict:
 
 
 def best_plans(rows: list[dict], plans: list[dict]) -> dict[str, dict]:
-    """Per variant slug: the eligible plan with the largest multiplier (ties: cheaper, then id)."""
+    """Per variant slug: the eligible plan with the largest confidence-weighted multiplier
+    (ties: cheaper, then id). The multiplier reported is the plan's own, undiscounted figure."""
     out: dict[str, dict] = {}
     for r in rows:
         cands = []
@@ -137,7 +149,8 @@ def best_plans(rows: list[dict], plans: list[dict]) -> dict[str, dict]:
                 continue
             for e in p["models"]:
                 if e["release"] == r["release"] and e["multiplier"]:
-                    cands.append((-e["multiplier"], p["price_usd"], p["id"], e["multiplier"]))
+                    rank = rank_value(e["multiplier"], e.get("confidence"))
+                    cands.append((-rank, p["price_usd"], p["id"], e["multiplier"]))
         if cands:
             c = min(cands)
             out[r["slug"]] = {"plan": c[2], "multiplier": c[3],

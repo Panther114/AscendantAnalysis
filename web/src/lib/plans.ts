@@ -13,7 +13,12 @@ export interface PlanPick {
   cost: number; // subsidized cost per task
 }
 
-/** Every eligible plan that serves this model's release, best (largest multiplier) first. */
+// Mirrors pipeline CONFIDENCE_WEIGHT: a derived/estimated multiplier is discounted when ranking plans,
+// so a generic figure can't outrank an official or measured per-model one by being bigger.
+const CONFIDENCE_WEIGHT: Record<string, number> = { official: 1, measured: 1, derived: 0.85, estimate: 0.6, unknown: 0.5 };
+const rankValue = (multiplier: number, confidence: string | null) => multiplier * (CONFIDENCE_WEIGHT[confidence ?? ""] ?? 1);
+
+/** Every eligible plan that serves this model's release, best (largest confidence-weighted multiplier) first. */
 export function plansFor(m: CostModel, plans: CodingPlan[], region: Region = "all"): PlanPick[] {
   const out: PlanPick[] = [];
   for (const p of plans) {
@@ -23,7 +28,7 @@ export function plansFor(m: CostModel, plans: CodingPlan[], region: Region = "al
     out.push({ plan: p, multiplier: e.multiplier, basis: e.basis, confidence: e.confidence, cost: m.cost_per_task / e.multiplier });
   }
   // ties: cheaper plan, then id (matches the pipeline's best_plans)
-  return out.sort((a, b) => b.multiplier - a.multiplier || a.plan.price_usd - b.plan.price_usd || a.plan.id.localeCompare(b.plan.id));
+  return out.sort((a, b) => rankValue(b.multiplier, b.confidence) - rankValue(a.multiplier, a.confidence) || a.plan.price_usd - b.plan.price_usd || a.plan.id.localeCompare(b.plan.id));
 }
 
 export function bestPlan(m: CostModel, plans: CodingPlan[], region: Region = "all"): PlanPick | null {

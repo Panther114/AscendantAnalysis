@@ -1,10 +1,11 @@
 "use client";
 
 import { scaleLinear, scaleLog } from "d3-scale";
-import { useEffect, useMemo, useRef, useState } from "react";
+import { useRouter } from "next/navigation";
+import { useEffect, useId, useMemo, useRef, useState, useSyncExternalStore } from "react";
 
 import { labColor } from "@/lib/palette";
-import { bestPlan, EFFORT_ORDER, fmtX, pareto, type PlanPick, type Region, usdTask } from "@/lib/plans";
+import { bestPlan, EFFORT_ORDER, fmtX, pareto, type PlanPick, type Region } from "@/lib/plans";
 import type { CodingPlan, CostModel, Effort } from "@/lib/types";
 import { easeInOutCubic } from "./useTween";
 import { LabPicker } from "./LabPicker";
@@ -17,16 +18,40 @@ interface Props {
   names: Record<string, string>;
   labs: string[]; // in display order (best model first)
   initialLabs: string[];
+  labPages?: string[]; // labs that have a /labs/<slug>/ page (tooltip click-through)
 }
 
 interface Pt {
   m: CostModel;
   pick: PlanPick | null;
+  shown: boolean; // selected by the filters; unselected frontier members are drawn faded
   x: number; // current (animated) cost
   y: number;
   px: number;
   py: number;
 }
+
+interface Box {
+  x0: number;
+  y0: number;
+  x1: number;
+  y1: number;
+}
+
+interface PlacedLabel {
+  p: Pt;
+  text: string;
+  box: Box;
+  leader: [number, number, number, number] | null;
+}
+
+// Geometry measured from Artificial Analysis's "Intelligence Index vs. Cost per Task" chart.
+const HEIGHT = 384;
+const MG = { top: 5, right: 5, bottom: 53, left: 65 };
+const DOT_R = 6;
+const HIT = 40; // px: the nearest dot within this distance owns the tooltip
+const LABEL_H = 11;
+const FADED = 0.25; // frontier members the filters have switched off
 
 const r2 = (v: number) => Math.round(v * 100) / 100;
 
@@ -68,11 +93,107 @@ function tickLabel(x: number) {
   return `$${x}`;
 }
 
+/** Tooltip cost, the way AA prints it: cents, then finer below a dime. */
+function fmtCost(x: number) {
+  if (x >= 0.1) return `$${x.toFixed(2)}`;
+  if (x >= 0.01) return `$${x.toFixed(3)}`;
+  return `$${x.toPrecision(2)}`;
+}
+
 function shortName(m: CostModel) {
   return m.effort === "Default" ? m.release_name : `${m.release_name} (${m.effort})`;
 }
 
-export function CostChart({ models, plans, names, labs, initialLabs }: Props) {
+let measureCtx: CanvasRenderingContext2D | null | undefined;
+/** Rendered width of a 11px chart label (canvas, so it follows the loaded web font). */
+function labelWidth(text: string, family: string) {
+  if (measureCtx === undefined) measureCtx = typeof document !== "undefined" ? document.createElement("canvas").getContext("2d") : null;
+  if (!measureCtx) return text.length * 5.8;
+  measureCtx.font = `400 11px ${family}`;
+  return measureCtx.measureText(text).width;
+}
+
+/** Nearest point of `b` to (x, y). */
+function nearestOn(b: Box, x: number, y: number): [number, number] {
+  return [Math.min(b.x1, Math.max(b.x0, x)), Math.min(b.y1, Math.max(b.y0, y))];
+}
+
+const overlap = (a: Box, b: Box) => a.x0 < b.x1 && a.x1 > b.x0 && a.y0 < b.y1 && a.y1 > b.y0;
+
+/**
+ * Greedy label placement in AA's style: every point is named when a clear spot exists. A label
+ * sits beside its dot, or, when that is taken, further out on a hairline leader. Frontier models
+ * and the highest scorers choose first; a label never covers another label or dot.
+ */
+function placeLabels(pts: Pt[], front: Set<string>, iw: number, ih: number, family: string): PlacedLabel[] {
+  const order = [...pts].sort((a, b) => Number(front.has(b.m.slug)) - Number(front.has(a.m.slug)) || b.y - a.y);
+  const placed: PlacedLabel[] = [];
+  const taken: Box[] = [];
+  const dots = pts.map((p) => ({ p, c: [p.px, p.py] as const }));
+  const hitsDot = (b: Box, self: Pt) =>
+    dots.some(({ p, c }) => {
+      if (p === self) return false;
+      const [nx, ny] = nearestOn(b, c[0], c[1]);
+      return (nx - c[0]) ** 2 + (ny - c[1]) ** 2 < (DOT_R + 1.5) ** 2;
+    });
+  for (const p of order) {
+    const text = shortName(p.m);
+    const w = labelWidth(text, family);
+    const h = LABEL_H;
+    let chosen: PlacedLabel | null = null;
+    for (const d of [DOT_R + 3, DOT_R + 14, DOT_R + 28, DOT_R + 44]) {
+      const k = d * 0.72;
+      const cands: Box[] = [
+        { x0: p.px + d, x1: p.px + d + w, y0: p.py - h / 2, y1: p.py + h / 2 }, // right
+        { x0: p.px - d - w, x1: p.px - d, y0: p.py - h / 2, y1: p.py + h / 2 }, // left
+        { x0: p.px - w / 2, x1: p.px + w / 2, y0: p.py - d - h, y1: p.py - d }, // above
+        { x0: p.px - w / 2, x1: p.px + w / 2, y0: p.py + d, y1: p.py + d + h }, // below
+        { x0: p.px + k, x1: p.px + k + w, y0: p.py - k - h, y1: p.py - k }, // up-right
+        { x0: p.px - k - w, x1: p.px - k, y0: p.py - k - h, y1: p.py - k }, // up-left
+        { x0: p.px + k, x1: p.px + k + w, y0: p.py + k, y1: p.py + k + h }, // down-right
+        { x0: p.px - k - w, x1: p.px - k, y0: p.py + k, y1: p.py + k + h }, // down-left
+      ];
+      for (const box of cands) {
+        if (box.x0 < 0 || box.x1 > iw || box.y0 < 0 || box.y1 > ih) continue;
+        const pad = { x0: box.x0 - 1.5, x1: box.x1 + 1.5, y0: box.y0 - 1, y1: box.y1 + 1 };
+        if (taken.some((t) => overlap(pad, t)) || hitsDot(pad, p)) continue;
+        const [nx, ny] = nearestOn(box, p.px, p.py);
+        const gap = Math.hypot(nx - p.px, ny - p.py);
+        chosen = { p, text, box, leader: gap > DOT_R + 4 ? [p.px, p.py, nx, ny] : null };
+        break;
+      }
+      if (chosen) break;
+    }
+    if (chosen) {
+      placed.push(chosen);
+      taken.push(chosen.box);
+    }
+  }
+  return placed;
+}
+
+/** Log-axis tick values in AA's rhythm: 1 2 3 4 6 8 per decade (plus 5 from $1 up). */
+function logTicks(lo: number, hi: number, narrow: boolean, px: (v: number) => number) {
+  const mult = narrow ? [1, 3] : [1, 2, 3, 4, 6, 8];
+  const rank = (k: number) => (k === 1 ? 0 : k === 3 ? 1 : k === 2 || k === 5 ? 2 : 3);
+  const out: { v: number; r: number; w: number }[] = [];
+  for (let e = Math.floor(Math.log10(lo)); e <= Math.ceil(Math.log10(hi)); e++) {
+    for (const k of e >= 0 && !narrow ? [...mult, 5].sort((a, b) => a - b) : mult) {
+      const v = +(k * 10 ** e).toPrecision(12);
+      if (v >= lo && v <= hi) out.push({ v, r: rank(k), w: tickLabel(v).length * 6.2 + 10 });
+    }
+  }
+  // Powers of ten claim their space first; the rest fill in wherever the labels still fit.
+  const kept: { v: number; w: number }[] = [];
+  for (const c of [...out].sort((a, b) => a.r - b.r || a.v - b.v)) {
+    if (kept.every((k) => Math.abs(px(c.v) - px(k.v)) >= (c.w + k.w) / 2)) kept.push(c);
+  }
+  return kept.map((k) => k.v).sort((a, b) => a - b);
+}
+
+export function CostChart({ models, plans, names, labs, initialLabs, labPages = [] }: Props) {
+  const router = useRouter();
+  const clipId = useId();
   const [ref, width] = useWidth<HTMLDivElement>(960);
   const [subsidy, setSubsidy] = useState(false);
   const [region, setRegion] = useState<Region>("all");
@@ -84,6 +205,14 @@ export function CostChart({ models, plans, names, labs, initialLabs }: Props) {
   const [selEfforts, setSelEfforts] = useState<Effort[]>(efforts);
   const [hidden, setHidden] = useState<string[]>([]); // release slugs switched off
   const [hover, setHover] = useState<Pt | null>(null);
+  const [mouse, setMouse] = useState<{ x: number; y: number } | null>(null);
+  const [fontKey, setFontKey] = useState(0); // bumps once the web font is in, so label widths are right
+  const mounted = useSyncExternalStore(() => () => {}, () => true, () => false); // false while server-rendering
+  const armed = useRef(true); // touch: the first tap shows the tooltip, a second tap on it opens the lab
+
+  useEffect(() => {
+    document.fonts?.ready.then(() => setFontKey(1));
+  }, []);
 
   // Shareable state: ?plans=on starts with plan pricing, ?region=china|global, ?scale=linear.
   useEffect(() => {
@@ -99,77 +228,95 @@ export function CostChart({ models, plans, names, labs, initialLabs }: Props) {
 
   const t = useAnimated(subsidy ? 1 : 0);
   const s = useAnimated(log ? 1 : 0, 700);
+  const settled = Math.abs(t - (subsidy ? 1 : 0)) < 0.002 && Math.abs(s - (log ? 1 : 0)) < 0.002;
 
+  const base = useMemo(() => models.map((m) => ({ m, pick: bestPlan(m, plans, region) })), [models, plans, region]);
+  const isShown = (m: CostModel) => selLabs.includes(m.lab) && selEfforts.includes(m.effort) && !hidden.includes(m.release);
   const visible = useMemo(
-    () =>
-      models
-        .filter((m) => selLabs.includes(m.lab) && selEfforts.includes(m.effort) && !hidden.includes(m.release))
-        .map((m) => ({ m, pick: bestPlan(m, plans, region) })),
-    [models, plans, region, selLabs, selEfforts, hidden],
+    () => base.filter((v) => selLabs.includes(v.m.lab) && selEfforts.includes(v.m.effort) && !hidden.includes(v.m.release)),
+    [base, selLabs, selEfforts, hidden],
   );
 
-  const height = width < 560 ? 420 : 560;
-  const mg = { top: 18, right: 24, bottom: 48, left: 48 };
-  const iw = width - mg.left - mg.right;
-  const ih = height - mg.top - mg.bottom;
+  const iw = width - MG.left - MG.right;
+  const ih = HEIGHT - MG.top - MG.bottom;
 
-  // One domain spans both states, so switching subsidies on visibly slides dots left.
+  // Scales follow AA's rules: the log axis runs from the cheapest dot to ~2.4x the dearest
+  // (headroom for labels), the index axis pads one 5-point step beyond the data. One domain
+  // spans both states, so switching subsidies on visibly slides dots left.
   const allX = visible.flatMap((v) => [v.m.cost_per_task, v.pick?.cost ?? v.m.cost_per_task]);
   const lo = allX.length ? Math.min(...allX) : 0.01;
   const hi = allX.length ? Math.max(...allX) : 10;
-  const xLog = scaleLog().domain([lo / 1.5, hi * 1.5]).range([0, iw]).clamp(true);
+  const ys = visible.map((v) => v.m.intelligence);
+  const yLo = Math.max(0, Math.floor((ys.length ? Math.min(...ys) : 0) / 5) * 5 - 5);
+  const yHi = Math.ceil((ys.length ? Math.max(...ys) : 60) / 5) * 5 + 5;
+  const xLog = scaleLog().domain([lo * 0.99, hi * 2.4]).range([0, iw]).clamp(true); // clamp: linear ticks include $0
   const xLin = scaleLinear().domain([0, hi * 1.06]).range([0, iw]).nice();
-  const yMax = Math.ceil((Math.max(10, ...visible.map((v) => v.m.intelligence)) + 4) / 10) * 10;
-  const yS = scaleLinear().domain([0, yMax]).range([ih, 0]);
+  const yS = scaleLinear().domain([yLo, yHi]).range([ih, 0]);
   const X = (v: number) => r2(xLin(v) + (xLog(v) - xLin(v)) * s);
   const Y = (v: number) => r2(yS(v));
+  const yStep = (yHi - yLo) / 5 <= 12 ? 5 : 10;
+  const yTicks = Array.from({ length: Math.floor((yHi - yLo) / yStep) + 1 }, (_, i) => yLo + i * yStep);
 
-  const pts: Pt[] = visible.map(({ m, pick }) => {
-    const a = m.cost_per_task;
-    const b = pick?.cost ?? a;
-    // interpolate in log space so the slide reads as a constant-ratio move
-    const x = Math.exp(Math.log(a) + (Math.log(b) - Math.log(a)) * t);
-    return { m, pick, x, y: m.intelligence, px: X(x), py: Y(m.intelligence) };
-  });
+  const xLoD = xLog.domain()[0];
+  const xHiD = xLog.domain()[1];
+  const pts: Pt[] = useMemo(
+    () => {
+      const lx = scaleLog().domain([xLoD, xHiD]).range([0, iw]);
+      const nx = scaleLinear().domain(xLin.domain()).range([0, iw]);
+      return base.map(({ m, pick }) => {
+        const a = m.cost_per_task;
+        const b = pick?.cost ?? a;
+        // interpolate in log space so the slide reads as a constant-ratio move
+        const x = Math.exp(Math.log(a) + (Math.log(b) - Math.log(a)) * t);
+        return { m, pick, shown: isShown(m), x, y: m.intelligence, px: r2(nx(x) + (lx(x) - nx(x)) * s), py: Y(m.intelligence) };
+      });
+    },
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [base, selLabs, selEfforts, hidden, t, s, iw, xLoD, xHiD, yLo, yHi, hi],
+  );
+  const shownPts = pts.filter((p) => p.shown);
+
+  // The frontier is drawn over every model, as AA does: members the filters switched off stay
+  // on the line as faded dots, so the line never changes just because a lab was unticked.
   const front = frontier ? pareto(pts) : [];
   const frontSet = new Set(front.map((p) => p.m.slug));
   const frontPath = front.map((p, i) => `${i ? "L" : "M"}${p.px},${p.py}`).join("");
+  const fadedPts = front.filter((p) => !p.shown && p.px > -DOT_R && p.px < iw + DOT_R && p.py > -DOT_R && p.py < ih + DOT_R);
 
-  // Tick marks: decades/halves on log, d3 ticks on linear; fade between them.
   const narrow = iw < 520;
-  const logTicks = (narrow ? [0.001, 0.01, 0.1, 1, 10] : [0.001, 0.003, 0.01, 0.03, 0.1, 0.3, 1, 3, 10, 30]).filter((v) => v >= xLog.domain()[0] && v <= xLog.domain()[1]);
-  const linTicks = xLin.ticks(narrow ? 4 : 6);
+  const logT = logTicks(xLog.domain()[0], xLog.domain()[1], narrow, (v) => xLog(v));
+  const linT = xLin.ticks(narrow ? 4 : 6);
 
-  // Greedy label placement: frontier first, then by intelligence; skip overlaps.
-  const placed: { x0: number; x1: number; y0: number; y1: number }[] = [];
-  const labelPts = labels
-    ? [...pts]
-        .sort((a, b) => Number(frontSet.has(b.m.slug)) - Number(frontSet.has(a.m.slug)) || b.y - a.y)
-        .slice(0, narrow ? 12 : 60)
-        .flatMap((p) => {
-          const text = shortName(p.m);
-          const w = text.length * 6.1;
-          const flip = p.px + 8 + w > iw;
-          const x0 = flip ? p.px - 8 - w : p.px + 8;
-          const box = { x0, x1: x0 + w, y0: p.py - 14, y1: p.py - 2 };
-          if (box.y0 < -mg.top || placed.some((b) => box.x0 < b.x1 && box.x1 > b.x0 && box.y0 < b.y1 && box.y1 > b.y0)) return [];
-          if (!frontSet.has(p.m.slug) && placed.length >= (narrow ? 6 : 18)) return [];
-          placed.push(box);
-          return [{ p, text, x: flip ? p.px - 8 : p.px + 8, anchor: flip ? "end" : "start" }];
-        })
-    : [];
+  const labelPts = useMemo(() => {
+    if (!labels || !mounted || !settled) return [];
+    const family = typeof document !== "undefined" ? getComputedStyle(document.body).fontFamily : "sans-serif";
+    return placeLabels(shownPts, frontSet, iw, ih, family);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [labels, mounted, settled, pts, frontier, iw, ih, fontKey]);
 
-  const onMove = (e: React.PointerEvent<SVGRectElement>) => {
+  const pointer = (e: React.PointerEvent<SVGRectElement>) => {
     const box = e.currentTarget.getBoundingClientRect();
-    const px = ((e.clientX - box.left) / box.width) * iw;
-    const py = ((e.clientY - box.top) / box.height) * ih;
+    const k = iw / box.width;
+    const px = (e.clientX - box.left) * k;
+    const py = (e.clientY - box.top) * (ih / box.height);
     let best: Pt | null = null;
-    let bd = 18 * 18;
-    for (const p of pts) {
+    let bd = HIT * HIT;
+    for (const p of shownPts) {
       const d = (p.px - px) ** 2 + (p.py - py) ** 2;
       if (d < bd) { bd = d; best = p; }
     }
-    setHover(best);
+    const wrap = e.currentTarget.ownerSVGElement?.parentElement?.getBoundingClientRect();
+    setMouse(wrap ? { x: e.clientX - wrap.left, y: e.clientY - wrap.top } : null);
+    return best;
+  };
+  const onMove = (e: React.PointerEvent<SVGRectElement>) => setHover(pointer(e));
+  const onDown = (e: React.PointerEvent<SVGRectElement>) => {
+    const p = pointer(e);
+    armed.current = e.pointerType !== "touch" || (p != null && hover != null && p.m.slug === hover.m.slug);
+    setHover(p);
+  };
+  const onClick = () => {
+    if (armed.current && hover && labPages.includes(hover.m.lab)) router.push(`/labs/${hover.m.lab}/`);
   };
 
   const withPlan = visible.filter((v) => v.pick).length;
@@ -184,6 +331,9 @@ export function CostChart({ models, plans, names, labs, initialLabs }: Props) {
     return [...seen.values()].sort((a, b) => b.best - a.best);
   }, [models]);
   const toggleEffort = (e: Effort) => setSelEfforts((cur) => (cur.includes(e) ? cur.filter((x) => x !== e) : [...cur, e]));
+
+  const scaleName = log ? "Log" : "Linear";
+  const linkable = hover != null && labPages.includes(hover.m.lab);
 
   return (
     <div>
@@ -225,7 +375,7 @@ export function CostChart({ models, plans, names, labs, initialLabs }: Props) {
           <span className="text-ink-3">Cost axis</span>
           <Tabs options={[{ key: "log", label: "Log" }, { key: "lin", label: "Linear" }]} value={log ? "log" : "lin"} onChange={(k) => setLog(k === "log")} className="" />
         </div>
-        <Check on={frontier} set={setFrontier}>Pareto frontier</Check>
+        <Check on={frontier} set={setFrontier}>Pareto line</Check>
         <Check on={labels} set={setLabels}>Labels</Check>
         <details className="relative">
           <summary className="cursor-pointer list-none rounded-full border border-rule px-3 py-1.5 text-ink-2 hover:border-ink-3 hover:text-ink">
@@ -273,108 +423,166 @@ export function CostChart({ models, plans, names, labs, initialLabs }: Props) {
 
       <LabPicker options={labs.map((lab) => ({ lab, name: names[lab] ?? lab }))} selected={selLabs} onChange={setSelLabs} label="Labs" />
 
+      {/* legend, as on AA: the attractive quadrant and the Pareto line */}
+      <div className="mb-2 ml-1 flex flex-wrap items-center gap-x-4 gap-y-1 text-sm text-ink-2">
+        <div className="flex items-center gap-2">
+          <div className="h-3 w-4 shrink-0 rounded-sm border" style={{ background: "var(--aa-good)", borderColor: "var(--aa-good-edge)" }} />
+          <span>Most attractive quadrant</span>
+        </div>
+        <div className="flex items-center gap-2">
+          <svg aria-hidden="true" width="20" height="8" viewBox="0 0 20 8">
+            <line x1="1.25" y1="4" x2="18.75" y2="4" stroke="var(--aa-pareto)" strokeWidth="2.5" strokeDasharray="0.1 5.6" strokeLinecap="round" />
+          </svg>
+          <span>Pareto line</span>
+        </div>
+      </div>
+
       <div ref={ref} className="relative w-full">
-        <svg width={width} height={height} viewBox={`0 0 ${width} ${height}`} className="viz block h-auto max-w-full" role="img" aria-label="Intelligence Index versus cost per task for current models">
-          <g transform={`translate(${mg.left},${mg.top})`}>
-            <g className="grid">
-              {yS.ticks(6).map((v) => (
-                <g key={v} transform={`translate(0,${Y(v)})`}>
-                  <line x1={0} x2={iw} />
-                  <text x={-8} dy="0.32em" textAnchor="end">{v}</text>
-                </g>
+        <svg width={width} height={HEIGHT} viewBox={`0 0 ${width} ${HEIGHT}`} className="viz block h-auto max-w-full" role="img" aria-label="Intelligence Index versus cost per task for current models">
+          <defs>
+            <clipPath id={clipId}>
+              <rect width={Math.max(0, iw)} height={ih} />
+            </clipPath>
+          </defs>
+          <g transform={`translate(${MG.left},${MG.top})`}>
+            {/* quadrants: cheap + smart (top-left) and dear + weak (bottom-right) */}
+            <g pointerEvents="none">
+              <rect x={0} y={0} width={iw / 2} height={ih / 2} style={{ fill: "var(--aa-good)" }} />
+              <rect x={iw / 2} y={ih / 2} width={iw / 2} height={ih / 2} style={{ fill: "var(--aa-bad)" }} />
+            </g>
+
+            {/* axes: tick marks and labels only, no grid or axis lines */}
+            <g style={{ stroke: "var(--aa-tick)" }} fill="none">
+              {yTicks.map((v) => (
+                <line key={`yt${v}`} x1={-4} x2={0} y1={Y(v)} y2={Y(v)} />
               ))}
-              {logTicks.map((v) => (
-                <g key={`l${v}`} transform={`translate(${X(v)},0)`} opacity={s}>
-                  <line y1={0} y2={ih} />
-                  <text y={ih + 16} textAnchor="middle">{tickLabel(v)}</text>
-                </g>
+              {logT.map((v) => (
+                <line key={`xl${v}`} x1={X(v)} x2={X(v)} y1={ih} y2={ih + 4} opacity={s} />
               ))}
-              {linTicks.map((v) => (
-                <g key={`n${v}`} transform={`translate(${X(v)},0)`} opacity={1 - s}>
-                  <line y1={0} y2={ih} />
-                  <text y={ih + 16} textAnchor="middle">{tickLabel(v)}</text>
-                </g>
+              {linT.map((v) => (
+                <line key={`xn${v}`} x1={X(v)} x2={X(v)} y1={ih} y2={ih + 4} opacity={1 - s} />
               ))}
             </g>
-            <text x={iw / 2} y={ih + 38} textAnchor="middle">
-              {narrow
-                ? `Cost per task, USD (${log ? "log" : "linear"}) →`
-                : `${subsidy ? "Cost per Intelligence Index task through the best coding plan" : "Cost per Intelligence Index task at API list price"} (USD, ${log ? "log" : "linear"}) →`}
-            </text>
-            <text transform="rotate(-90)" x={-ih / 2} y={-34} textAnchor="middle">Artificial Analysis Intelligence Index</text>
+            <g style={{ fill: "var(--aa-tick)" }}>
+              {yTicks.map((v) => (
+                <text key={`yl${v}`} x={-10} y={Y(v)} dy="0.355em" textAnchor="end">{v}</text>
+              ))}
+              {logT.map((v) => (
+                <text key={`xlt${v}`} x={X(v)} y={ih + 10} dy="0.71em" textAnchor="middle" opacity={s}>{tickLabel(v)}</text>
+              ))}
+              {linT.map((v) => (
+                <text key={`xnt${v}`} x={X(v)} y={ih + 10} dy="0.71em" textAnchor="middle" opacity={1 - s}>{tickLabel(v)}</text>
+              ))}
+            </g>
+            <g style={{ fill: "var(--aa-axis-title)", fontSize: 13 }}>
+              <text x={iw / 2} y={ih + MG.bottom - 10} textAnchor="middle" style={{ fontSize: 13, fill: "var(--aa-axis-title)" }}>
+                {narrow
+                  ? `Cost per Task (USD, ${scaleName} Scale)`
+                  : `Cost per Task${subsidy ? " through the best coding plan" : ""} (USD, ${scaleName} Scale)`}
+              </text>
+              <text transform={`translate(${-MG.left + 10},${ih / 2}) rotate(-90)`} dy="0.355em" textAnchor="middle" style={{ fontSize: 13, fill: "var(--aa-axis-title)" }}>
+                Artificial Analysis Intelligence Index
+              </text>
+            </g>
 
             {/* slide trails: where each subsidized dot came from */}
             {t > 0.01 &&
-              pts.filter((p) => p.pick).map((p) => (
+              shownPts.filter((p) => p.pick).map((p) => (
                 <line key={`tr${p.m.slug}`} x1={X(p.m.cost_per_task)} x2={p.px} y1={p.py} y2={p.py} stroke={labColor(p.m.lab)} strokeOpacity={0.28 * t} strokeWidth={1.5} strokeDasharray="2 3" />
               ))}
 
             {front.length > 1 && (
-              <path d={frontPath} fill="none" stroke="var(--ink)" strokeOpacity={0.55} strokeWidth={1.5} strokeDasharray="5 4" strokeLinejoin="round" />
+              <g clipPath={`url(#${clipId})`} pointerEvents="none">
+                <path d={frontPath} fill="none" strokeWidth={2.5} strokeDasharray="0.1 6" strokeLinecap="round" strokeLinejoin="round" style={{ stroke: "var(--aa-pareto)" }} />
+              </g>
             )}
 
-            {pts.map((p) => {
-              const onFront = frontSet.has(p.m.slug);
-              const dim = !p.pick ? 1 - 0.6 * t : 1;
-              return (
-                <circle
-                  key={p.m.slug}
-                  cx={p.px}
-                  cy={p.py}
-                  r={onFront ? 5.5 : 4.5}
-                  fill={labColor(p.m.lab)}
-                  fillOpacity={dim}
-                  stroke="var(--surface)"
-                  strokeWidth={1.5}
-                />
-              );
-            })}
-
-            {labelPts.map((l) => (
-              <text
-                key={`lb${l.p.m.slug}`}
-                x={l.x}
-                y={l.p.py - 6}
-                textAnchor={l.anchor as "start" | "end"}
-                style={{ fill: frontSet.has(l.p.m.slug) ? "var(--ink)" : "var(--ink-2)", fontSize: 11, fontWeight: frontSet.has(l.p.m.slug) ? 600 : 400, paintOrder: "stroke", stroke: "var(--surface)", strokeWidth: 3 }}
-              >
-                {l.text}
-              </text>
+            {fadedPts.map((p) => (
+              <circle key={`f${p.m.slug}`} cx={p.px} cy={p.py} r={DOT_R} fill={labColor(p.m.lab)} opacity={FADED} pointerEvents="none" />
             ))}
 
-            {hover && <circle cx={hover.px} cy={hover.py} r={9} fill="none" stroke="var(--ink)" strokeWidth={1.5} />}
-            <rect width={iw} height={ih} fill="transparent" onPointerMove={onMove} onPointerLeave={() => setHover(null)} />
+            {shownPts.map((p) => {
+              const dim = !p.pick ? 1 - 0.6 * t : 1;
+              return <circle key={p.m.slug} cx={p.px} cy={p.py} r={DOT_R} fill={labColor(p.m.lab)} opacity={dim} pointerEvents="none" />;
+            })}
+
+            {/* labels: leader hairline when the name sits away from its dot; the hovered name goes solid */}
+            <g pointerEvents="none" aria-hidden="true" style={{ transition: "opacity 200ms" }} opacity={settled ? 1 : 0}>
+              {labelPts.map((l) => (
+                <g key={`lb${l.p.m.slug}`}>
+                  {l.leader && <line x1={l.leader[0]} y1={l.leader[1]} x2={l.leader[2]} y2={l.leader[3]} strokeWidth={1} style={{ stroke: "var(--aa-leader)" }} />}
+                  <text
+                    x={l.box.x0}
+                    y={l.box.y0}
+                    dominantBaseline="hanging"
+                    strokeWidth={3}
+                    strokeLinejoin="round"
+                    style={{
+                      fill: hover?.m.slug === l.p.m.slug ? "var(--aa-label-hover)" : "var(--aa-label)",
+                      stroke: "var(--aa-halo)",
+                      paintOrder: "stroke",
+                      fontSize: 11,
+                      fontWeight: 400,
+                    }}
+                  >
+                    {l.text}
+                  </text>
+                </g>
+              ))}
+            </g>
+
+            <rect
+              width={Math.max(0, iw)}
+              height={ih}
+              fill="transparent"
+              style={{ cursor: hover ? "pointer" : "default", pointerEvents: "all", touchAction: "pan-y" }}
+              onPointerMove={onMove}
+              onPointerDown={onDown}
+              onPointerLeave={() => { setHover(null); setMouse(null); }}
+              onClick={onClick}
+            />
           </g>
         </svg>
 
-        {hover && (
+        {hover && mouse && (
           <div
-            className="pointer-events-none absolute z-10 w-[270px] rounded-lg border border-rule bg-raised px-3 py-2 text-xs shadow-lg"
-            style={{ left: Math.max(0, Math.min(hover.px + mg.left + 14, width - 282)), top: Math.max(0, hover.py + mg.top - 24) }}
+            className="pointer-events-none absolute z-10 w-max"
+            style={{ left: mouse.x + 12 + 250 > width ? Math.max(0, mouse.x - 12 - 250) : mouse.x + 12, top: mouse.y + 12 }}
           >
-            <p className="font-medium text-ink">{hover.m.name}</p>
-            <p className="mb-1.5 text-ink-3">{names[hover.m.lab] ?? hover.m.lab}{hover.m.open_weights ? " · open weights" : ""}</p>
-            <Row k="Intelligence Index" v={hover.m.intelligence.toFixed(1) + (hover.m.estimated ? "*" : "")} />
-            <Row k="API cost per task" v={usdTask(hover.m.cost_per_task)} />
-            {hover.m.price_in != null && <Row k="API $/1M in · out" v={`$${hover.m.price_in} · $${hover.m.price_out}`} />}
-            {hover.pick ? (
-              <>
-                <div className="my-1.5 border-t border-rule-soft" />
-                <Row k="Best plan" v={`${hover.pick.plan.product} ${hover.pick.plan.plan}`} />
-                <Row k="Plan price" v={`$${hover.pick.plan.price_usd.toFixed(hover.pick.plan.price_usd % 1 ? 2 : 0)}/mo · ${hover.pick.plan.region === "china" ? "China" : "global"}`} />
-                <Row k="Subsidy" v={fmtX(hover.pick.multiplier)} />
-                <Row k="Plan cost per task" v={usdTask(hover.pick.cost)} strong />
-                {hover.pick.confidence && <p className="mt-1 text-[11px] text-ink-3">Confidence: {hover.pick.confidence}</p>}
-              </>
-            ) : (
-              <p className="mt-1.5 text-ink-3">No eligible coding plan{region !== "all" ? ` in ${region === "china" ? "China" : "global"} plans` : ""}: API price only.</p>
-            )}
+            <div
+              className="max-w-[320px] rounded-md border p-2 text-xs shadow-sm"
+              style={{ background: "var(--aa-tip-bg)", borderColor: "var(--aa-tip-border)", color: "var(--aa-tip-ink)" }}
+            >
+              <div className="mb-1 flex items-center gap-1.5 font-medium">
+                <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: labColor(hover.m.lab) }} />
+                <span className="text-balance">{hover.m.name}</span>
+              </div>
+              <div className="flex flex-col gap-1">
+                <TipRow k={`Cost per Task (USD, ${scaleName} Scale)`} v={fmtCost(hover.pick && subsidy ? hover.pick.cost : hover.m.cost_per_task)} />
+                <TipRow k="Artificial Analysis Intelligence Index" v={`${Math.round(hover.m.intelligence)}${hover.m.estimated ? "*" : ""}`} />
+                {subsidy && hover.pick && (
+                  <>
+                    <TipRow k="API cost per task" v={fmtCost(hover.m.cost_per_task)} />
+                    <TipRow k="Best plan" v={`${hover.pick.plan.product} ${hover.pick.plan.plan}`} />
+                    <TipRow k="Plan price" v={`$${hover.pick.plan.price_usd.toFixed(hover.pick.plan.price_usd % 1 ? 2 : 0)}/mo · ${hover.pick.plan.region === "china" ? "China" : "global"}`} />
+                    <TipRow k="Subsidy" v={fmtX(hover.pick.multiplier)} />
+                    {hover.pick.confidence && <TipRow k="Confidence" v={hover.pick.confidence} />}
+                  </>
+                )}
+                {subsidy && !hover.pick && (
+                  <p style={{ color: "var(--aa-tip-hint)" }}>No eligible coding plan{region !== "all" ? ` in ${region === "china" ? "China" : "global"} plans` : ""}: API price only.</p>
+                )}
+              </div>
+              {linkable && (
+                <div className="mt-1 text-[10px]" style={{ color: "var(--aa-tip-hint)" }}>Click for more info</div>
+              )}
+            </div>
           </div>
         )}
       </div>
       <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-ink-3">
-        <span className="flex items-center gap-1.5"><svg width="22" height="6" aria-hidden="true"><line x1="0" x2="22" y1="3" y2="3" stroke="var(--ink)" strokeOpacity="0.55" strokeWidth="1.5" strokeDasharray="5 4" /></svg>Pareto frontier (nothing is both cheaper and smarter)</span>
-        <span>Faded dots: no eligible plan, so they keep their API price</span>
+        <span>Faded dots on the line: cheapest-and-smartest models your filters hide</span>
+        {subsidy && <span>Paler dots: no eligible plan, so they keep their API price</span>}
         <span>* estimated index</span>
       </p>
     </div>
@@ -390,11 +598,11 @@ function Check({ on, set, children }: { on: boolean; set: (v: boolean) => void; 
   );
 }
 
-function Row({ k, v, strong }: { k: string; v: string; strong?: boolean }) {
+function TipRow({ k, v }: { k: string; v: string }) {
   return (
-    <p className="flex justify-between gap-3 py-px">
-      <span className="text-ink-3">{k}</span>
-      <span className={`tabular text-right ${strong ? "font-semibold text-ink" : "text-ink"}`}>{v}</span>
-    </p>
+    <div className="flex items-start justify-between gap-3">
+      <span className="text-balance leading-tight">{k}</span>
+      <span className="shrink-0 whitespace-nowrap font-medium leading-tight" style={{ color: "var(--aa-tip-strong)" }}>{v}</span>
+    </div>
   );
 }

@@ -37,6 +37,16 @@ def test_best_plan_takes_largest_multiplier_then_cheaper():
     assert best["v"] == {"plan": "c", "multiplier": 8, "cost_per_task": 0.25}
 
 
+def test_best_plan_discounts_low_confidence_multipliers():
+    rows = [{"slug": "v", "release": "r1", "cost_per_task": 2.0}]
+    # a derived x9 (worth 7.65) must not beat an official x8; it still wins once it is clearly larger
+    ps = [_plan("generic", 30, 9, confidence="derived"), _plan("official", 10, 8, confidence="official")]
+    assert plans.best_plans(rows, ps)["v"]["plan"] == "official"
+    ps = [_plan("generic", 30, 12, confidence="derived"), _plan("official", 10, 8, confidence="official")]
+    best = plans.best_plans(rows, ps)["v"]
+    assert best["plan"] == "generic" and best["multiplier"] == 12  # raw figure is reported, not the discounted one
+
+
 def test_plan_only_reprices_its_own_lineup():
     rows = [{"slug": "v", "release": "other", "cost_per_task": 2.0}]
     assert plans.best_plans(rows, [_plan("a", 20, 50)]) == {}
