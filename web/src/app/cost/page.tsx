@@ -24,7 +24,7 @@ function price(p: CodingPlan) {
 export default function CostPage() {
   // Labs ordered by their best model, so the picker reads like the chart top-down.
   const bestByLab = new Map<string, number>();
-  for (const m of cost.models) bestByLab.set(m.lab, Math.max(bestByLab.get(m.lab) ?? 0, m.intelligence));
+  for (const m of [...cost.models, ...cost.archive]) bestByLab.set(m.lab, Math.max(bestByLab.get(m.lab) ?? 0, m.intelligence));
   const labs = [...bestByLab.entries()].sort((a, b) => b[1] - a[1]).map(([l]) => l);
 
   // One row per release: its highest-scoring variant.
@@ -36,7 +36,7 @@ export default function CostPage() {
   const rows = [...heads.values()].sort((a, b) => b.intelligence - a.intelligence);
 
   const meta = Object.fromEntries(
-    [...heads.keys()].map((r) => [r, { date: releases[r]?.date ?? cost.date, competitiveness: releases[r]?.competitiveness ?? null }]),
+    [...new Set([...heads.keys(), ...cost.archive.map((m) => m.release)])].map((r) => [r, { date: releases[r]?.date ?? cost.date, competitiveness: releases[r]?.competitiveness ?? null }]),
   );
 
   const checkBy = new Map((cost.check?.plans ?? []).map((p) => [p.id, p]));
@@ -60,7 +60,7 @@ export default function CostPage() {
 
       <section id="chart" className="scroll-mt-32">
         <Card title="Intelligence vs. cost per task" keyColor="orange" subtitle={`${cost.models.length} current model variants with a measured cost per task · Up and left is better`}>
-          <CostChart models={cost.models} plans={cost.plans} names={labNames()} labs={labs} initialLabs={labs} labPages={leaderboard.map((l) => l.lab)} meta={meta} today={cost.date} />
+          <CostChart models={cost.models} archive={cost.archive} plans={cost.plans} names={labNames()} labs={labs} initialLabs={labs} labPages={leaderboard.map((l) => l.lab)} meta={meta} today={cost.date} />
           <InfoNote>
             Cost per task is Artificial Analysis&apos;s cost to run its Intelligence Index divided by the number of tasks, at each
             model&apos;s API list price. Through a plan it is divided by that plan&apos;s subsidy for the model: the API-equivalent value

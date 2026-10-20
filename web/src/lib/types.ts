@@ -269,6 +269,7 @@ export interface CostData {
   fx: Record<string, number>;
   definition: string | null;
   models: CostModel[];
+  archive: CostModel[]; // retired models that still have a documented cost per task
   plans: CodingPlan[];
   best: Record<string, { plan: string; multiplier: number; cost_per_task: number }>;
   check: PlanCheck | null;

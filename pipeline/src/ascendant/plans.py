@@ -67,8 +67,11 @@ def load_plans() -> dict[str, Any]:
     return _plain(yaml.safe_load(PLANS_FILE.read_text(encoding="utf-8")) or {})
 
 
-def models(api: dict, board: dict, cfg: Config) -> list[dict]:
-    """Current models with a measured cost per task, one row per AA variant (reasoning effort)."""
+def models(api: dict, board: dict, cfg: Config, *, deprecated: bool = False) -> list[dict]:
+    """Models with a measured cost per task, one row per AA variant (reasoning effort).
+
+    Current models by default; `deprecated=True` returns the retired ones instead (the archive).
+    """
     aliases: dict[str, str] = cfg.labs.get("aliases") or {}
     creator = {r["slug"]: aliases.get(r["model_creator"]["slug"], r["model_creator"]["slug"])
                for r in api["data"]}
@@ -79,7 +82,7 @@ def models(api: dict, board: dict, cfg: Config) -> list[dict]:
         cpt = m.get("intelligenceIndexCostPerTask")
         intel = m.get("intelligenceIndex")
         slug = m["slug"]
-        if m.get("deprecated") or not cpt or cpt <= 0 or intel is None or slug not in creator:
+        if bool(m.get("deprecated")) != deprecated or not cpt or cpt <= 0 or intel is None or slug not in creator:
             continue
         release = release_of.get(slug, slug)
         rows.append({
@@ -201,6 +204,7 @@ def build(api: dict, board: dict, cfg: Config, snapshot_date: dt.date) -> dict:
         "fx": raw.get("fx") or {},
         "definition": raw.get("definition"),
         "models": rows,
+        "archive": models(api, board, cfg, deprecated=True),
         "plans": plans,
         "best": best_plans(rows, plans),
         "check": check,

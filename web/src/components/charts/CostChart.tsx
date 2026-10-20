@@ -14,6 +14,7 @@ import { useWidth } from "./useWidth";
 
 interface Props {
   models: CostModel[];
+  archive: CostModel[]; // retired models with a documented cost per task
   plans: CodingPlan[];
   names: Record<string, string>;
   labs: string[]; // in display order (best model first)
@@ -31,7 +32,9 @@ export interface ReleaseMeta {
 interface Pt {
   m: CostModel;
   pick: PlanPick | null;
-  shown: boolean; // selected by the filters; unselected frontier members are drawn faded
+  shown: boolean; // selected by the filters and inside the age window; unselected frontier members are drawn faded
+  fit: boolean; // selected by the filters (the age window aside)
+  inAge: boolean; // inside the release-age window
   x: number; // current (animated) cost
   y: number;
   px: number;
@@ -217,7 +220,7 @@ function logTicks(lo: number, hi: number, narrow: boolean, px: (v: number) => nu
   return kept.map((k) => k.v).sort((a, b) => a - b);
 }
 
-export function CostChart({ models: allModels, plans, names, labs, initialLabs, labPages = [], meta, today }: Props) {
+export function CostChart({ models: current, archive, plans, names, labs, initialLabs, labPages = [], meta, today }: Props) {
   const router = useRouter();
   const clipId = useId();
   const [ref, width] = useWidth<HTMLDivElement>(960);
@@ -227,6 +230,9 @@ export function CostChart({ models: allModels, plans, names, labs, initialLabs, 
   const [frontier, setFrontier] = useState(true);
   const [labels, setLabels] = useState(true);
   const [selLabs, setSelLabs] = useState<string[]>(initialLabs);
+  const [past, setPast] = useState(false); // include retired models
+  const allModels = useMemo(() => (past ? [...current, ...archive] : current), [past, current, archive]);
+  const retired = useMemo(() => new Set(archive.map((m) => m.slug)), [archive]);
   const [relevantOnly, setRelevantOnly] = useState(false);
   const [ageMode, setAgeMode] = useState(false);
   const [back, setBack] = useState(0); // time travel: days before the snapshot
@@ -267,6 +273,17 @@ export function CostChart({ models: allModels, plans, names, labs, initialLabs, 
   // The lineup on the chosen day: every tracked model that had launched by then.
   const models = useMemo(() => allModels.filter((m) => (relDay.get(m.release) ?? todayN) <= asOfN), [allModels, relDay, asOfN, todayN]);
   const maxAge = useMemo(() => Math.max(1, ...models.map((m) => asOfN - (relDay.get(m.release) ?? asOfN))), [models, relDay, asOfN]);
+  // Release-age window (age mode): thumbs live in the gradient's own sqrt space, 0..1000, so they
+  // line up with the legend and keep their place when the chart date moves.
+  const [rng, setRng] = useState<[number, number]>([0, 1000]);
+  const windowed = ageMode && (rng[0] > 0 || rng[1] < 1000);
+  const ageLoD = maxAge * (rng[0] / 1000) ** 2;
+  const ageHiD = maxAge * (rng[1] / 1000) ** 2;
+  const inAge = (m: CostModel) => {
+    if (!ageMode) return true;
+    const age = asOfN - (relDay.get(m.release) ?? asOfN);
+    return age >= ageLoD && age <= ageHiD;
+  };
   const dotColor = (m: CostModel) => (ageMode ? ageColor(ageFrac(asOfN - (relDay.get(m.release) ?? asOfN), maxAge)) : labColor(m.lab));
 
   const t = useAnimated(subsidy ? 1 : 0);
@@ -351,17 +368,23 @@ export function CostChart({ models: allModels, plans, names, labs, initialLabs, 
         const b = pick?.cost ?? a;
         // interpolate in log space so the slide reads as a constant-ratio move
         const x = Math.exp(Math.log(a) + (Math.log(b) - Math.log(a)) * t);
-        return { m, pick, shown: isShown(m), x, y: m.intelligence, px: r2(Math.min(nx(x), iw - DOT_R - 1) + (lx(x) - Math.min(nx(x), iw - DOT_R - 1)) * s), py: Y(m.intelligence) };
+        const fit = isShown(m);
+        const ia = inAge(m);
+        return { m, pick, fit, inAge: ia, shown: fit && ia, x, y: m.intelligence, px: r2(Math.min(nx(x), iw - DOT_R - 1) + (lx(x) - Math.min(nx(x), iw - DOT_R - 1)) * s), py: Y(m.intelligence) };
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [base, selLabs, selEfforts, hidden, relevantOnly, relevant, t, s, iw, xLoD, xHiD, yLo, yHi, hi, hiLin],
+    [base, selLabs, selEfforts, hidden, relevantOnly, relevant, t, s, iw, xLoD, xHiD, yLo, yHi, hi, hiLin, ageMode, ageLoD, ageHiD, asOfN, relDay],
   );
   const shownPts = pts.filter((p) => p.shown);
 
   // The frontier is drawn over every model, as AA does: members the filters switched off stay
   // on the line as faded dots, so the line never changes just because a lab was unticked.
-  const front = frontier ? pareto(pts) : [];
+  // Inside an age window the line is the frontier of the models still on the chart; the frontier of
+  // the whole lineup stays behind it as a faint mark, so the two can be compared as the window moves.
+  const allFront = frontier ? pareto(pts) : [];
+  const front = windowed ? pareto(pts.filter((p) => p.inAge)) : allFront;
+  const ghostPath = windowed ? allFront.map((p, i) => `${i ? "L" : "M"}${p.px},${p.py}`).join("") : "";
   const frontSet = new Set(front.map((p) => p.m.slug));
   const frontPath = front.map((p, i) => `${i ? "L" : "M"}${p.px},${p.py}`).join("");
   const fadedPts = front.filter((p) => !p.shown && p.px > -DOT_R && p.px < iw + DOT_R && p.py > -DOT_R && p.py < ih + DOT_R);
@@ -403,8 +426,9 @@ export function CostChart({ models: allModels, plans, names, labs, initialLabs, 
     if (armed.current && hover && labPages.includes(hover.m.lab)) router.push(`/labs/${hover.m.lab}/`);
   };
 
-  const withPlan = visible.filter((v) => v.pick).length;
-  const mults = visible.map((v) => v.pick?.multiplier).filter((x): x is number => x != null).sort((a, b) => a - b);
+  const inView = visible.filter((v) => inAge(v.m));
+  const withPlan = inView.filter((v) => v.pick).length;
+  const mults = inView.map((v) => v.pick?.multiplier).filter((x): x is number => x != null).sort((a, b) => a - b);
   const median = mults.length ? mults[Math.floor(mults.length / 2)] : null;
   const releases = useMemo(() => {
     const seen = new Map<string, { release: string; name: string; lab: string; best: number }>();
@@ -450,7 +474,7 @@ export function CostChart({ models: allModels, plans, names, labs, initialLabs, 
           />
         </div>
         <p className="tabular ml-auto text-xs text-ink-3">
-          {withPlan} of {visible.length} shown variants have a plan{median != null && <> · median subsidy {fmtX(median)}</>}
+          {withPlan} of {inView.length} shown variants have a plan{median != null && <> · median subsidy {fmtX(median)}</>}
         </p>
       </div>
 
@@ -497,6 +521,15 @@ export function CostChart({ models: allModels, plans, names, labs, initialLabs, 
           className={`rounded-full border px-3 py-1.5 transition-colors ${relevantOnly ? "border-ink bg-ink text-page" : "border-rule text-ink-2 hover:border-ink-3 hover:text-ink"}`}
         >
           Relevant models only{relevantOnly && <span className="tabular ml-1.5 opacity-70">{relevant.size}</span>}
+        </button>
+        <button
+          type="button"
+          aria-pressed={past}
+          onClick={() => setPast((v) => !v)}
+          title="Add every retired model that has a documented release date, lab, index score and cost per task"
+          className={`rounded-full border px-3 py-1.5 transition-colors ${past ? "border-ink bg-ink text-page" : "border-rule text-ink-2 hover:border-ink-3 hover:text-ink"}`}
+        >
+          All past models{past && <span className="tabular ml-1.5 opacity-70">+{archive.length}</span>}
         </button>
         <button
           type="button"
@@ -571,11 +604,38 @@ export function CostChart({ models: allModels, plans, names, labs, initialLabs, 
       {ageMode && (
         <div className="mb-3 ml-1 max-w-[520px] text-xs text-ink-3">
           <div className="mb-1">Dot color: release age before {fmtLongDate(asOfN)}</div>
-          <div className="relative h-2.5 rounded-full" style={{ background: `linear-gradient(to right, ${Array.from({ length: 21 }, (_, i) => ageColor(i / 20)).join(",")})` }} />
+          <div className="age-range relative h-5">
+            <div className="absolute inset-x-0 top-1/2 h-2.5 -translate-y-1/2 overflow-hidden rounded-full" style={{ background: `linear-gradient(to right, ${Array.from({ length: 21 }, (_, i) => ageColor(i / 20)).join(",")})` }}>
+              <div className="absolute inset-y-0 left-0 bg-page/75" style={{ width: `${rng[0] / 10}%` }} />
+              <div className="absolute inset-y-0 right-0 bg-page/75" style={{ width: `${100 - rng[1] / 10}%` }} />
+            </div>
+            <input
+              type="range" min={0} max={1000} step={1} value={rng[0]} aria-label="Newest release shown"
+              aria-valuetext={`${fmtLongDate(asOfN - Math.round(ageLoD))}`}
+              onChange={(e) => setRng(([, hi]) => [Math.min(Number(e.target.value), hi - 12), hi])}
+            />
+            <input
+              type="range" min={0} max={1000} step={1} value={rng[1]} aria-label="Oldest release shown"
+              aria-valuetext={`${fmtLongDate(asOfN - Math.round(ageHiD))}`}
+              onChange={(e) => setRng(([lo]) => [lo, Math.max(Number(e.target.value), lo + 12)])}
+            />
+          </div>
           <div className="relative mt-1 h-4">
             {AGE_TICKS.filter(([d]) => d === 0 || d <= maxAge).map(([d, label]) => (
               <span key={d} className="absolute -translate-x-1/2 whitespace-nowrap first:translate-x-0" style={{ left: `${ageFrac(d, maxAge) * 100}%` }}>{label}</span>
             ))}
+          </div>
+          <div className="mt-1 flex flex-wrap items-center gap-x-3 gap-y-1">
+            <span className="tabular text-ink-2">
+              {windowed
+                ? `Showing releases from ${fmtLongDate(asOfN - Math.round(ageHiD))} to ${fmtLongDate(asOfN - Math.round(ageLoD))} · ${inView.length} models`
+                : "Drag either end to keep only releases in an age window"}
+            </span>
+            {windowed && (
+              <button type="button" onClick={() => setRng([0, 1000])} className="rounded-full border border-rule px-2.5 py-0.5 text-ink-2 hover:border-ink-3 hover:text-ink">
+                Reset
+              </button>
+            )}
           </div>
         </div>
       )}
@@ -634,9 +694,15 @@ export function CostChart({ models: allModels, plans, names, labs, initialLabs, 
                 <line key={`tr${p.m.slug}`} x1={Math.min(X(p.m.cost_per_task), iw - DOT_R - 1)} x2={p.px} y1={p.py} y2={p.py} stroke={dotColor(p.m)} strokeOpacity={0.28 * t} strokeWidth={1.5} strokeDasharray="2 3" />
               ))}
 
+            {windowed && allFront.length > 1 && (
+              <g clipPath={`url(#${clipId})`} pointerEvents="none">
+                <path d={ghostPath} fill="none" strokeWidth={1.5} strokeDasharray="1 5" strokeLinecap="round" strokeLinejoin="round" opacity={0.45} style={{ stroke: "var(--aa-pareto)" }} />
+              </g>
+            )}
+
             {front.length > 1 && (
               <g clipPath={`url(#${clipId})`} pointerEvents="none">
-                <path d={frontPath} fill="none" strokeWidth={2.5} strokeDasharray="0.1 6" strokeLinecap="round" strokeLinejoin="round" style={{ stroke: "var(--aa-pareto)" }} />
+                <path key={front.map((p) => p.m.slug).join()} className={windowed ? "pf-in" : undefined} d={frontPath} fill="none" strokeWidth={2.5} strokeDasharray="0.1 6" strokeLinecap="round" strokeLinejoin="round" style={{ stroke: "var(--aa-pareto)" }} />
               </g>
             )}
 
@@ -644,9 +710,20 @@ export function CostChart({ models: allModels, plans, names, labs, initialLabs, 
               <circle key={`f${p.m.slug}`} cx={p.px} cy={p.py} r={DOT_R} fill={dotColor(p.m)} opacity={FADED} pointerEvents="none" />
             ))}
 
-            {shownPts.map((p) => {
-              const dim = !p.pick ? 1 - 0.6 * t : 1;
-              return <circle key={p.m.slug} cx={p.px} cy={p.py} r={DOT_R} fill={dotColor(p.m)} opacity={dim} pointerEvents="none" />;
+            {pts.filter((p) => p.fit).map((p) => {
+              const dim = p.inAge ? (!p.pick ? 1 - 0.6 * t : 1) : 0;
+              return (
+                <circle
+                  key={p.m.slug}
+                  cx={p.px}
+                  cy={p.py}
+                  r={p.inAge ? DOT_R : 0}
+                  fill={dotColor(p.m)}
+                  opacity={dim}
+                  pointerEvents="none"
+                  style={{ transition: "r 280ms cubic-bezier(.3,1.4,.5,1), opacity 220ms ease-out, fill 200ms" }}
+                />
+              );
             })}
 
             {/* labels: leader hairline when the name sits away from its dot; the hovered name goes solid */}
@@ -703,6 +780,7 @@ export function CostChart({ models: allModels, plans, names, labs, initialLabs, 
               <div className="flex flex-col gap-1">
                 <TipRow k={`Cost per Task (USD, ${scaleName} Scale)`} v={fmtCost(hover.pick && subsidy ? hover.pick.cost : hover.m.cost_per_task)} />
                 <TipRow k="Artificial Analysis Intelligence Index" v={`${Math.round(hover.m.intelligence)}${hover.m.estimated ? "*" : ""}`} />
+                {retired.has(hover.m.slug) && <TipRow k="Status" v="Retired" />}
                 {meta[hover.m.release] && <TipRow k="Released" v={fmtLongDate(relDay.get(hover.m.release) ?? asOfN)} />}
                 {subsidy && hover.pick && (
                   <>
@@ -725,6 +803,7 @@ export function CostChart({ models: allModels, plans, names, labs, initialLabs, 
         )}
       </div>
       <p className="mt-2 flex flex-wrap gap-x-4 gap-y-1 text-xs text-ink-3">
+        {windowed && <span>Dotted line behind: the frontier of every model, for comparison</span>}
         <span>Faded dots on the line: cheapest-and-smartest models your filters hide</span>
         {subsidy && <span>Paler dots: no eligible plan, so they keep their API price</span>}
         <span>* estimated index</span>
