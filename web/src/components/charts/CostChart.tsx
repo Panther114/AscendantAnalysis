@@ -19,6 +19,13 @@ interface Props {
   labs: string[]; // in display order (best model first)
   initialLabs: string[];
   labPages?: string[]; // labs that have a /labs/<slug>/ page (tooltip click-through)
+  meta: Record<string, ReleaseMeta>; // per release: launch date and competitiveness
+  today: string; // ISO date of the data snapshot: the right end of the time slider
+}
+
+export interface ReleaseMeta {
+  date: string;
+  competitiveness: number | null;
 }
 
 interface Pt {
@@ -52,6 +59,25 @@ const DOT_R = 4.5;
 const HIT = 40; // px: the nearest dot within this distance owns the tooltip
 const LABEL_H = 11;
 const FADED = 0.25; // frontier members the filters have switched off
+
+const DAY = 864e5;
+const dayNum = (iso: string) => Math.floor(Date.parse(`${iso}T00:00:00Z`) / DAY);
+const RELEVANT_PER_LAB = 2; // a lab's most competitive releases kept by "Relevant only"
+
+// Release-age gradient, newest to oldest: warm to cool, legible on light and dark pages.
+const AGE_STOPS = ["#e8362d", "#f59e0b", "#3fae5a", "#1a8fb5", "#5b3fb5"].map((h) => [1, 3, 5].map((i) => parseInt(h.slice(i, i + 2), 16)));
+/** u in [0, 1] (0 = just released) to a color. */
+function ageColor(u: number) {
+  const k = Math.min(1, Math.max(0, u)) * (AGE_STOPS.length - 1);
+  const i = Math.min(AGE_STOPS.length - 2, Math.floor(k));
+  const f = k - i;
+  const c = AGE_STOPS[i].map((v, j) => Math.round(v + (AGE_STOPS[i + 1][j] - v) * f));
+  return `rgb(${c[0]},${c[1]},${c[2]})`;
+}
+const ageFrac = (age: number, maxAge: number) => (maxAge > 0 ? Math.sqrt(Math.min(1, Math.max(0, age / maxAge))) : 0);
+const AGE_TICKS: [number, string][] = [[0, "Release day"], [30, "1 mo"], [90, "3 mo"], [180, "6 mo"], [365, "1 yr"], [730, "2 yr"]];
+
+const fmtLongDate = (n: number) => new Date(n * DAY).toLocaleDateString("en-US", { year: "numeric", month: "short", day: "numeric", timeZone: "UTC" });
 
 const r2 = (v: number) => Math.round(v * 100) / 100;
 
@@ -191,7 +217,7 @@ function logTicks(lo: number, hi: number, narrow: boolean, px: (v: number) => nu
   return kept.map((k) => k.v).sort((a, b) => a - b);
 }
 
-export function CostChart({ models, plans, names, labs, initialLabs, labPages = [] }: Props) {
+export function CostChart({ models: allModels, plans, names, labs, initialLabs, labPages = [], meta, today }: Props) {
   const router = useRouter();
   const clipId = useId();
   const [ref, width] = useWidth<HTMLDivElement>(960);
@@ -201,7 +227,10 @@ export function CostChart({ models, plans, names, labs, initialLabs, labPages = 
   const [frontier, setFrontier] = useState(true);
   const [labels, setLabels] = useState(true);
   const [selLabs, setSelLabs] = useState<string[]>(initialLabs);
-  const efforts = useMemo(() => EFFORT_ORDER.filter((e) => models.some((m) => m.effort === e)), [models]);
+  const [relevantOnly, setRelevantOnly] = useState(false);
+  const [ageMode, setAgeMode] = useState(false);
+  const [back, setBack] = useState(0); // time travel: days before the snapshot
+  const efforts = useMemo(() => EFFORT_ORDER.filter((e) => allModels.some((m) => m.effort === e)), [allModels]);
   const [selEfforts, setSelEfforts] = useState<Effort[]>(efforts);
   const [hidden, setHidden] = useState<string[]>([]); // release slugs switched off
   const [hover, setHover] = useState<Pt | null>(null);
@@ -226,15 +255,57 @@ export function CostChart({ models, plans, names, labs, initialLabs, labPages = 
     return () => clearTimeout(id);
   }, []);
 
+  const todayN = dayNum(today);
+  const relDay = useMemo(() => {
+    const out = new Map<string, number>();
+    for (const m of allModels) out.set(m.release, meta[m.release] ? dayNum(meta[m.release].date) : todayN);
+    return out;
+  }, [allModels, meta, todayN]);
+  const firstN = useMemo(() => Math.min(todayN, ...relDay.values()), [relDay, todayN]);
+  const span = Math.max(1, todayN - firstN);
+  const asOfN = todayN - Math.min(back, span);
+  // The lineup on the chosen day: every tracked model that had launched by then.
+  const models = useMemo(() => allModels.filter((m) => (relDay.get(m.release) ?? todayN) <= asOfN), [allModels, relDay, asOfN, todayN]);
+  const maxAge = useMemo(() => Math.max(1, ...models.map((m) => asOfN - (relDay.get(m.release) ?? asOfN))), [models, relDay, asOfN]);
+  const dotColor = (m: CostModel) => (ageMode ? ageColor(ageFrac(asOfN - (relDay.get(m.release) ?? asOfN), maxAge)) : labColor(m.lab));
+
   const t = useAnimated(subsidy ? 1 : 0);
   const s = useAnimated(log ? 1 : 0, 700);
   const settled = Math.abs(t - (subsidy ? 1 : 0)) < 0.002 && Math.abs(s - (log ? 1 : 0)) < 0.002;
 
   const base = useMemo(() => models.map((m) => ({ m, pick: bestPlan(m, plans, region) })), [models, plans, region]);
-  const isShown = (m: CostModel) => selLabs.includes(m.lab) && selEfforts.includes(m.effort) && !hidden.includes(m.release);
+
+  // "Relevant" models, decided from the whole lineup (never the filters), deterministically:
+  // the Pareto frontier at the current pricing, plus each lab's most competitive releases.
+  // A release off the frontier is represented by its highest reasoning effort alone.
+  const relevant = useMemo(() => {
+    const out = new Set<string>();
+    const cost = (b: (typeof base)[number]) => (subsidy ? b.pick?.cost ?? b.m.cost_per_task : b.m.cost_per_task);
+    for (const p of pareto(base.map((b) => ({ x: cost(b), y: b.m.intelligence, slug: b.m.slug })))) out.add(p.slug);
+    const byRelease = new Map<string, CostModel[]>();
+    for (const { m } of base) byRelease.set(m.release, [...(byRelease.get(m.release) ?? []), m]);
+    const byLab = new Map<string, { release: string; comp: number; best: number }[]>();
+    for (const [release, vs] of byRelease) {
+      const row = { release, comp: meta[release]?.competitiveness ?? -1, best: Math.max(...vs.map((v) => v.intelligence)) };
+      byLab.set(vs[0].lab, [...(byLab.get(vs[0].lab) ?? []), row]);
+    }
+    for (const rows of byLab.values()) {
+      rows.sort((a, b) => b.comp - a.comp || b.best - a.best || a.release.localeCompare(b.release));
+      for (const { release } of rows.slice(0, RELEVANT_PER_LAB)) {
+        const vs = [...(byRelease.get(release) ?? [])];
+        if (vs.some((v) => out.has(v.slug))) continue;
+        vs.sort((a, b) => EFFORT_ORDER.indexOf(a.effort) - EFFORT_ORDER.indexOf(b.effort) || b.intelligence - a.intelligence || a.slug.localeCompare(b.slug));
+        out.add(vs[0].slug);
+      }
+    }
+    return out;
+  }, [base, subsidy, meta]);
+  const isShown = (m: CostModel) =>
+    selLabs.includes(m.lab) && !hidden.includes(m.release) && (relevantOnly ? relevant.has(m.slug) : selEfforts.includes(m.effort));
   const visible = useMemo(
-    () => base.filter((v) => selLabs.includes(v.m.lab) && selEfforts.includes(v.m.effort) && !hidden.includes(v.m.release)),
-    [base, selLabs, selEfforts, hidden],
+    () => base.filter((v) => isShown(v.m)),
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+    [base, selLabs, selEfforts, hidden, relevantOnly, relevant],
   );
 
   const iw = width - MG.left - MG.right;
@@ -243,14 +314,26 @@ export function CostChart({ models, plans, names, labs, initialLabs, labPages = 
   // Scales follow AA's rules: the log axis runs from the cheapest dot to ~2.4x the dearest
   // (headroom for labels), the index axis pads one 5-point step beyond the data. One domain
   // spans both states, so switching subsidies on visibly slides dots left.
-  const allX = visible.flatMap((v) => [v.m.cost_per_task, v.pick?.cost ?? v.m.cost_per_task]);
-  const lo = allX.length ? Math.min(...allX) : 0.01;
-  const hi = allX.length ? Math.max(...allX) : 10;
+  // The domain follows the pricing state and eases with the dots: switching subsidies on refits the
+  // axes to the (much cheaper) plan costs instead of leaving every dot packed at the left.
+  const apiX = visible.map((v) => v.m.cost_per_task);
+  const planX = visible.map((v) => v.pick?.cost ?? v.m.cost_per_task);
+  const lerpLog = (a: number, b: number) => Math.exp(Math.log(a) + (Math.log(b) - Math.log(a)) * t);
+  const lo = apiX.length ? lerpLog(Math.min(...apiX), Math.min(...planX)) : 0.01;
+  const hi = apiX.length ? lerpLog(Math.max(...apiX), Math.max(...planX)) : 10;
+  // Linear axis: fit the bulk, not the stragglers. A few dear outliers (models with no plan keep
+  // their API price) would otherwise squash everything else; they are pinned to the right edge.
+  const fitHi = (a: number[]) => {
+    const v = [...a].sort((x, y) => x - y);
+    const q = v[Math.floor(0.93 * (v.length - 1))];
+    return v[v.length - 1] <= q * 1.6 ? v[v.length - 1] : q * 1.15;
+  };
+  const hiLin = apiX.length ? lerpLog(fitHi(apiX), fitHi(planX)) : 10;
   const ys = visible.map((v) => v.m.intelligence);
   const yLo = Math.max(0, Math.floor((ys.length ? Math.min(...ys) : 0) / 5) * 5 - 5);
   const yHi = Math.ceil((ys.length ? Math.max(...ys) : 60) / 5) * 5 + 5;
   const xLog = scaleLog().domain([lo * 0.99, hi * 2.4]).range([0, iw]).clamp(true); // clamp: linear ticks include $0
-  const xLin = scaleLinear().domain([0, hi * 1.06]).range([0, iw]).nice();
+  const xLin = scaleLinear().domain([0, hiLin * 1.06]).range([0, iw]);
   const yS = scaleLinear().domain([yLo, yHi]).range([ih, 0]);
   const X = (v: number) => r2(xLin(v) + (xLog(v) - xLin(v)) * s);
   const Y = (v: number) => r2(yS(v));
@@ -268,11 +351,11 @@ export function CostChart({ models, plans, names, labs, initialLabs, labPages = 
         const b = pick?.cost ?? a;
         // interpolate in log space so the slide reads as a constant-ratio move
         const x = Math.exp(Math.log(a) + (Math.log(b) - Math.log(a)) * t);
-        return { m, pick, shown: isShown(m), x, y: m.intelligence, px: r2(nx(x) + (lx(x) - nx(x)) * s), py: Y(m.intelligence) };
+        return { m, pick, shown: isShown(m), x, y: m.intelligence, px: r2(Math.min(nx(x), iw - DOT_R - 1) + (lx(x) - Math.min(nx(x), iw - DOT_R - 1)) * s), py: Y(m.intelligence) };
       });
     },
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [base, selLabs, selEfforts, hidden, t, s, iw, xLoD, xHiD, yLo, yHi, hi],
+    [base, selLabs, selEfforts, hidden, relevantOnly, relevant, t, s, iw, xLoD, xHiD, yLo, yHi, hi, hiLin],
   );
   const shownPts = pts.filter((p) => p.shown);
 
@@ -283,6 +366,7 @@ export function CostChart({ models, plans, names, labs, initialLabs, labPages = 
   const frontPath = front.map((p, i) => `${i ? "L" : "M"}${p.px},${p.py}`).join("");
   const fadedPts = front.filter((p) => !p.shown && p.px > -DOT_R && p.px < iw + DOT_R && p.py > -DOT_R && p.py < ih + DOT_R);
 
+  const pinned = log ? 0 : shownPts.filter((p) => p.x > xLin.domain()[1]).length;
   const narrow = iw < 520;
   const logT = logTicks(xLog.domain()[0], xLog.domain()[1], narrow, (v) => xLog(v));
   const linT = xLin.ticks(narrow ? 4 : 6);
@@ -370,6 +454,34 @@ export function CostChart({ models, plans, names, labs, initialLabs, labPages = 
         </p>
       </div>
 
+      {/* time travel: the lineup as it stood on any past day */}
+      <div className="mb-4 flex flex-wrap items-center gap-x-4 gap-y-2 rounded-lg border border-rule px-4 py-2.5 text-xs">
+        <span className="text-ink-3">Lineup as of</span>
+        <span className="tabular min-w-[92px] text-sm font-medium text-ink">{fmtLongDate(asOfN)}</span>
+        <button type="button" aria-label="One day earlier" disabled={back >= span} onClick={() => setBack((b) => Math.min(span, b + 1))} className={STEP}>‹</button>
+        <input
+          type="range"
+          min={0}
+          max={span}
+          step={1}
+          value={span - Math.min(back, span)}
+          onChange={(e) => setBack(span - Number(e.target.value))}
+          aria-label="Chart date"
+          aria-valuetext={fmtLongDate(asOfN)}
+          className="min-w-[140px] flex-1 accent-current"
+        />
+        <button type="button" aria-label="One day later" disabled={back <= 0} onClick={() => setBack((b) => Math.max(0, b - 1))} className={STEP}>›</button>
+        <button
+          type="button"
+          disabled={back === 0}
+          onClick={() => setBack(0)}
+          className="rounded-full border border-rule px-3 py-1 text-ink-2 transition-colors enabled:hover:border-ink-3 enabled:hover:text-ink disabled:opacity-40"
+        >
+          Today
+        </button>
+        <span className="tabular text-ink-3">{models.length} of {allModels.length} models out</span>
+      </div>
+
       <div className="mb-3 flex flex-wrap items-center gap-x-5 gap-y-2 text-xs">
         <div className="flex items-center gap-2">
           <span className="text-ink-3">Cost axis</span>
@@ -377,6 +489,24 @@ export function CostChart({ models, plans, names, labs, initialLabs, labPages = 
         </div>
         <Check on={frontier} set={setFrontier}>Pareto line</Check>
         <Check on={labels} set={setLabels}>Labels</Check>
+        <button
+          type="button"
+          aria-pressed={relevantOnly}
+          onClick={() => setRelevantOnly((v) => !v)}
+          title="Keep the Pareto frontier plus each lab's two most competitive releases (highest reasoning effort)"
+          className={`rounded-full border px-3 py-1.5 transition-colors ${relevantOnly ? "border-ink bg-ink text-page" : "border-rule text-ink-2 hover:border-ink-3 hover:text-ink"}`}
+        >
+          Relevant models only{relevantOnly && <span className="tabular ml-1.5 opacity-70">{relevant.size}</span>}
+        </button>
+        <button
+          type="button"
+          aria-pressed={ageMode}
+          onClick={() => setAgeMode((v) => !v)}
+          title="Color dots by how long before the chart date each model launched"
+          className={`rounded-full border px-3 py-1.5 transition-colors ${ageMode ? "border-ink bg-ink text-page" : "border-rule text-ink-2 hover:border-ink-3 hover:text-ink"}`}
+        >
+          Color by release age
+        </button>
         <details className="relative">
           <summary className="cursor-pointer list-none rounded-full border border-rule px-3 py-1.5 text-ink-2 hover:border-ink-3 hover:text-ink">
             Models · {releases.length - hidden.length}/{releases.length} ▾
@@ -402,8 +532,8 @@ export function CostChart({ models, plans, names, labs, initialLabs, labPages = 
         </details>
       </div>
 
-      <div className="mb-3 flex flex-wrap items-center gap-1.5 text-xs" role="group" aria-label="Reasoning effort">
-        <span className="mr-1 text-ink-3">Reasoning effort:</span>
+      <div className={`mb-3 flex flex-wrap items-center gap-1.5 text-xs transition-opacity ${relevantOnly ? "pointer-events-none opacity-40" : ""}`} role="group" aria-label="Reasoning effort" aria-disabled={relevantOnly}>
+        <span className="mr-1 text-ink-3">Reasoning effort:{relevantOnly && " highest per model (relevant view)"}</span>
         {efforts.map((e) => {
           const on = selEfforts.includes(e);
           return (
@@ -411,6 +541,7 @@ export function CostChart({ models, plans, names, labs, initialLabs, labPages = 
               key={e}
               type="button"
               aria-pressed={on}
+              disabled={relevantOnly}
               onClick={() => toggleEffort(e)}
               className={`rounded-full border px-2.5 py-0.5 transition-colors ${on ? "border-ink bg-ink text-page" : "border-rule text-ink-3 hover:border-ink-3 hover:text-ink-2"}`}
             >
@@ -436,6 +567,18 @@ export function CostChart({ models, plans, names, labs, initialLabs, labPages = 
           <span>Pareto line</span>
         </div>
       </div>
+
+      {ageMode && (
+        <div className="mb-3 ml-1 max-w-[520px] text-xs text-ink-3">
+          <div className="mb-1">Dot color: release age before {fmtLongDate(asOfN)}</div>
+          <div className="relative h-2.5 rounded-full" style={{ background: `linear-gradient(to right, ${Array.from({ length: 21 }, (_, i) => ageColor(i / 20)).join(",")})` }} />
+          <div className="relative mt-1 h-4">
+            {AGE_TICKS.filter(([d]) => d === 0 || d <= maxAge).map(([d, label]) => (
+              <span key={d} className="absolute -translate-x-1/2 whitespace-nowrap first:translate-x-0" style={{ left: `${ageFrac(d, maxAge) * 100}%` }}>{label}</span>
+            ))}
+          </div>
+        </div>
+      )}
 
       <div ref={ref} className="relative w-full">
         <svg width={width} height={HEIGHT} viewBox={`0 0 ${width} ${HEIGHT}`} className="viz block h-auto max-w-full" role="img" aria-label="Intelligence Index versus cost per task for current models">
@@ -488,7 +631,7 @@ export function CostChart({ models, plans, names, labs, initialLabs, labPages = 
             {/* slide trails: where each subsidized dot came from */}
             {t > 0.01 &&
               shownPts.filter((p) => p.pick).map((p) => (
-                <line key={`tr${p.m.slug}`} x1={X(p.m.cost_per_task)} x2={p.px} y1={p.py} y2={p.py} stroke={labColor(p.m.lab)} strokeOpacity={0.28 * t} strokeWidth={1.5} strokeDasharray="2 3" />
+                <line key={`tr${p.m.slug}`} x1={Math.min(X(p.m.cost_per_task), iw - DOT_R - 1)} x2={p.px} y1={p.py} y2={p.py} stroke={dotColor(p.m)} strokeOpacity={0.28 * t} strokeWidth={1.5} strokeDasharray="2 3" />
               ))}
 
             {front.length > 1 && (
@@ -498,12 +641,12 @@ export function CostChart({ models, plans, names, labs, initialLabs, labPages = 
             )}
 
             {fadedPts.map((p) => (
-              <circle key={`f${p.m.slug}`} cx={p.px} cy={p.py} r={DOT_R} fill={labColor(p.m.lab)} opacity={FADED} pointerEvents="none" />
+              <circle key={`f${p.m.slug}`} cx={p.px} cy={p.py} r={DOT_R} fill={dotColor(p.m)} opacity={FADED} pointerEvents="none" />
             ))}
 
             {shownPts.map((p) => {
               const dim = !p.pick ? 1 - 0.6 * t : 1;
-              return <circle key={p.m.slug} cx={p.px} cy={p.py} r={DOT_R} fill={labColor(p.m.lab)} opacity={dim} pointerEvents="none" />;
+              return <circle key={p.m.slug} cx={p.px} cy={p.py} r={DOT_R} fill={dotColor(p.m)} opacity={dim} pointerEvents="none" />;
             })}
 
             {/* labels: leader hairline when the name sits away from its dot; the hovered name goes solid */}
@@ -554,12 +697,13 @@ export function CostChart({ models, plans, names, labs, initialLabs, labPages = 
               style={{ background: "var(--aa-tip-bg)", borderColor: "var(--aa-tip-border)", color: "var(--aa-tip-ink)" }}
             >
               <div className="mb-1 flex items-center gap-1.5 font-medium">
-                <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: labColor(hover.m.lab) }} />
+                <span className="h-2 w-2 shrink-0 rounded-full" style={{ background: dotColor(hover.m) }} />
                 <span className="text-balance">{hover.m.name}</span>
               </div>
               <div className="flex flex-col gap-1">
                 <TipRow k={`Cost per Task (USD, ${scaleName} Scale)`} v={fmtCost(hover.pick && subsidy ? hover.pick.cost : hover.m.cost_per_task)} />
                 <TipRow k="Artificial Analysis Intelligence Index" v={`${Math.round(hover.m.intelligence)}${hover.m.estimated ? "*" : ""}`} />
+                {meta[hover.m.release] && <TipRow k="Released" v={fmtLongDate(relDay.get(hover.m.release) ?? asOfN)} />}
                 {subsidy && hover.pick && (
                   <>
                     <TipRow k="API cost per task" v={fmtCost(hover.m.cost_per_task)} />
@@ -584,10 +728,13 @@ export function CostChart({ models, plans, names, labs, initialLabs, labPages = 
         <span>Faded dots on the line: cheapest-and-smartest models your filters hide</span>
         {subsidy && <span>Paler dots: no eligible plan, so they keep their API price</span>}
         <span>* estimated index</span>
+        {pinned > 0 && <span>{pinned} dearer {pinned === 1 ? "model is" : "models are"} pinned to the right edge: switch to the log axis to see {pinned === 1 ? "its" : "their"} true cost</span>}
       </p>
     </div>
   );
 }
+
+const STEP = "grid h-7 w-7 place-items-center rounded-full border border-rule text-ink-2 transition-colors enabled:hover:border-ink-3 enabled:hover:text-ink disabled:opacity-40";
 
 function Check({ on, set, children }: { on: boolean; set: (v: boolean) => void; children: React.ReactNode }) {
   return (

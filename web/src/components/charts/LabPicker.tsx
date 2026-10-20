@@ -68,7 +68,7 @@ export function LabPicker({
               type="button"
               aria-pressed={on}
               onClick={() => toggle(o.lab)}
-              className={`group inline-flex items-center gap-1.5 rounded-full border py-0.5 pl-0.5 pr-2.5 text-xs transition-all duration-200 ${
+              className={`group inline-flex items-center gap-1.5 rounded-full border py-1 pl-1.5 pr-2.5 text-xs transition-all duration-200 ${
                 on ? "border-transparent text-ink shadow-[0_1px_2px_rgba(0,0,0,0.06)]" : "border-rule text-ink-3 hover:border-ink-3 hover:text-ink-2"
               }`}
               style={on ? { background: `color-mix(in oklab, ${color} 14%, var(--raised))`, boxShadow: `inset 0 0 0 1.5px ${color}` } : undefined}

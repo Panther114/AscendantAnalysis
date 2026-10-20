@@ -3,7 +3,7 @@ import logos from "@/lib/logos.json";
 const BASE = process.env.NEXT_PUBLIC_BASE_PATH ?? "";
 
 /**
- * Lab logo on a white rounded tile (app-icon style), legible in both themes.
+ * Lab logo with no border or backdrop on light pages; dark pages get a white rounded tile so dark glyphs stay legible.
  * Client-safe: depends only on the small logo manifest, not on the dataset.
  */
 export function LabMark({ lab, name, size = 20 }: { lab: string; name?: string; size?: number }) {
@@ -12,8 +12,8 @@ export function LabMark({ lab, name, size = 20 }: { lab: string; name?: string; 
   return (
     <span
       aria-hidden="true"
-      className="inline-grid shrink-0 place-items-center overflow-hidden rounded-[22%] border border-black/10 bg-white"
-      style={{ width: size, height: size, padding: pad }}
+      className="inline-grid shrink-0 place-items-center overflow-hidden rounded-[22%]"
+      style={{ width: size, height: size, padding: pad, background: "var(--logo-tile)" }}
     >
       {logo ? (
         // eslint-disable-next-line @next/next/no-img-element -- static export, tiny SVGs
