@@ -4,7 +4,7 @@ from __future__ import annotations
 
 import datetime as dt
 import math
-from dataclasses import dataclass, field
+from dataclasses import dataclass, field, replace
 
 from ascendant import stats
 from ascendant.config import Config
@@ -80,6 +80,7 @@ class Engine:
         self.cfg = cfg
         self._fields: dict[dt.date, Field] = {}
         self._at_release: dict[str, tuple[float, bool, str | None]] = {}
+        self._tier_cache: dict[tuple[dt.date, str], dict[str, TierSlot]] = {}
         self.by_lab: dict[str, list[Release]] = {}
         for r in universe.releases:
             self.by_lab.setdefault(r.lab, []).append(r)
@@ -205,9 +206,17 @@ class Engine:
         """Per-lab slot in a tier. Unless `force` is given, a lab is represented by whichever of
         its active releases in the tier scores best (rivals held at their most capable release),
         so adding a release can never lower its lab's slot."""
-        slots = self._tier_slots(f, tier, force)
         if force is not None:
-            return slots
+            return self._tier_slots(f, tier, force)
+        # Depends only on (field, tier), but lineup() asks for every tier once per lab, so compute
+        # it once per field. Callers mutate the slots they get (score_lab rounds them): copy out.
+        key = (f.date, tier)
+        if key not in self._tier_cache:
+            self._tier_cache[key] = self._best_slots(f, tier)
+        return {lab: replace(s) for lab, s in self._tier_cache[key].items()}
+
+    def _best_slots(self, f: Field, tier: str) -> dict[str, TierSlot]:
+        slots = self._tier_slots(f, tier)
         cands: dict[str, list[Release]] = {}
         for r in f.active:
             if f.tier.get(r.slug) == tier:

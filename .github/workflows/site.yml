@@ -33,7 +33,7 @@ permissions:
 jobs:
   build:
     runs-on: ubuntu-latest
-    timeout-minutes: 15
+    timeout-minutes: 30
     env:
       FETCH: ${{ github.event_name == 'schedule' || (github.event_name == 'workflow_dispatch' && inputs.fetch) }}
     steps:
