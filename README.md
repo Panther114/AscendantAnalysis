@@ -26,7 +26,7 @@ config/     methodology.v1.yaml (every constant), labs, overrides, perception re
             coding_plans.yaml (hand-reviewed coding-plan subsidies, with sources)
 data/       content-hashed snapshots, plans/check.json (latest plan audit), all committed
 update.ps1  local refresh: snapshot → test → export → commit → push
-.github/    workflow: daily snapshot → test → export → commit → build → GitHub Pages
+.github/    workflow: twice-daily snapshot → test → export → commit → build → GitHub Pages
 ```
 
 ## How the index works
@@ -61,7 +61,7 @@ The full write-up is on the site's Methodology page.
   Fable's separate cap, GLM's credit weights, ...). Every plan has one committed number per model
   (no ranges or blanks), and tiers the provider scales linearly with price share one multiplier, so
   a stated tier ratio (e.g. "5× Pro at 5× the price") is kept exactly.
-- **Audit:** `uv run ascendant plans-check` (daily in CI, non-blocking) compares the pinned values with
+- **Audit:** `uv run ascendant plans-check` (in CI on each scheduled run, non-blocking) compares the pinned values with
   Devforth's crowd-measured limits (`devforth_baseline` = what Devforth showed at review time), probes
   every source URL and flags plans not re-verified for 90 days. Flags appear as workflow annotations
   and on the site; a person decides what to change.
@@ -91,7 +91,7 @@ npm run build                  # static site in web/out
 The site is fully static and the scored data is committed (`web/public/data`), so hosting needs
 no server and no key. One workflow, `.github/workflows/site.yml`, does everything for free:
 
-- **Daily (09:17 UTC) or manual run:** fetch a snapshot, test, verify determinism, export,
+- **Twice daily (06:17 and 18:17 Singapore time) or manual run:** fetch a snapshot, test, verify determinism, export,
   commit the data if it changed, build the site and deploy it to Pages.
 - **Push to `main`** (code, config or data): rebuild and deploy, without fetching.
 
