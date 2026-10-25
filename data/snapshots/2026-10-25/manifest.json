@@ -1,8 +1,8 @@
 {
   "date": "2026-10-25",
   "files": {
-    "api_models.json.gz": "2e2a8e802263809c44d56eb0c6c2c0fa223ae06920cfdc63978a4ac1be96dba7",
-    "leaderboard.json.gz": "8037e63ce0c7d87f1569db99faefacc9022ed9f118a1e37540e815e3e779b66e"
+    "api_models.json.gz": "8b1a46b528bda4ab8c24d7d2ee44aa3d380bade919edf5b7cfba991848aebb72",
+    "leaderboard.json.gz": "62c482e970237fd4967daf4a7319013bb2494c499e08c0637526078cbeb43c00"
   },
-  "hash": "d8c69c5d31b2c9f2ea969b17e3b26781f6d89e3fc63d2e8cb5834339d802754b"
+  "hash": "725c457065754ed46a363fdc88b68a2a89352a725827d387a85bc03f87beab4e"
 }
