@@ -523,45 +523,29 @@
     },
     {
       "age_days": 6,
-      "dead_sources": [
-        "https://aitoolanalysis.com/supergrok-subscription-price-2026/"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "cursor-x-plus",
       "verified": "2026-10-20"
     },
     {
       "age_days": 6,
-      "dead_sources": [
-        "https://aitoolanalysis.com/supergrok-subscription-price-2026/"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "cursor-x-premium",
       "verified": "2026-10-20"
     },
     {
       "age_days": 6,
-      "dead_sources": [
-        "https://aitoolanalysis.com/supergrok-subscription-price-2026/"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "cursor-x-super",
       "verified": "2026-10-20"
     },
     {
       "age_days": 6,
-      "dead_sources": [
-        "https://aitoolanalysis.com/supergrok-subscription-price-2026/"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "cursor-x-ultra",
       "verified": "2026-10-20"
     },
@@ -1726,45 +1710,29 @@
     },
     {
       "age_days": 6,
-      "dead_sources": [
-        "https://aitoolanalysis.com/supergrok-subscription-price-2026/"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "xai-supergrok",
       "verified": "2026-10-20"
     },
     {
       "age_days": 6,
-      "dead_sources": [
-        "https://aitoolanalysis.com/supergrok-subscription-price-2026/"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "xai-supergrok-heavy",
       "verified": "2026-10-20"
     },
     {
       "age_days": 6,
-      "dead_sources": [
-        "https://aitoolanalysis.com/supergrok-subscription-price-2026/"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "xai-supergrok-lite",
       "verified": "2026-10-20"
     },
     {
       "age_days": 6,
-      "dead_sources": [
-        "https://aitoolanalysis.com/supergrok-subscription-price-2026/"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "xai-supergrok-plus",
       "verified": "2026-10-20"
     },
@@ -1876,7 +1844,7 @@
   ],
   "sources": {
     "total": 198,
-    "unreachable": 23
+    "unreachable": 22
   },
   "stale_after_days": 90
 }
