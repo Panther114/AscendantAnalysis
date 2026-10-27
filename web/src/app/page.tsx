@@ -4,7 +4,6 @@ import { HealthChart } from "@/components/charts/HealthChart";
 import { CountUp } from "@/components/CountUp";
 import { BandBadge, Card, CtaLink, LabLink, LabLogo, PageHeader } from "@/components/ui";
 import { cost, history, labName, labs, leaderboard, meta, rankedLabs, releases } from "@/lib/data";
-import { recentReleases } from "@/lib/explain";
 import { fmtDate, fmtHealth, TIER_LABEL } from "@/lib/format";
 import { bestPlan, fmtX, usdTask } from "@/lib/plans";
 import { leaderSpans, raceEvents } from "@/lib/race";
@@ -24,7 +23,11 @@ function cheapestAt(level: number) {
 
 export default function Home() {
   const leader = leaderboard[0];
-  const latest = recentReleases(meta.snapshot_date, 21, false);
+  const latest = Object.entries(releases)
+    .filter(([, release]) => release.date <= meta.snapshot_date)
+    .map(([slug, release]) => ({ slug, ...release }))
+    .sort((a, b) => b.date.localeCompare(a.date) || a.name.localeCompare(b.name) || a.slug.localeCompare(b.slug))
+    .slice(0, 5);
   const ranked = rankedLabs();
   const start = Math.max(0, history.dates.findIndex((d) => d >= "2026-01-01"));
   const top = Math.max(...cost.models.map((m) => m.intelligence));
@@ -121,7 +124,7 @@ export default function Home() {
             <span aria-hidden="true" className="shrink-0 transition-transform group-hover:translate-x-0.5">→</span>
           </Link>
         </Card>
-        <Card title="Latest releases" keyColor="green" subtitle="All recorded releases in the last 3 weeks">
+        <Card title="Latest releases" keyColor="green" subtitle="The 5 most recent recorded releases" action={<CtaLink href="/releases/">All releases</CtaLink>}>
           <p className="mb-2 text-xs text-ink-3">Materiality margin: index points above or below the easier cutoff at release. A tie meets the frontier cutoff, but must beat a lab&apos;s previous best. First releases in a tier and releases inactive on launch have no margin.</p>
           <ul className="-mt-1 divide-y divide-rule-soft">
             {latest.map((r) => (
@@ -138,7 +141,7 @@ export default function Home() {
                 </div>
               </li>
             ))}
-            {!latest.length && <li className="py-3 text-sm text-ink-3">No recorded releases in the last 3 weeks.</li>}
+            {!latest.length && <li className="py-3 text-sm text-ink-3">No recorded releases yet.</li>}
           </ul>
         </Card>
       </div>
@@ -151,6 +154,7 @@ export default function Home() {
             { href: "/trends/", k: "Lab Index", t: "Trends", d: "Daily replay since January, lead changes and the releases that moved the race." },
             { href: "/tiers/", k: "Lab Index", t: "Tiers", d: "Head-to-head in the frontier, mid and small price tiers." },
             { href: "/frontier/", k: "Lab Index", t: "Frontier map", d: "Each release as a curve through its reasoning efforts, and who owns each capability level." },
+            { href: "/releases/", k: "Lab Index", t: "Releases", d: "Browse the full release history and compare changes in lab health on launch day." },
             { href: "/cost/", k: "Cost & Plans", t: "Intelligence vs. cost", d: "Artificial Analysis's chart, re-priced through the best coding plan per model." },
             { href: "/cost/#plans", k: "Cost & Plans", t: "Coding plans", d: "Every plan's price, subsidy, model lineup, limits and sources." },
           ].map((x) => (

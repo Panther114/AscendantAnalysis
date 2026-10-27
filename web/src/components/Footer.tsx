@@ -17,6 +17,7 @@ export function Footer() {
           <p className="text-xs uppercase tracking-[0.1em] text-ink-3">Explore</p>
           <Link className="block text-ink-2 hover:text-ink" href="/leaderboard/">Lab Index leaderboard</Link>
           <Link className="block text-ink-2 hover:text-ink" href="/trends/">Trends</Link>
+          <Link className="block text-ink-2 hover:text-ink" href="/releases/">Releases</Link>
           <Link className="block text-ink-2 hover:text-ink" href="/labs/">All labs</Link>
           <Link className="block text-ink-2 hover:text-ink" href="/cost/">Cost &amp; coding plans</Link>
           <Link className="block text-ink-2 hover:text-ink" href="/methodology/">Methodology</Link>

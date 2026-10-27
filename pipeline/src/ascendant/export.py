@@ -8,7 +8,6 @@ from __future__ import annotations
 
 import copy
 import dataclasses
-import datetime as dt
 import hashlib
 import json
 import math
@@ -134,6 +133,20 @@ def _history_payload(series) -> dict:
     return {"dates": dates, "labs": labs}
 
 
+def _release_index(engine: Engine) -> dict:
+    """Export the entire recorded release history, including releases before the replay."""
+    return {
+        r.slug: {"name": r.name, "lab": r.lab, "date": r.date.isoformat(), "line": r.line,
+                 "tier": engine.tiers.get(r.slug), "intelligence": r.intelligence,
+                 "price_blend": r.price_blend, "open_weights": r.open_weights,
+                 "price_imputed": any(v.price_imputed for v in r.variants),
+                 "material": engine.at_release(r)[1],
+                 "materiality_margin": (stats.rnd(margin) if (margin := engine.materiality_margin(r)) is not None else None),
+                 "competitiveness": stats.rnd(engine.at_release(r)[0])}
+        for r in engine.u.releases
+    }
+
+
 SENSITIVITY_PARAMS = [
     ("core", "max_weight"),
     ("lineup", "max_weight"),
@@ -244,17 +257,7 @@ def build(u: Universe, cfg: Config, manifest: dict, with_sensitivity: bool = Tru
             "momentum": ps.momentum, "freshness_multiplier": ps.freshness_multiplier,
         }
         board.append(d)
-    release_index = {
-        r.slug: {"name": r.name, "lab": r.lab, "date": r.date.isoformat(), "line": r.line,
-                 "tier": engine.tiers.get(r.slug), "intelligence": r.intelligence,
-                 "price_blend": r.price_blend, "open_weights": r.open_weights,
-                 "price_imputed": any(v.price_imputed for v in r.variants),
-                 "material": engine.at_release(r)[1],
-                 "materiality_margin": (stats.rnd(margin) if (margin := engine.materiality_margin(r)) is not None else None),
-                 "competitiveness": stats.rnd(engine.at_release(r)[0])}
-        for r in u.releases
-        if r.date >= series[0][0] - dt.timedelta(days=365)
-    }
+    release_index = _release_index(engine)
     files = {
         "meta.json": {
             "schema": SCHEMA_VERSION,

@@ -21,10 +21,11 @@ export const SECTIONS: Section[] = [
   {
     href: "/leaderboard/",
     label: "Lab Index",
-    match: ["/leaderboard", "/trends", "/tiers", "/frontier"],
+    match: ["/leaderboard", "/trends", "/tiers", "/frontier", "/releases"],
     sub: [
       { href: "/leaderboard/", label: "Leaderboard" },
       { href: "/trends/", label: "Trends" },
+      { href: "/releases/", label: "Releases" },
       { href: "/tiers/", label: "Tiers" },
       { href: "/frontier/", label: "Frontier map" },
     ],
