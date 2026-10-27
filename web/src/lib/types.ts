@@ -155,6 +155,7 @@ export interface ReleaseIndexEntry {
   price_imputed: boolean;
   open_weights: boolean;
   material: boolean;
+  materiality_margin: number | null;
   competitiveness: number;
 }
 

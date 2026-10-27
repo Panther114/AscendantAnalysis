@@ -10,6 +10,19 @@ from ascendant.scoring import Engine
 TODAY = D(2026, 9, 1)
 
 
+def test_materiality_margin_tracks_the_easier_cutoff(cfg):
+    first = release("first", "a", D(2026, 7, 1), "A", [(51.8, 2)], 2)
+    terra = release("terra", "a", D(2026, 8, 1), "B", [(48.1, 2)], 2)
+    e = Engine(universe([first, terra], TODAY), cfg)
+    assert e.materiality_margin(first) is None
+    assert round(e.materiality_margin(terra), 1) == -0.7
+    assert not e.at_release(terra)[1]
+    stronger = release("stronger", "a", D(2026, 8, 2), "C", [(49.1, 3)], 2)
+    e = Engine(universe([first, terra, stronger], TODAY), cfg)
+    assert round(e.materiality_margin(stronger), 1) == 0.3
+    assert e.at_release(stronger)[1]
+
+
 def scores(market, cfg, date=TODAY):
     return {s.lab: s for s in Engine(universe(market, date), cfg).score_all(date)}
 

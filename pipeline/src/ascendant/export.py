@@ -250,6 +250,7 @@ def build(u: Universe, cfg: Config, manifest: dict, with_sensitivity: bool = Tru
                  "price_blend": r.price_blend, "open_weights": r.open_weights,
                  "price_imputed": any(v.price_imputed for v in r.variants),
                  "material": engine.at_release(r)[1],
+                 "materiality_margin": (stats.rnd(margin) if (margin := engine.materiality_margin(r)) is not None else None),
                  "competitiveness": stats.rnd(engine.at_release(r)[0])}
         for r in u.releases
         if r.date >= series[0][0] - dt.timedelta(days=365)

@@ -24,7 +24,7 @@ function cheapestAt(level: number) {
 
 export default function Home() {
   const leader = leaderboard[0];
-  const latest = recentReleases(meta.snapshot_date, 21).slice(0, 5);
+  const latest = recentReleases(meta.snapshot_date, 21, false);
   const ranked = rankedLabs();
   const start = Math.max(0, history.dates.findIndex((d) => d >= "2026-01-01"));
   const top = Math.max(...cost.models.map((m) => m.intelligence));
@@ -121,22 +121,24 @@ export default function Home() {
             <span aria-hidden="true" className="shrink-0 transition-transform group-hover:translate-x-0.5">→</span>
           </Link>
         </Card>
-        <Card title="Latest releases" keyColor="green" subtitle="Material releases in the last 3 weeks">
+        <Card title="Latest releases" keyColor="green" subtitle="All recorded releases in the last 3 weeks">
+          <p className="mb-2 text-xs text-ink-3">Materiality margin: index points above or below the easier cutoff at release. A tie meets the frontier cutoff, but must beat a lab&apos;s previous best. First releases in a tier and releases inactive on launch have no margin.</p>
           <ul className="-mt-1 divide-y divide-rule-soft">
             {latest.map((r) => (
               <li key={r.slug}>
-                <Link href={`/labs/${r.lab}/`} className="group flex items-start justify-between gap-4 py-3">
+                <div className="group flex items-start justify-between gap-4 py-3">
                   <div className="min-w-0">
                     <p className="text-[11px] font-medium uppercase tracking-[0.08em] text-tag">{fmtDate(r.date)}</p>
-                    <p className="mt-0.5 truncate text-[15px] font-medium group-hover:underline group-hover:underline-offset-4">{r.name}</p>
+                    <p className="mt-0.5 text-[15px] font-medium">{ranked.includes(r.lab) ? <Link href={`/labs/${r.lab}/`} className="hover:underline hover:underline-offset-4">{r.name}</Link> : r.name}</p>
                     <p className="text-[13px] text-ink-3">
                       {labName(r.lab)} · {r.tier ? `${TIER_LABEL[r.tier]} tier` : "untiered"} · index {r.intelligence.toFixed(1)}
                     </p>
+                    <p className="mt-1 text-xs text-ink-2">{r.material ? "Material" : "Non-material"} · margin {r.materiality_margin == null ? "—" : `${r.materiality_margin > 0 ? "+" : ""}${r.materiality_margin.toFixed(1)} pts`}</p>
                   </div>
-                </Link>
+                </div>
               </li>
             ))}
-            {!latest.length && <li className="py-3 text-sm text-ink-3">No material releases in the last 3 weeks.</li>}
+            {!latest.length && <li className="py-3 text-sm text-ink-3">No recorded releases in the last 3 weeks.</li>}
           </ul>
         </Card>
       </div>

@@ -268,6 +268,24 @@ class Engine:
 
     # ------------------------------------------------------------ momentum / freshness
 
+    def materiality_margin(self, r: Release) -> float | None:
+        """Index points above the easier materiality cutoff, or None if not comparable.
+
+        The first release in a tier is automatically material; releases inactive on their
+        launch date cannot be material. Neither has a meaningful numeric margin.
+        """
+        f = self.field(r.date)
+        if r.slug not in {x.slug for x in f.active}:
+            return None
+        tier = f.tier.get(r.slug)
+        peers = [x.intelligence for x in f.active if tier is None or f.tier.get(x.slug) == tier]
+        previous = [x.intelligence for x in self.by_lab[r.lab]
+                    if x.date < r.date and (tier is None or self.tiers.get(x.slug) == tier)]
+        if not previous:
+            return None
+        cutoff = min(max(previous), max(peers) - self.cfg.m("freshness")["material_frontier_gap"])
+        return r.intelligence - cutoff
+
     def at_release(self, r: Release) -> tuple[float, bool, str | None]:
         """(competitiveness in [0,1], material?, tier) of a release on its release date."""
         hit = self._at_release.get(r.slug)

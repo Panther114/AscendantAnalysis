@@ -62,12 +62,12 @@ export function changeDrivers(s: LabScore): Driver[] {
 }
 
 /** Material releases from any lab in the 7 days up to the snapshot date. */
-export function recentReleases(snapshotDate: string, days = 7) {
+export function recentReleases(snapshotDate: string, days = 7, materialOnly = true) {
   const end = new Date(`${snapshotDate}T00:00:00Z`).getTime();
   return Object.entries(releases)
     .filter(([, r]) => {
       const t = new Date(`${r.date}T00:00:00Z`).getTime();
-      return r.material && t <= end && end - t <= days * 864e5;
+      return (!materialOnly || r.material) && t <= end && end - t <= days * 864e5;
     })
     .map(([slug, r]) => ({ slug, ...r }))
     .sort((a, b) => b.date.localeCompare(a.date) || a.name.localeCompare(b.name));
