@@ -52,6 +52,14 @@ export default function MethodologyPage() {
             <code className="font-mono text-[13px] text-ink">{meta.snapshot_hash.slice(0, 16)}</code> from {fmtDate(meta.snapshot_date)}.
           </p>
           <p>
+            <strong>One index version.</strong> Every score comes from Artificial Analysis Intelligence Index v{meta.index_version}. Artificial
+            Analysis rescores models on each major version (moving v4 scores by -16 to +4 points and cost per task by up to 2x), and it has
+            rescored only part of its catalogue so far. Scores from different versions are never mixed: a model without a v
+            {meta.index_version} score ({meta.counts.unscored_models} of the models in the API) is left out instead of being given an older
+            one, and a snapshot on another version is rejected. Labs and history therefore cover the rescored models only, and widen as
+            Artificial Analysis rescores more.
+          </p>
+          <p>
             A <strong>release</strong> (e.g. Claude Opus 5.5) groups its reasoning-effort <strong>variants</strong>. A{" "}
             <strong>product line</strong> is the release name without version numbers (Claude Opus, GPT Sol, Gemini Flash-Lite). On any
             date, the <strong>field</strong> is the newest release in every product line, dropped after{" "}

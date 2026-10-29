@@ -1,3 +1,4 @@
+import dataclasses
 """Behavioural and property tests on a synthetic market (no network, no snapshot)."""
 
 import datetime as dt
@@ -83,9 +84,12 @@ def test_launch_tiers_respect_price_order_within_lab(market, cfg):
     assert ranks == sorted(ranks)
 
 
-def test_lab_scope_requires_two_releases(market, cfg):
+def test_lab_scope_min_releases(market, cfg):
     solo = release("solo-1", "solo", D(2026, 8, 1), "Solo", [(30, 1.0)], 1.0)
-    assert "solo" not in scores([*market, solo], cfg)
+    assert "solo" in scores([*market, solo], cfg)  # methodology 1.7.0: one release is enough
+    strict = dataclasses.replace(cfg, methodology={
+        **cfg.methodology, "lab_scope": {**cfg.m("lab_scope"), "min_releases": 2}})
+    assert "solo" not in scores([*market, solo], strict)
 
 
 def test_lab_scope_requires_priced_model(market, cfg):

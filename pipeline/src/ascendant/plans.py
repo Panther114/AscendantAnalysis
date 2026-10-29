@@ -75,13 +75,18 @@ def models(api: dict, board: dict, cfg: Config, *, deprecated: bool = False) -> 
     aliases: dict[str, str] = cfg.labs.get("aliases") or {}
     creator = {r["slug"]: aliases.get(r["model_creator"]["slug"], r["model_creator"]["slug"])
                for r in api["data"]}
+    api_intel = {r["slug"]: (r["evaluations"] or {}).get("artificial_analysis_intelligence_index")
+                 for r in api["data"]}
     rel_name = {r["slug"]: r.get("name") for r in board["releases"]}
     release_of: dict[str, str] = board["release_of"]
     rows = []
     for m in board["models"]:
         cpt = m.get("intelligenceIndexCostPerTask")
-        intel = m.get("intelligenceIndex")
         slug = m["slug"]
+        # Same source order as normalize.build, so both views carry one score per model.
+        intel = api_intel.get(slug)
+        if intel is None:
+            intel = m.get("intelligenceIndex")
         if bool(m.get("deprecated")) != deprecated or not cpt or cpt <= 0 or intel is None or slug not in creator:
             continue
         release = release_of.get(slug, slug)

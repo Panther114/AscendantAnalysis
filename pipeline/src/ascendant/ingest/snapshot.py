@@ -42,6 +42,10 @@ def check_coverage(api: dict, board: dict, minimum: float = MIN_BOARD_COVERAGE) 
         )
 
 
+# Page fields measured on the Intelligence Index scale; they are meaningless under another version.
+INDEX_SCALE_FIELDS = ("intelligenceIndex", "intelligenceIndexCostPerTask")
+
+
 def backfill(api: dict, board: dict, prior: dict | None) -> dict:
     """Fills API models missing from the leaderboard page with their prior snapshot's object.
 
@@ -49,11 +53,23 @@ def backfill(api: dict, board: dict, prior: dict | None) -> dict:
     separately (encrypted), so they drop out of the scrape. Deprecation is permanent, so their
     last scraped object is carried forward and flagged deprecated. Carried slugs are recorded
     under board["carried"].
+
+    A prior snapshot taken under a different Intelligence Index version (or before the version
+    was recorded) has its index-scale fields cleared on carry: AA rescores models on every
+    major version, so a carried v4 score or cost per task would otherwise sit beside v5 ones.
     """
     have = {m["slug"] for m in board["models"]}
     old = {m["slug"]: m for m in (prior or {}).get("models", [])}
+    same_scale = (prior or {}).get("index_version") == board.get("index_version")
     carried = sorted(r["slug"] for r in api["data"] if r["slug"] not in have and r["slug"] in old)
-    models = board["models"] + [{**old[s], "deprecated": True} for s in carried]
+
+    def carry(slug: str) -> dict:
+        obj = {**old[slug], "deprecated": True}
+        if not same_scale:
+            obj.update({f: None for f in INDEX_SCALE_FIELDS}, intelligenceIndexIsEstimated=False)
+        return obj
+
+    models = board["models"] + [carry(s) for s in carried]
     return {**board, "models": sorted(models, key=lambda m: m["slug"]), "carried": carried}
 
 

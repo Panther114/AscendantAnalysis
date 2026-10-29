@@ -54,3 +54,29 @@ def test_backfill_prefers_page_objects_and_handles_no_prior():
     out = backfill(_api(1), board, {"models": [{"slug": "m0", "deprecated": True}]})
     assert out["carried"] == [] and out["models"][0]["deprecated"] is False
     assert backfill(_api(2), board, None)["carried"] == []
+
+
+def test_backfill_clears_index_scale_fields_across_index_versions():
+    api = _api(2)
+    board = {"index_version": "5.0", "models": [{"slug": "m0"}]}
+    prior = {"index_version": "4.0", "models": [
+        {"slug": "m1", "intelligenceIndex": 48.1, "intelligenceIndexCostPerTask": 1.6,
+         "intelligenceIndexIsEstimated": True, "shortName": "M1"}]}
+    carried = backfill(api, board, prior)["models"][1]
+    assert carried["intelligenceIndex"] is None and carried["intelligenceIndexCostPerTask"] is None
+    assert carried["intelligenceIndexIsEstimated"] is False
+    assert carried["shortName"] == "M1" and carried["deprecated"] is True
+
+
+def test_backfill_clears_index_scale_fields_when_prior_has_no_version():
+    board = {"index_version": "5.0", "models": []}
+    prior = {"models": [{"slug": "m0", "intelligenceIndex": 30.0}]}
+    assert backfill(_api(1), board, prior)["models"][0]["intelligenceIndex"] is None
+
+
+def test_backfill_keeps_index_scale_fields_within_one_version():
+    board = {"index_version": "5.0", "models": []}
+    prior = {"index_version": "5.0", "models": [
+        {"slug": "m0", "intelligenceIndex": 30.0, "intelligenceIndexCostPerTask": 2.0}]}
+    carried = backfill(_api(1), board, prior)["models"][0]
+    assert carried["intelligenceIndex"] == 30.0 and carried["intelligenceIndexCostPerTask"] == 2.0

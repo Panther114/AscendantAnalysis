@@ -15,6 +15,8 @@ import httpx
 LEADERBOARD_URL = "https://artificialanalysis.ai/leaderboards/models"
 _PUSH = re.compile(r'self\.__next_f\.push\(\[1,"((?:[^"\\]|\\.)*)"\]\)')
 _OBJ = re.compile(r'\{"slug":')
+# 'Artificial Analysis Intelligence Index v5.0' -> '5.0'
+_INDEX_VERSION = re.compile(r"Artificial Analysis Intelligence Index v(\d+(?:\.\d+)*)")
 
 
 def fetch_leaderboard_html(client: httpx.Client) -> str:
@@ -43,7 +45,11 @@ def extract(html: str) -> dict:
             release_of.setdefault(slug, obj["releaseSlug"])
     if not models or not release_of:
         raise RuntimeError("leaderboard payload changed: no model objects found")
+    versions = sorted(set(_INDEX_VERSION.findall(flight)))
+    if len(versions) != 1:
+        raise RuntimeError(f"cannot determine the Intelligence Index version (found {versions})")
     return {
+        "index_version": versions[0],
         "models": [models[k] for k in sorted(models)],
         "releases": [releases[k] for k in sorted(releases)],
         "release_of": dict(sorted(release_of.items())),

@@ -1,7 +1,11 @@
 # Deterministic, reviewed overrides. Keep this file short; each entry needs a reason.
 
 # release slug -> product line (when the name heuristic gets it wrong)
-product_lines: {}
+product_lines:
+  # Same $4/$20 pricing, and Carbon (59.4) is strictly stronger than Argon (50.4): Carbon is
+  # Argon's successor, not a separate product, so the name heuristic must not split them.
+  gemini-4-argon: Gemini Frontier
+  gemini-4-carbon: Gemini Frontier
 
 # release slug -> tier (small | mid | frontier)
 tiers: {}

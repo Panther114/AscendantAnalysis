@@ -78,6 +78,8 @@ class Universe:
     releases: list[Release]  # sorted by (date, slug)
     cost_model: dict[str, float] = field(default_factory=dict)
     excluded: list[str] = field(default_factory=list)
+    index_version: str = ""
+    unscored: int = 0  # API models with no score on the configured Intelligence Index version
 
 
 _VERSION_TOKEN = re.compile(r"^(v?\d+(\.\d+)*[a-z]?|\d{4})$", re.IGNORECASE)
@@ -185,12 +187,21 @@ def build(manifest: dict, api: dict, board: dict, cfg: Config) -> Universe:
     ov = cfg.overrides
     excluded_cfg = set(ov.get("exclude_releases") or [])
 
+    want = str(cfg.m("index")["version"])
+    have = str(board.get("index_version") or "unknown")
+    if have.split(".")[0] != want:
+        raise ValueError(
+            f"snapshot {manifest['date']} uses Intelligence Index v{have}; methodology "
+            f"{cfg.version} requires v{want}. Scores from different versions are not comparable."
+        )
+
     page = {m["slug"]: m for m in board["models"]}
     rel_meta = {r["slug"]: r for r in board["releases"]}
     release_of: dict[str, str] = board["release_of"]
 
     labs: dict[str, Lab] = {}
     raw: list[dict] = []
+    unscored = 0
     for row in sorted(api["data"], key=lambda r: r["id"]):
         slug = row["slug"]
         pm = page.get(slug, {})
@@ -198,6 +209,9 @@ def build(manifest: dict, api: dict, board: dict, cfg: Config) -> Universe:
         if intel is None:
             intel = pm.get("intelligenceIndex")
         if intel is None or row.get("release_date") is None:
+            # AA rescores models on each Index version, and keeps no score for the ones it has
+            # not re-run. An older-version score is never substituted.
+            unscored += intel is None
             continue
         creator = row["model_creator"]
         lab_slug = aliases.get(creator["slug"], creator["slug"])
@@ -334,4 +348,6 @@ def build(manifest: dict, api: dict, board: dict, cfg: Config) -> Universe:
         releases=releases,
         cost_model=cost_model,
         excluded=excluded,
+        index_version=have,
+        unscored=unscored,
     )

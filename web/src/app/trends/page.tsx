@@ -3,7 +3,7 @@ import type { Metadata } from "next";
 import { ColumnChart } from "@/components/charts/ColumnChart";
 import { MetricHistory } from "@/components/charts/MetricHistory";
 import { Card, InfoNote, PageHeader } from "@/components/ui";
-import { history, labName, labs, leaderboard, rankedLabs, releases } from "@/lib/data";
+import { history, labName, labs, leaderboard, meta, rankedLabs, releases } from "@/lib/data";
 import { fmtDate } from "@/lib/format";
 import { leaderSpans, raceEvents, SURGE_POINTS } from "@/lib/race";
 
@@ -29,7 +29,8 @@ export default function TrendsPage() {
     <div className="rise">
       <PageHeader eyebrow="Lab Index · Trends" title="Health over time">
         Every day is rescored using only the models released by then. History is reconstructed from today&apos;s snapshot, so
-        all days share one Intelligence Index version and current prices.
+        all days share one Intelligence Index version (v{meta.index_version}) and current prices. Models Artificial Analysis has not
+        rescored on that version are excluded, so the series begins with the first priced v{meta.index_version} release.
       </PageHeader>
 
       <Card title="Daily replay" keyColor="blue" subtitle={`All ${ranked.length} ranked labs · your selection is kept when you switch metric`}>

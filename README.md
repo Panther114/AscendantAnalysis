@@ -29,6 +29,15 @@ update.ps1  local refresh: snapshot → test → export → commit → push
 .github/    workflow: twice-daily snapshot → test → export → commit → build → GitHub Pages
 ```
 
+## Intelligence Index version
+
+All scores use one Artificial Analysis Intelligence Index version (`index.version` in
+`config/methodology.v1.yaml`, currently v5). AA rescores models on every major version and, for v5,
+has rescored only part of its catalogue, so v4 and v5 values are never combined: models with no v5
+score are left out, snapshots record the version they were taken under (`index_version`), carried-over
+deprecated models lose index-scale fields when the version changes, and a snapshot on another
+version is rejected at load.
+
 ## How the index works
 
 `Health = 100 · Core · Momentum · Freshness`

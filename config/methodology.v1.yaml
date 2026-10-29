@@ -1,7 +1,14 @@
 # Ascendant Analysis Health Index, Methodology v1.
 # Every constant that influences a score lives here. Changing any value requires
 # bumping `version`, and the full history is recomputed.
-version: "1.6.0"
+version: "1.7.0"
+
+index:
+  # Major version of the Artificial Analysis Intelligence Index every score is taken from. AA
+  # rescores models on each major version (v4 -> v5 moved scores by -16 to +4 points and cost per
+  # task by up to 2x), so versions are never mixed: a snapshot on another version is rejected,
+  # and a model with no score on this version is left out rather than given an older one.
+  version: "5"
 
 field:
   shelf_life_days: 365        # a release with no successor in its product line drops out after this
@@ -75,7 +82,9 @@ freshness:
   material_frontier_gap: 3.0  # within N index points of the tier leader at release
 
 lab_scope:
-  min_releases: 2
+  # One release is enough: the Intelligence Index v5 rescore left most labs with a single
+  # scored release, and a lab's current flagship is a fair basis for a rank.
+  min_releases: 1
   active_window_days: 365
   # Rank only labs with at least one active, priced model. Unpriced labs still count as
   # rivals (their models shape the field) but can't be tiered or compared on cost.
@@ -89,7 +98,8 @@ bands:
   - [0, Peripheral]
 
 replay:
-  # First day replayed. Before 2025 many deprecated models have no price or speed in
-  # AA's current data, so tiers and cost leads aren't reliable.
-  start: "2025-01-06"
+  # First day replayed: the first day a release scored on the configured Intelligence Index
+  # version has a published price (MiniMax-M3, 2026-06-01). Earlier days have no priced field,
+  # so tiers and cost leads cannot be computed.
+  start: "2026-06-01"
   step_days: 1

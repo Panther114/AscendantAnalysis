@@ -77,3 +77,38 @@ def test_deprecated_release_falls_back_to_later_sibling():
            _row("m-2", "m-2", "2025-06-01", 25, 4.0, False)]
     _impute_deprecated_prices(raw, meta, {})
     assert raw[0]["price_blend"] == 4.0
+
+
+def _api_row(slug, intel, price=1.0):
+    return {"id": slug, "slug": slug, "name": slug, "release_date": "2026-09-01",
+            "evaluations": {"artificial_analysis_intelligence_index": intel},
+            "model_creator": {"slug": "lab", "name": "Lab"},
+            "pricing": {"price_1m_input_tokens": price, "price_1m_output_tokens": 4 * price},
+            "median_output_tokens_per_second": 100}
+
+
+def test_build_rejects_other_index_version():
+    from ascendant import config
+    from ascendant.normalize import build
+    board = {"index_version": "4.0", "models": [], "releases": [], "release_of": {}}
+    with pytest.raises(ValueError, match="requires v5"):
+        build({"date": "2026-10-29"}, {"data": []}, board, config.load())
+    with pytest.raises(ValueError, match="vunknown"):
+        build({"date": "2026-10-29"}, {"data": []}, {**board, "index_version": None},
+              config.load())
+
+
+def test_build_drops_models_without_a_score_on_the_index_version():
+    from ascendant import config
+    from ascendant.normalize import build
+    scored = [(f"s-{i}", 10.0 + 7 * i) for i in range(6)]
+    api = {"data": [_api_row(s, v, 1.0 + (i * 7) % 5) for i, (s, v) in enumerate(scored)]
+           + [_api_row("a-2", None), _api_row("a-3", None)]}
+    page = [{"slug": s, "intelligenceIndexCostPerTask": 0.5 + 0.4 * ((i * 3) % 4) + 0.1 * i, "isReasoning": i % 2 == 0}
+            for i, (s, _) in enumerate(scored)]
+    page += [{"slug": "a-2", "intelligenceIndex": 28.0}, {"slug": "a-3"}]  # a-2 has a page score
+    board = {"index_version": "5.0", "models": page, "releases": [],
+             "release_of": {r["slug"]: r["slug"] for r in api["data"]}}
+    u = build({"date": "2026-10-29"}, api, board, config.load())
+    assert sorted(r.slug for r in u.releases) == sorted([s for s, _ in scored] + ["a-2"])
+    assert u.unscored == 1 and u.index_version == "5.0"
