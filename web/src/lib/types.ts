@@ -166,7 +166,8 @@ export interface Meta {
   snapshot_hash: string;
   cost_model: Record<string, number>;
   index_version: string;
-  counts: { releases: number; labs_ranked: number; variants: number; unscored_models: number };
+  index_bridge: { n?: number; rmse?: number };
+  counts: { releases: number; labs_ranked: number; variants: number; unscored_models: number; bridged_models: number };
   methodology_config: Record<string, Record<string, unknown>>;
   attribution: string;
 }

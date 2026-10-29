@@ -151,7 +151,7 @@ export default function Home() {
         <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3">
           {[
             { href: "/leaderboard/", k: "Lab Index", t: "Leaderboard", d: "Every ranked lab by Health, as a table or re-sorted by any component." },
-            { href: "/trends/", k: "Lab Index", t: "Trends", d: "Daily replay of the Intelligence Index v5 era, lead changes and the releases that moved the race." },
+            { href: "/trends/", k: "Lab Index", t: "Trends", d: "Daily replay on one Intelligence Index version, lead changes and the releases that moved the race." },
             { href: "/tiers/", k: "Lab Index", t: "Tiers", d: "Head-to-head in the frontier, mid and small price tiers." },
             { href: "/frontier/", k: "Lab Index", t: "Frontier map", d: "Each release as a curve through its reasoning efforts, and who owns each capability level." },
             { href: "/releases/", k: "Lab Index", t: "Releases", d: "Browse the full release history and compare changes in lab health on launch day." },

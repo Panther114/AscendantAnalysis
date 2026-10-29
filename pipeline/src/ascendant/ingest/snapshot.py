@@ -100,6 +100,13 @@ def take(date: dt.date | None = None) -> Path:
     return out
 
 
+def legacy_api(cfg) -> dict | None:
+    """API payload of the configured previous-version snapshot (for score bridging), if present."""
+    spec = cfg.m("index").get("bridge")
+    path = SNAPSHOTS / spec["snapshot"] if spec else None
+    return load(path)[1] if path and (path / "manifest.json").exists() else None
+
+
 def latest() -> Path:
     dirs = sorted(p for p in SNAPSHOTS.iterdir() if (p / "manifest.json").exists())
     if not dirs:

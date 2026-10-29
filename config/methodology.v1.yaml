@@ -1,14 +1,22 @@
 # Ascendant Analysis Health Index, Methodology v1.
 # Every constant that influences a score lives here. Changing any value requires
 # bumping `version`, and the full history is recomputed.
-version: "1.7.0"
+version: "1.8.0"
 
 index:
   # Major version of the Artificial Analysis Intelligence Index every score is taken from. AA
   # rescores models on each major version (v4 -> v5 moved scores by -16 to +4 points and cost per
   # task by up to 2x), so versions are never mixed: a snapshot on another version is rejected,
-  # and a model with no score on this version is left out rather than given an older one.
+  # and a model's own older-version score is never used as if it were current.
   version: "5"
+  # A model AA has not rescored gets an *estimated* score (flagged, shown with *) mapped from its
+  # last score on the previous version: a quadratic fit on the models scored on both, plus a lab
+  # offset shrunk by n / (n + lab_shrinkage). Leave-one-out error is about 3 index points, the
+  # size of tau_intelligence. Estimated models have no measured cost per task (it is imputed).
+  # `snapshot` is the last snapshot taken before AA switched versions.
+  bridge:
+    snapshot: "2026-10-27"
+    lab_shrinkage: 2.0
 
 field:
   shelf_life_days: 365        # a release with no successor in its product line drops out after this

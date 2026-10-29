@@ -33,10 +33,15 @@ update.ps1  local refresh: snapshot → test → export → commit → push
 
 All scores use one Artificial Analysis Intelligence Index version (`index.version` in
 `config/methodology.v1.yaml`, currently v5). AA rescores models on every major version and, for v5,
-has rescored only part of its catalogue, so v4 and v5 values are never combined: models with no v5
-score are left out, snapshots record the version they were taken under (`index_version`), carried-over
-deprecated models lose index-scale fields when the version changes, and a snapshot on another
-version is rejected at load.
+has rescored only part of its catalogue. A model's own older-version score is never used as if it were
+current; snapshots record their `index_version`, carried-over deprecated models lose index-scale
+fields when the version changes, and a snapshot on another version is rejected at load.
+
+Models not yet rescored carry an **estimated** score (flagged `estimated`, shown with `*`): a
+quadratic map from their last previous-version score (`index.bridge.snapshot`), fitted on the models
+scored on both versions, plus a lab offset shrunk by n / (n + 2). Leave-one-out error is about 3
+index points. Estimated models have no measured cost per task (it is imputed) and are replaced by
+AA's own scores as they appear. Models that never had a score are left out.
 
 ## How the index works
 

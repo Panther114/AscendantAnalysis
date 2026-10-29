@@ -25,7 +25,8 @@ def _universe(arg: str | None, shuffle_seed: int | None = None):
         rng.shuffle(board["models"])
         rng.shuffle(board["releases"])
     cfg = config.load()
-    return manifest, normalize.build(manifest, api, board, cfg), cfg, (api, board)
+    legacy = snapshot.legacy_api(cfg)
+    return manifest, normalize.build(manifest, api, board, cfg, legacy), cfg, (api, board)
 
 
 def cmd_ingest(args: argparse.Namespace) -> None:

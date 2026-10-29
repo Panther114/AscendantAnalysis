@@ -10,7 +10,7 @@ from ascendant.scoring import Engine
 path = snapshot.latest()
 manifest, api, board = snapshot.load(path)
 cfg = config.load()
-u = normalize.build(manifest, api, board, cfg)
+u = normalize.build(manifest, api, board, cfg, snapshot.legacy_api(cfg))
 scores = Engine(u, cfg).score_all(u.snapshot_date)[:15]
 out = Path(__file__).parent / "golden" / "health.json"
 out.parent.mkdir(exist_ok=True)

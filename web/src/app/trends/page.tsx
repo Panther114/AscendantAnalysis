@@ -30,7 +30,7 @@ export default function TrendsPage() {
       <PageHeader eyebrow="Lab Index · Trends" title="Health over time">
         Every day is rescored using only the models released by then. History is reconstructed from today&apos;s snapshot, so
         all days share one Intelligence Index version (v{meta.index_version}) and current prices. Models Artificial Analysis has not
-        rescored on that version are excluded, so the series begins with the first priced v{meta.index_version} release.
+        rescored on that version carry a flagged estimate mapped from their previous-version score.
       </PageHeader>
 
       <Card title="Daily replay" keyColor="blue" subtitle={`All ${ranked.length} ranked labs · your selection is kept when you switch metric`}>

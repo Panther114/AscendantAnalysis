@@ -12,6 +12,7 @@ import math
 import re
 from dataclasses import dataclass, field
 
+from ascendant import bridge as bridge_mod
 from ascendant import stats
 from ascendant.config import Config
 
@@ -80,6 +81,8 @@ class Universe:
     excluded: list[str] = field(default_factory=list)
     index_version: str = ""
     unscored: int = 0  # API models with no score on the configured Intelligence Index version
+    bridged: int = 0  # of the scored ones, how many carry an estimate from the previous version
+    bridge: dict[str, float] = field(default_factory=dict)
 
 
 _VERSION_TOKEN = re.compile(r"^(v?\d+(\.\d+)*[a-z]?|\d{4})$", re.IGNORECASE)
@@ -180,7 +183,17 @@ def _impute_deprecated_prices(raw: list[dict], rel_meta: dict, line_ov: dict[str
             r["price_imputed"] = True
 
 
-def build(manifest: dict, api: dict, board: dict, cfg: Config) -> Universe:
+def _scores(api: dict) -> dict[str, float]:
+    out = {}
+    for r in api["data"]:
+        v = (r["evaluations"] or {}).get("artificial_analysis_intelligence_index")
+        if v is not None:
+            out[r["slug"]] = float(v)
+    return out
+
+
+def build(manifest: dict, api: dict, board: dict, cfg: Config,
+          legacy_api: dict | None = None) -> Universe:
     snap_date = dt.date.fromisoformat(manifest["date"])
     aliases: dict[str, str] = cfg.labs.get("aliases") or {}
     display: dict[str, dict] = cfg.labs.get("display") or {}
@@ -199,15 +212,40 @@ def build(manifest: dict, api: dict, board: dict, cfg: Config) -> Universe:
     rel_meta = {r["slug"]: r for r in board["releases"]}
     release_of: dict[str, str] = board["release_of"]
 
+    # Scores on the previous index version, used only to estimate models AA has not rescored.
+    bridge = None
+    old_scores: dict[str, float] = {}
+    icfg = cfg.m("index")
+    if legacy_api is not None and icfg.get("bridge"):
+        old_scores = _scores(legacy_api)
+        lab_of = {r["slug"]: aliases.get(r["model_creator"]["slug"], r["model_creator"]["slug"])
+                  for r in api["data"]}
+        new_scores = {**{s: float(m["intelligenceIndex"]) for s, m in page.items()
+                         if m.get("intelligenceIndex") is not None
+                         and not m.get("deprecated")},
+                      **_scores(api)}
+        pairs = [(s, lab_of[s], old_scores[s], v) for s, v in new_scores.items()
+                 if s in old_scores and s in lab_of]
+        bridge = bridge_mod.fit(pairs, float(icfg["bridge"]["lab_shrinkage"]))
+
     labs: dict[str, Lab] = {}
     raw: list[dict] = []
     unscored = 0
+    bridged = 0
     for row in sorted(api["data"], key=lambda r: r["id"]):
         slug = row["slug"]
         pm = page.get(slug, {})
         intel = (row["evaluations"] or {}).get("artificial_analysis_intelligence_index")
         if intel is None:
             intel = pm.get("intelligenceIndex")
+        estimated = bool(pm.get("intelligenceIndexIsEstimated", False))
+        bridged_row = False
+        if intel is None and bridge is not None and row["slug"] in old_scores:
+            creator = row["model_creator"]
+            intel = bridge.predict(aliases.get(creator["slug"], creator["slug"]),
+                                   old_scores[row["slug"]])
+            estimated = bridged_row = True
+            bridged += row.get("release_date") is not None
         if intel is None or row.get("release_date") is None:
             # AA rescores models on each Index version, and keeps no score for the ones it has
             # not re-run. An older-version score is never substituted.
@@ -240,13 +278,14 @@ def build(manifest: dict, api: dict, board: dict, cfg: Config) -> Universe:
                 "release": release_of.get(slug, slug),
                 "date": dt.date.fromisoformat(row["release_date"]),
                 "intelligence": float(intel),
-                "estimated": bool(pm.get("intelligenceIndexIsEstimated", False)),
+                "estimated": estimated,
                 "reasoning": bool(pm.get("isReasoning", False)),
                 "open_weights": bool(pm.get("isOpenWeights", False)),
                 "price_in": pin,
                 "price_out": pout,
                 "price_blend": blend,
-                "cpt": _pos(pm.get("intelligenceIndexCostPerTask")),
+                # an estimated score has no measured cost per task on this version: impute it
+                "cpt": None if bridged_row else _pos(pm.get("intelligenceIndexCostPerTask")),
                 "speed": _pos(row.get("median_output_tokens_per_second")),
                 "deprecated": bool(pm.get("deprecated", False)),
                 "price_imputed": False,
@@ -350,4 +389,6 @@ def build(manifest: dict, api: dict, board: dict, cfg: Config) -> Universe:
         excluded=excluded,
         index_version=have,
         unscored=unscored,
+        bridged=bridged,
+        bridge=({"n": bridge.n, "rmse": stats.rnd(bridge.rmse)} if bridge else {}),
     )

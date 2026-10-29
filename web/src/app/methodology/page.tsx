@@ -54,10 +54,13 @@ export default function MethodologyPage() {
           <p>
             <strong>One index version.</strong> Every score comes from Artificial Analysis Intelligence Index v{meta.index_version}. Artificial
             Analysis rescores models on each major version (moving v4 scores by -16 to +4 points and cost per task by up to 2x), and it has
-            rescored only part of its catalogue so far. Scores from different versions are never mixed: a model without a v
-            {meta.index_version} score ({meta.counts.unscored_models} of the models in the API) is left out instead of being given an older
-            one, and a snapshot on another version is rejected. Labs and history therefore cover the rescored models only, and widen as
-            Artificial Analysis rescores more.
+            rescored only part of its catalogue so far. A model&apos;s own older-version score is never used as if it were current, and a
+            snapshot on another version is rejected. Instead, the {meta.counts.bridged_models} models without a v{meta.index_version} score
+            carry an <strong>estimated</strong> score (marked * on the charts): a quadratic map from the previous-version score, fitted on
+            the {meta.index_bridge.n} models scored on both, plus a lab offset shrunk towards zero. The in-sample error is{" "}
+            {meta.index_bridge.rmse} index points (about 3 out of sample, comparable to <TeX>{"\tau"}</TeX> for intelligence), and an estimated
+            model has no measured cost per task, so it is imputed. {meta.counts.unscored_models} models never had a score and are left out.
+            Estimates are replaced by AA&apos;s own scores as models are rescored.
           </p>
           <p>
             A <strong>release</strong> (e.g. Claude Opus 5.5) groups its reasoning-effort <strong>variants</strong>. A{" "}

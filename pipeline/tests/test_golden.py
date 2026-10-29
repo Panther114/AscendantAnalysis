@@ -24,7 +24,7 @@ def current() -> dict:
         pytest.skip(f"snapshot {data['snapshot']} not present")
     manifest, api, board = snapshot.load(path)
     cfg = config.load()
-    u = normalize.build(manifest, api, board, cfg)
+    u = normalize.build(manifest, api, board, cfg, snapshot.legacy_api(cfg))
     scores = Engine(u, cfg).score_all(u.snapshot_date)
     return data, {s.lab: s.health for s in scores}, cfg.version
 
