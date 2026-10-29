@@ -1,7 +1,7 @@
 # Ascendant Analysis Health Index, Methodology v1.
 # Every constant that influences a score lives here. Changing any value requires
 # bumping `version`, and the full history is recomputed.
-version: "1.8.0"
+version: "1.8.1"
 
 index:
   # Major version of the Artificial Analysis Intelligence Index every score is taken from. AA
@@ -106,8 +106,7 @@ bands:
   - [0, Peripheral]
 
 replay:
-  # First day replayed: the first day a release scored on the configured Intelligence Index
-  # version has a published price (MiniMax-M3, 2026-06-01). Earlier days have no priced field,
-  # so tiers and cost leads cannot be computed.
-  start: "2026-06-01"
+  # First day replayed. Before 2025 many deprecated models have no price or speed in
+  # AA's current data, so tiers and cost leads aren't reliable.
+  start: "2025-01-06"
   step_days: 1
