@@ -1,5 +1,5 @@
 {
-  "checked": "2026-10-29",
+  "checked": "2026-10-30",
   "devforth": {
     "error": null,
     "plans": 26,
@@ -8,28 +8,28 @@
   "drift_tolerance": 0.25,
   "plans": [
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "alibaba-coding-plan-pro",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "alibaba-token-essential",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "alibaba-token-lite",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://linux.do/t/topic/2984804"
       ],
@@ -40,35 +40,35 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "alibaba-token-standard",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "aliyun-coding-plan-pro",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "aliyun-token-essential",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "aliyun-token-lite",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://linux.do/t/topic/2984804"
       ],
@@ -79,28 +79,28 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "aliyun-token-standard",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "amp-gigawatt",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "amp-megawatt",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "devforth": {
         "baseline": 121.7,
@@ -123,7 +123,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "devforth": {
         "baseline": 60.9,
@@ -148,7 +148,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "devforth": {
         "baseline": 60.9,
@@ -171,49 +171,49 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 11,
+      "age_days": 12,
       "dead_sources": [],
       "flags": [],
       "id": "atlas-lite",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 11,
+      "age_days": 12,
       "dead_sources": [],
       "flags": [],
       "id": "atlas-max",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 11,
+      "age_days": 12,
       "dead_sources": [],
       "flags": [],
       "id": "atlas-plus",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 11,
+      "age_days": 12,
       "dead_sources": [],
       "flags": [],
       "id": "atlas-starter",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 11,
+      "age_days": 12,
       "dead_sources": [],
       "flags": [],
       "id": "atlas-ultra",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "augment-business",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://www.usagepricing.com/blueprint/augment-code"
       ],
@@ -224,49 +224,49 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "baidu-comate-max",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "baidu-comate-pro",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "baidu-token-lite",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "baidu-token-max",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "baidu-token-mini",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "baidu-token-pro",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://linux.do/t/topic/2134094"
       ],
@@ -277,7 +277,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://linux.do/t/topic/2134094"
       ],
@@ -288,14 +288,14 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "cerebras-code-max",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://www.usagepricing.com/blueprint/cerebras"
       ],
@@ -306,21 +306,21 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "chutes-plus",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "chutes-pro",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://zhuanlan.zhihu.com/p/2051194847260840250"
       ],
@@ -331,7 +331,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://zhuanlan.zhihu.com/p/2051194847260840250"
       ],
@@ -342,7 +342,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://zhuanlan.zhihu.com/p/2051194847260840250"
       ],
@@ -353,7 +353,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://www.codebuddy.ai/docs/ide/Account/pricing",
         "https://www.codebuddy.ai/docs/ide/Account/credits"
@@ -365,42 +365,42 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 11,
+      "age_days": 12,
       "dead_sources": [],
       "flags": [],
       "id": "commandcode-go",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "commandcode-goat",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 11,
+      "age_days": 12,
       "dead_sources": [],
       "flags": [],
       "id": "commandcode-max-10x",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 11,
+      "age_days": 12,
       "dead_sources": [],
       "flags": [],
       "id": "commandcode-max-20x",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 11,
+      "age_days": 12,
       "dead_sources": [],
       "flags": [],
       "id": "commandcode-pro",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://www.compshare.cn/coding-plan"
       ],
@@ -411,7 +411,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://www.compshare.cn/coding-plan"
       ],
@@ -422,7 +422,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://www.compshare.cn/coding-plan"
       ],
@@ -433,7 +433,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://www.compshare.cn/coding-plan"
       ],
@@ -444,7 +444,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://www.compshare.cn/coding-plan"
       ],
@@ -455,7 +455,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://www.compshare.cn/coding-plan"
       ],
@@ -466,126 +466,126 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "ctyun-coding-token-plan-10000",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "ctyun-coding-token-plan-100000",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "ctyun-coding-token-plan-25000",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "ctyun-coding-token-plan-3000",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "ctyun-coding-token-plan-50000",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "cursor-legacy-pro",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "cursor-legacy-pro-plus",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "cursor-legacy-ultra",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "cursor-x-plus",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "cursor-x-premium",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "cursor-x-super",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "cursor-x-ultra",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "devpass-lite",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "devpass-max",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "devpass-pro",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "factory-max",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "factory-plus",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://www.usagepricing.com/blueprint/factory"
       ],
@@ -596,7 +596,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 11,
+      "age_days": 12,
       "dead_sources": [],
       "devforth": {
         "baseline": 2.0,
@@ -619,7 +619,7 @@
       "verified": "2026-10-18"
     },
     {
-      "age_days": 11,
+      "age_days": 12,
       "dead_sources": [],
       "devforth": {
         "baseline": 1.5,
@@ -642,7 +642,7 @@
       "verified": "2026-10-18"
     },
     {
-      "age_days": 11,
+      "age_days": 12,
       "dead_sources": [],
       "devforth": {
         "baseline": 1.79,
@@ -665,7 +665,7 @@
       "verified": "2026-10-18"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "devforth": {
         "baseline": 8.7,
@@ -690,7 +690,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "devforth": {
         "baseline": 17.4,
@@ -715,7 +715,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "devforth": {
         "baseline": 8.7,
@@ -740,49 +740,49 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "huawei-maas-token-plan-lite",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "huawei-maas-token-plan-max",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "huawei-maas-token-plan-pro",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "huawei-maas-token-plan-standard",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "iflytek-astron-efficient",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "iflytek-astron-express",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://www.usagepricing.com/blueprint/jetbrains-ai"
       ],
@@ -793,7 +793,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://www.usagepricing.com/blueprint/jetbrains-ai"
       ],
@@ -804,49 +804,49 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "jiuzhang-token-plan-advanced",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "jiuzhang-token-plan-entry",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "jiuzhang-token-plan-flagship",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "kilo-pass-expert",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "kilo-pass-pro",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "kilo-pass-starter",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://linux.do/t/topic/2620965",
         "https://linux.do/t/topic/2617259"
@@ -858,7 +858,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://www.usagepricing.com/blueprint/activity/moonshot-ai-2026-09-28-kimi-plus-pro-max-ultra-plans",
         "https://linux.do/t/topic/2620965",
@@ -871,7 +871,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://linux.do/t/topic/2620965",
         "https://linux.do/t/topic/2617259"
@@ -883,7 +883,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://www.usagepricing.com/blueprint/activity/moonshot-ai-2026-09-28-kimi-plus-pro-max-ultra-plans",
         "https://linux.do/t/topic/2620965",
@@ -896,7 +896,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://linux.do/t/topic/2620965",
         "https://linux.do/t/topic/2617259"
@@ -908,7 +908,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://www.usagepricing.com/blueprint/activity/moonshot-ai-2026-09-28-kimi-plus-pro-max-ultra-plans",
         "https://linux.do/t/topic/2620965",
@@ -921,7 +921,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://linux.do/t/topic/2620965",
         "https://linux.do/t/topic/2617259"
@@ -933,7 +933,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://www.usagepricing.com/blueprint/activity/moonshot-ai-2026-09-28-kimi-plus-pro-max-ultra-plans",
         "https://linux.do/t/topic/2620965",
@@ -946,7 +946,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://www.usagepricing.com/blueprint/kiro"
       ],
@@ -957,7 +957,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://www.usagepricing.com/blueprint/kiro"
       ],
@@ -968,7 +968,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://www.usagepricing.com/blueprint/kiro"
       ],
@@ -979,7 +979,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://www.usagepricing.com/blueprint/kiro"
       ],
@@ -990,7 +990,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://vercel.com/ai-gateway/models/kat-coder-pro-v2.5"
       ],
@@ -1001,7 +1001,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://vercel.com/ai-gateway/models/kat-coder-pro-v2.5"
       ],
@@ -1012,7 +1012,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://vercel.com/ai-gateway/models/kat-coder-pro-v2.5"
       ],
@@ -1023,7 +1023,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://vercel.com/ai-gateway/models/kat-coder-pro-v2.5"
       ],
@@ -1034,7 +1034,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://vercel.com/ai-gateway/models/kat-coder-pro-v2.5"
       ],
@@ -1045,7 +1045,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://vercel.com/ai-gateway/models/kat-coder-pro-v2.5"
       ],
@@ -1056,7 +1056,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://vercel.com/ai-gateway/models/kat-coder-pro-v2.5"
       ],
@@ -1067,7 +1067,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://vercel.com/ai-gateway/models/kat-coder-pro-v2.5"
       ],
@@ -1078,7 +1078,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://openai-hub.com/news/946/",
         "https://zhuanlan.zhihu.com/p/2058896848035828365"
@@ -1090,161 +1090,161 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "meta-muse-code-everyday",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "meta-muse-code-high",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "meta-muse-code-max",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "meta-muse-code-power",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "minimax-token-build",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "minimax-token-cn-build",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "minimax-token-cn-explore",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "minimax-token-cn-go",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "minimax-token-explore",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "minimax-token-go",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "mistral-vibe-pro",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "mobilecloud-coding-plan-lite",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "mobilecloud-coding-plan-pro",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "moorethreads-coding-plan-lite",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "moorethreads-coding-plan-max",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "moorethreads-coding-plan-pro",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "nanogpt-pro",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "novita-coding-lite",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "novita-coding-max",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "novita-coding-pro",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 11,
+      "age_days": 12,
       "dead_sources": [],
       "flags": [],
       "id": "ollama-max",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 11,
+      "age_days": 12,
       "dead_sources": [],
       "flags": [],
       "id": "ollama-pro",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "devforth": {
         "baseline": 0.25,
@@ -1267,7 +1267,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "devforth": {
         "baseline": 15.2,
@@ -1290,7 +1290,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "devforth": {
         "baseline": 15.2,
@@ -1313,7 +1313,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "devforth": {
         "baseline": 55.7,
@@ -1336,238 +1336,238 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "openai-chatgpt-pro-500",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 11,
+      "age_days": 12,
       "dead_sources": [],
       "flags": [],
       "id": "opencode-go",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 11,
+      "age_days": 12,
       "dead_sources": [],
       "flags": [],
       "id": "opencode-go-plus",
       "verified": "2026-10-18"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "qoder-cn-pro",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "qoder-cn-pro-plus",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "qoder-pro",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "qoder-pro-plus",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "qoder-ultra",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "scnet-coding-plan-lite",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "scnet-coding-plan-pro",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "scnet-token-plan-advanced",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "scnet-token-plan-basic",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "scnet-token-plan-flagship",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "scnet-token-plan-standard",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "stepfun-step-plan-max-china",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "stepfun-step-plan-max-global",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "stepfun-step-plan-mini-china",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "stepfun-step-plan-mini-global",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "stepfun-step-plan-plus-china",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "stepfun-step-plan-plus-global",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "stepfun-step-plan-pro-china",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "stepfun-step-plan-pro-global",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "synthetic-big",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "synthetic-go",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "synthetic-standard",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "tencent-hy-lite",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "tencent-hy-max",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "tencent-hy-pro",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "tencent-hy-standard",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "tencent-token-lite",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "tencent-token-max",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "tencent-token-pro",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "tencent-token-standard",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://www.trae.cn/pricing",
         "https://zhuanlan.zhihu.com/p/2066687263707238910"
@@ -1579,7 +1579,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://www.trae.cn/pricing",
         "https://zhuanlan.zhihu.com/p/2066687263707238910"
@@ -1591,7 +1591,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://www.trae.cn/pricing",
         "https://zhuanlan.zhihu.com/p/2066687263707238910"
@@ -1603,7 +1603,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://www.trae.cn/pricing",
         "https://zhuanlan.zhihu.com/p/2066687263707238910"
@@ -1615,42 +1615,42 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "trae-pro",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "trae-pro-plus",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "trae-ultra",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "unicom-coding-plan-lite",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "unicom-coding-plan-pro",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://linux.do/t/topic/2134094"
       ],
@@ -1661,7 +1661,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://linux.do/t/topic/2134094"
       ],
@@ -1672,7 +1672,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://www.usagepricing.com/blueprint/warp",
         "https://capitalandcompute.net/blog/warp-pricing-explained/"
@@ -1684,7 +1684,7 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [
         "https://www.usagepricing.com/blueprint/activity/warp-2026-10-price-change"
       ],
@@ -1695,147 +1695,147 @@
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "windsurf-max",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "windsurf-pro",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "xai-supergrok",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "xai-supergrok-heavy",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "xai-supergrok-lite",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "xai-supergrok-plus",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "xiaomi-mimo-cn-lite",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "xiaomi-mimo-cn-max",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "xiaomi-mimo-cn-pro",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "xiaomi-mimo-cn-standard",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "xiaomi-mimo-lite",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "xiaomi-mimo-max",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "xiaomi-mimo-pro",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "xiaomi-mimo-standard",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "zai-glm-lite",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "zai-glm-max",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "zai-glm-pro",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "zed-pro",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "zhipu-glm-lite",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "zhipu-glm-max",
       "verified": "2026-10-20"
     },
     {
-      "age_days": 9,
+      "age_days": 10,
       "dead_sources": [],
       "flags": [],
       "id": "zhipu-glm-pro",
