@@ -992,10 +992,11 @@
     {
       "age_days": 13,
       "dead_sources": [
+        "https://www.yiboot.com/article/ai-tools/from-patching-code-to-running-entire-projects-what-makes-kuaishou-kat-coder-pro-v2-5-stand-out.html",
         "https://vercel.com/ai-gateway/models/kat-coder-pro-v2.5"
       ],
       "flags": [
-        "1 source URL(s) unreachable"
+        "2 source URL(s) unreachable"
       ],
       "id": "kwaikat-coding-plan-max-china",
       "verified": "2026-10-20"
@@ -1003,10 +1004,11 @@
     {
       "age_days": 13,
       "dead_sources": [
+        "https://www.yiboot.com/article/ai-tools/from-patching-code-to-running-entire-projects-what-makes-kuaishou-kat-coder-pro-v2-5-stand-out.html",
         "https://vercel.com/ai-gateway/models/kat-coder-pro-v2.5"
       ],
       "flags": [
-        "1 source URL(s) unreachable"
+        "2 source URL(s) unreachable"
       ],
       "id": "kwaikat-coding-plan-max-global",
       "verified": "2026-10-20"
@@ -1014,10 +1016,11 @@
     {
       "age_days": 13,
       "dead_sources": [
+        "https://www.yiboot.com/article/ai-tools/from-patching-code-to-running-entire-projects-what-makes-kuaishou-kat-coder-pro-v2-5-stand-out.html",
         "https://vercel.com/ai-gateway/models/kat-coder-pro-v2.5"
       ],
       "flags": [
-        "1 source URL(s) unreachable"
+        "2 source URL(s) unreachable"
       ],
       "id": "kwaikat-coding-plan-mini-china",
       "verified": "2026-10-20"
@@ -1025,10 +1028,11 @@
     {
       "age_days": 13,
       "dead_sources": [
+        "https://www.yiboot.com/article/ai-tools/from-patching-code-to-running-entire-projects-what-makes-kuaishou-kat-coder-pro-v2-5-stand-out.html",
         "https://vercel.com/ai-gateway/models/kat-coder-pro-v2.5"
       ],
       "flags": [
-        "1 source URL(s) unreachable"
+        "2 source URL(s) unreachable"
       ],
       "id": "kwaikat-coding-plan-mini-global",
       "verified": "2026-10-20"
@@ -1036,10 +1040,11 @@
     {
       "age_days": 13,
       "dead_sources": [
+        "https://www.yiboot.com/article/ai-tools/from-patching-code-to-running-entire-projects-what-makes-kuaishou-kat-coder-pro-v2-5-stand-out.html",
         "https://vercel.com/ai-gateway/models/kat-coder-pro-v2.5"
       ],
       "flags": [
-        "1 source URL(s) unreachable"
+        "2 source URL(s) unreachable"
       ],
       "id": "kwaikat-coding-plan-pro-china",
       "verified": "2026-10-20"
@@ -1047,10 +1052,11 @@
     {
       "age_days": 13,
       "dead_sources": [
+        "https://www.yiboot.com/article/ai-tools/from-patching-code-to-running-entire-projects-what-makes-kuaishou-kat-coder-pro-v2-5-stand-out.html",
         "https://vercel.com/ai-gateway/models/kat-coder-pro-v2.5"
       ],
       "flags": [
-        "1 source URL(s) unreachable"
+        "2 source URL(s) unreachable"
       ],
       "id": "kwaikat-coding-plan-pro-global",
       "verified": "2026-10-20"
@@ -1058,10 +1064,11 @@
     {
       "age_days": 13,
       "dead_sources": [
+        "https://www.yiboot.com/article/ai-tools/from-patching-code-to-running-entire-projects-what-makes-kuaishou-kat-coder-pro-v2-5-stand-out.html",
         "https://vercel.com/ai-gateway/models/kat-coder-pro-v2.5"
       ],
       "flags": [
-        "1 source URL(s) unreachable"
+        "2 source URL(s) unreachable"
       ],
       "id": "kwaikat-coding-plan-starter-china",
       "verified": "2026-10-20"
@@ -1069,10 +1076,11 @@
     {
       "age_days": 13,
       "dead_sources": [
+        "https://www.yiboot.com/article/ai-tools/from-patching-code-to-running-entire-projects-what-makes-kuaishou-kat-coder-pro-v2-5-stand-out.html",
         "https://vercel.com/ai-gateway/models/kat-coder-pro-v2.5"
       ],
       "flags": [
-        "1 source URL(s) unreachable"
+        "2 source URL(s) unreachable"
       ],
       "id": "kwaikat-coding-plan-starter-global",
       "verified": "2026-10-20"
@@ -1844,7 +1852,7 @@
   ],
   "sources": {
     "total": 198,
-    "unreachable": 22
+    "unreachable": 23
   },
   "stale_after_days": 90
 }
