@@ -73,21 +73,64 @@ def backfill(api: dict, board: dict, prior: dict | None) -> dict:
     return {**board, "models": sorted(models, key=lambda m: m["slug"]), "carried": carried}
 
 
-def _prior_board(date: dt.date) -> dict | None:
+def _prior(date: dt.date) -> tuple[dict, dict] | tuple[None, None]:
     dirs = sorted(p for p in SNAPSHOTS.iterdir()
                   if p.name < date.isoformat() and (p / "manifest.json").exists())
-    return load(dirs[-1])[2] if dirs else None
+    if not dirs:
+        return None, None
+    _, api, board = load(dirs[-1])
+    return api, board
+
+
+def carry_api(api: dict, prior_api: dict | None, prior_board: dict | None, version: str) -> dict:
+    """Keeps API rows of models the current list no longer returns.
+
+    The free v2 list covers current models; deprecated ones drop out, yet the replay needs
+    them. Their last row is carried forward (recorded under api["carried"]). Index-scale scores
+    are cleared when the prior snapshot was on another Intelligence Index version.
+    """
+    if not prior_api:
+        return {**api, "carried": []}
+    have = {r["slug"] for r in api["data"]}
+    same_scale = (prior_board or {}).get("index_version") == version
+    carried = []
+    for r in prior_api["data"]:
+        if r["slug"] in have:
+            continue
+        row = dict(r)
+        if not same_scale:
+            row["evaluations"] = {**(row.get("evaluations") or {}),
+                                  "artificial_analysis_intelligence_index": None}
+        carried.append(row)
+    return {**api, "data": api["data"] + carried, "carried": sorted(r["slug"] for r in carried)}
+
+
+def check_versions(api: dict, board: dict) -> None:
+    """The API and the leaderboard page must report the same Intelligence Index major version."""
+    api_major = str(api.get("index_version", "")).split(".")[0]
+    page_major = str(board["index_version"]).split(".")[0]
+    if api_major != page_major:
+        raise RuntimeError(f"Intelligence Index version mismatch: API v{api.get('index_version')}"
+                           f" vs leaderboard v{board['index_version']}")
 
 
 def take(date: dt.date | None = None) -> Path:
     date = date or dt.datetime.now(dt.UTC).date()
     out = SNAPSHOTS / date.isoformat()
     headers = {"User-Agent": aa_api.USER_AGENT}
+    prior_api, prior_board = _prior(date)
+    known = {r["model_creator"]["id"]: r["model_creator"]["slug"]
+             for r in (prior_api or {"data": []})["data"] if r.get("model_creator")}
     with httpx.Client(headers=headers, timeout=60, follow_redirects=True) as client:
-        api = json.loads(aa_api.fetch_models(client))
+        api = aa_api.fetch_models(client, known)
         board = aa_pages.extract(aa_pages.fetch_leaderboard_html(client))
-    board = backfill(api, board, _prior_board(date))
+    check_versions(api, board)
+    fresh = {r["slug"] for r in api["data"]}
+    api = carry_api(api, prior_api, prior_board, board["index_version"])
+    board = backfill(api, board, prior_board)
     check_coverage(api, board)
+    print(f"API models: {len(fresh)} current + {len(api['carried'])} carried; "
+          f"new vs prior: {sorted(fresh - {r['slug'] for r in (prior_api or {'data': []})['data']})}")
     api["data"].sort(key=lambda r: r["id"])
     out.mkdir(parents=True, exist_ok=True)
     payloads = {"api_models.json.gz": _canonical(api), "leaderboard.json.gz": _canonical(board)}

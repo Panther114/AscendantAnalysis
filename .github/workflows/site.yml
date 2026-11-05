@@ -7,7 +7,9 @@ name: Update and deploy
 
 on:
   schedule:
-    - cron: "17 10,22 * * *" # twice daily, 10:17 and 22:17 UTC = 18:17 and 06:17 Singapore time
+    # Twice daily at 09:43 and 21:43 UTC. GitHub delays scheduled runs under load (observed 4-7 h
+    # after 10:17/22:17), so the slots sit off the busy marks and the real runs land ~12 h apart.
+    - cron: "43 9,21 * * *"
   workflow_dispatch:
     inputs:
       fetch:
