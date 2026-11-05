@@ -261,9 +261,13 @@ class Engine:
         slots = [s for t in TIERS if (s := self.tier_scores(f, t).get(lab))]
         if not slots:
             return 0.0, slots
-        mw = self.cfg.m("lineup")["max_weight"]
+        lc = self.cfg.m("lineup")
+        mw = lc["max_weight"]
         best = max(s.score for s in slots)
-        mean = math.fsum(s.score for s in slots) / len(TIERS)
+        # A missing tier is credited a fraction of the lab's best slot, not 0: tiers are set by
+        # price, so a lab that prices low can never fill the frontier tier however strong it is.
+        missing = len(TIERS) - len(slots)
+        mean = (math.fsum(s.score for s in slots) + missing * lc["missing_tier_credit"] * best) / len(TIERS)
         return mw * best + (1 - mw) * mean, slots
 
     # ------------------------------------------------------------ momentum / freshness

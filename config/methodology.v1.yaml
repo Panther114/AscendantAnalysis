@@ -1,7 +1,7 @@
 # Ascendant Analysis Health Index, Methodology v1.
 # Every constant that influences a score lives here. Changing any value requires
 # bumping `version`, and the full history is recomputed.
-version: "1.8.1"
+version: "1.9.0"
 
 index:
   # Major version of the Artificial Analysis Intelligence Index every score is taken from. AA
@@ -11,7 +11,8 @@ index:
   version: "5"
   # A model AA has not rescored gets an *estimated* score (flagged, shown with *) mapped from its
   # last score on the previous version: a quadratic fit on the models scored on both, plus a lab
-  # offset shrunk by n / (n + lab_shrinkage). Leave-one-out error is about 3 index points, the
+  # offset shrunk by n / (n + lab_shrinkage). The offset is relative (a fraction of the mapped
+  # score), so it cannot swamp or reorder the small estimates of older models. Leave-one-out error is about 3 index points, the
   # size of tau_intelligence. Estimated models have no measured cost per task (it is imputed).
   # `snapshot` is the last snapshot taken before AA switched versions.
   bridge:
@@ -67,9 +68,15 @@ lineup:
   tau_intelligence: 3.0       # index points
   tau_value: 3.0              # index points of value residual
   tau_speed: 0.25             # log units of speed residual
-  # LS = mw * best tier + (1 - mw) * mean over all tiers (missing tier = 0): a specialist
-  # that wins its tier scores well, a full lineup earns the breadth bonus.
+  # LS = mw * best tier + (1 - mw) * mean over all tiers: a specialist that wins its tier
+  # scores well, a full lineup earns the breadth bonus.
   max_weight: 0.5
+  # A missing tier counts missing_tier_credit * best tier score toward the mean (not 0).
+  # Tiers are set by price, so a lab that prices every model below the frontier cut-off
+  # (most Chinese labs) could otherwise never fill the frontier tier however strong its
+  # models are, and was penalised for low prices rather than for weak models. At 1.0 the
+  # breadth term vanishes and a one-model specialist outranks full-lineup frontier labs.
+  missing_tier_credit: 0.5
 
 core:
   max_weight: 0.55            # Core = mw * max(FL, LS) + (1 - mw) * mean(FL, LS)

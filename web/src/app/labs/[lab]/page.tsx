@@ -218,7 +218,7 @@ export default async function LabPage(props: PageProps<"/labs/[lab]">) {
                       </p>
                     </>
                   ) : (
-                    <p className="mt-1.5 text-xs text-ink-3">No active release in this tier (counts 0 toward breadth).</p>
+                    <p className="mt-1.5 text-xs text-ink-3">No active release in this tier (counts half the best tier score toward breadth).</p>
                   )}
                 </div>
               );

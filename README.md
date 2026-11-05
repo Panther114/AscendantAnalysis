@@ -39,7 +39,7 @@ fields when the version changes, and a snapshot on another version is rejected a
 
 Models not yet rescored carry an **estimated** score (flagged `estimated`, shown with `*`): a
 quadratic map from their last previous-version score (`index.bridge.snapshot`), fitted on the models
-scored on both versions, plus a lab offset shrunk by n / (n + 2). Leave-one-out error is about 3
+scored on both versions, scaled by a relative lab offset shrunk by n / (n + 2). Leave-one-out error is about 3
 index points. Estimated models have no measured cost per task (it is imputed) and are replaced by
 AA's own scores as they appear. Models that never had a score are left out.
 
@@ -52,6 +52,8 @@ AA's own scores as they appear. Models that never had a score are left out.
   is enough to score well.
 - **Lineup:** each lab's best-scoring release per tier (frontier / mid / small, by the release's own blended
   price against fixed cut-offs), scored against rivals on intelligence, value residual and speed.
+  A tier the lab has no release in counts half its best tier score, so pricing every model below
+  the frontier cut-off is not penalised as if the lab had no strong model.
 - **Core:** a soft-max of the two, so a specialist that wins its niche can still be healthy.
 - **Momentum (×0.75–1.25):** the trend in at-release competitiveness between successive
   releases of the same product line.

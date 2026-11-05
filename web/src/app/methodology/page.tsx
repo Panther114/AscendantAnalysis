@@ -57,7 +57,7 @@ export default function MethodologyPage() {
             rescored only part of its catalogue so far. A model&apos;s own older-version score is never used as if it were current, and a
             snapshot on another version is rejected. Instead, the {meta.counts.bridged_models} models without a v{meta.index_version} score
             carry an <strong>estimated</strong> score (marked * on the charts): a quadratic map from the previous-version score, fitted on
-            the {meta.index_bridge.n} models scored on both, plus a lab offset shrunk towards zero. The in-sample error is{" "}
+            the {meta.index_bridge.n} models scored on both, scaled by a relative lab offset shrunk towards zero (relative, so it cannot reorder the small estimates of older models). The in-sample error is{" "}
             {meta.index_bridge.rmse} index points (about 3 out of sample, comparable to <TeX>{"\tau"}</TeX> for intelligence), and an estimated
             model has no measured cost per task, so it is imputed. {meta.counts.unscored_models} models never had a score and are left out.
             Estimates are replaced by AA&apos;s own scores as models are rescored.
@@ -117,8 +117,8 @@ export default function MethodologyPage() {
             crowded, but with only two or three entrants (as in the frontier tier) a narrow gap stays close to even instead of
             counting as a total win or loss. Then:
           </p>
-          <TeX block>{String.raw`\text{LS} = 0.5\cdot\max_t s_t + 0.5\cdot\tfrac13\textstyle\sum_t s_t \quad(\text{missing tier} = 0)`}</TeX>
-          <p>A specialist that wins its tier scores well, and a full lineup earns a breadth bonus.</p>
+          <TeX block>{String.raw`\text{LS} = 0.5\cdot\max_t s_t + 0.5\cdot\tfrac13\textstyle\sum_t s_t \quad(\text{missing tier} = 0.5\cdot\max_t s_t)`}</TeX>
+          <p>A specialist that wins its tier scores well, and a full lineup earns a breadth bonus. A missing tier counts half the lab&apos;s best tier score rather than 0: tiers are set by price, so a lab that prices every model below the frontier cut-off would otherwise be penalised for low prices rather than for weak models.</p>
         </Section>
 
         <Section n={5} title="Core, momentum and freshness">
