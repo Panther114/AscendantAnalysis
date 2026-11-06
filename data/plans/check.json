@@ -16,15 +16,23 @@
     },
     {
       "age_days": 17,
-      "dead_sources": [],
-      "flags": [],
+      "dead_sources": [
+        "https://www.alibabacloud.com/help/en/model-studio/model-pricing"
+      ],
+      "flags": [
+        "1 source URL(s) unreachable"
+      ],
       "id": "alibaba-token-essential",
       "verified": "2026-10-20"
     },
     {
       "age_days": 17,
-      "dead_sources": [],
-      "flags": [],
+      "dead_sources": [
+        "https://www.alibabacloud.com/help/en/model-studio/model-pricing"
+      ],
+      "flags": [
+        "1 source URL(s) unreachable"
+      ],
       "id": "alibaba-token-lite",
       "verified": "2026-10-20"
     },
@@ -41,8 +49,12 @@
     },
     {
       "age_days": 17,
-      "dead_sources": [],
-      "flags": [],
+      "dead_sources": [
+        "https://www.alibabacloud.com/help/en/model-studio/model-pricing"
+      ],
+      "flags": [
+        "1 source URL(s) unreachable"
+      ],
       "id": "alibaba-token-standard",
       "verified": "2026-10-20"
     },
@@ -101,9 +113,7 @@
     },
     {
       "age_days": 17,
-      "dead_sources": [
-        "https://www.orcarouter.ai/blog/claude-opus-5-5-vs-gpt-6-1-sol-subscription-value"
-      ],
+      "dead_sources": [],
       "devforth": {
         "baseline": 121.7,
         "class": "All",
@@ -120,17 +130,13 @@
         "price_usd": 200,
         "updated": "2026-07-16T00:00:00.000Z"
       },
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "flags": [],
       "id": "anthropic-claude-max-20x",
       "verified": "2026-10-20"
     },
     {
       "age_days": 17,
-      "dead_sources": [
-        "https://www.orcarouter.ai/blog/claude-opus-5-5-vs-gpt-6-1-sol-subscription-value"
-      ],
+      "dead_sources": [],
       "devforth": {
         "baseline": 60.9,
         "class": "All",
@@ -149,17 +155,13 @@
         "price_usd": 100,
         "updated": "2026-09-16T08:19:47.352Z"
       },
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "flags": [],
       "id": "anthropic-claude-max-5x",
       "verified": "2026-10-20"
     },
     {
       "age_days": 17,
-      "dead_sources": [
-        "https://www.orcarouter.ai/blog/claude-opus-5-5-vs-gpt-6-1-sol-subscription-value"
-      ],
+      "dead_sources": [],
       "devforth": {
         "baseline": 60.9,
         "class": "All",
@@ -176,9 +178,7 @@
         "price_usd": 20,
         "updated": "2026-09-17T10:03:43.286Z"
       },
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "flags": [],
       "id": "anthropic-claude-pro",
       "verified": "2026-10-20"
     },
@@ -366,13 +366,8 @@
     },
     {
       "age_days": 17,
-      "dead_sources": [
-        "https://www.codebuddy.ai/docs/ide/Account/pricing",
-        "https://www.codebuddy.ai/docs/ide/Account/credits"
-      ],
-      "flags": [
-        "2 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "codebuddy-intl-pro",
       "verified": "2026-10-20"
     },
@@ -1111,45 +1106,29 @@
     },
     {
       "age_days": 17,
-      "dead_sources": [
-        "https://www.orcarouter.ai/blog/muse-code"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "meta-muse-code-everyday",
       "verified": "2026-10-20"
     },
     {
       "age_days": 17,
-      "dead_sources": [
-        "https://www.orcarouter.ai/blog/muse-code"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "meta-muse-code-high",
       "verified": "2026-10-20"
     },
     {
       "age_days": 17,
-      "dead_sources": [
-        "https://www.orcarouter.ai/blog/muse-code"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "meta-muse-code-max",
       "verified": "2026-10-20"
     },
     {
       "age_days": 17,
-      "dead_sources": [
-        "https://www.orcarouter.ai/blog/muse-code"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "meta-muse-code-power",
       "verified": "2026-10-20"
     },
@@ -1613,11 +1592,10 @@
     {
       "age_days": 17,
       "dead_sources": [
-        "https://www.trae.cn/pricing",
         "https://zhuanlan.zhihu.com/p/2066687263707238910"
       ],
       "flags": [
-        "2 source URL(s) unreachable"
+        "1 source URL(s) unreachable"
       ],
       "id": "trae-cn-lite",
       "verified": "2026-10-20"
@@ -1625,11 +1603,10 @@
     {
       "age_days": 17,
       "dead_sources": [
-        "https://www.trae.cn/pricing",
         "https://zhuanlan.zhihu.com/p/2066687263707238910"
       ],
       "flags": [
-        "2 source URL(s) unreachable"
+        "1 source URL(s) unreachable"
       ],
       "id": "trae-cn-pro",
       "verified": "2026-10-20"
@@ -1637,11 +1614,10 @@
     {
       "age_days": 17,
       "dead_sources": [
-        "https://www.trae.cn/pricing",
         "https://zhuanlan.zhihu.com/p/2066687263707238910"
       ],
       "flags": [
-        "2 source URL(s) unreachable"
+        "1 source URL(s) unreachable"
       ],
       "id": "trae-cn-pro-plus",
       "verified": "2026-10-20"
@@ -1649,11 +1625,10 @@
     {
       "age_days": 17,
       "dead_sources": [
-        "https://www.trae.cn/pricing",
         "https://zhuanlan.zhihu.com/p/2066687263707238910"
       ],
       "flags": [
-        "2 source URL(s) unreachable"
+        "1 source URL(s) unreachable"
       ],
       "id": "trae-cn-ultra",
       "verified": "2026-10-20"
@@ -1888,7 +1863,7 @@
   ],
   "sources": {
     "total": 198,
-    "unreachable": 26
+    "unreachable": 22
   },
   "stale_after_days": 90
 }
