@@ -149,9 +149,7 @@
     },
     {
       "age_days": 22,
-      "dead_sources": [
-        "https://www.explainx.ai/blog/semianalysis-claude-vs-chatgpt-subscription-api-value-limit-testing-2026"
-      ],
+      "dead_sources": [],
       "devforth": {
         "baseline": 60.9,
         "class": "All",
@@ -168,9 +166,7 @@
         "price_usd": 20,
         "updated": "2026-09-17T10:03:43.286Z"
       },
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "flags": [],
       "id": "anthropic-claude-pro",
       "verified": "2026-10-20"
     },
@@ -1280,9 +1276,7 @@
     },
     {
       "age_days": 22,
-      "dead_sources": [
-        "https://www.explainx.ai/blog/semianalysis-claude-vs-chatgpt-subscription-api-value-limit-testing-2026"
-      ],
+      "dead_sources": [],
       "devforth": {
         "baseline": 15.2,
         "class": "All",
@@ -1299,17 +1293,13 @@
         "price_usd": 20,
         "updated": "2026-09-17T10:35:47.298Z"
       },
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "flags": [],
       "id": "openai-chatgpt-plus",
       "verified": "2026-10-20"
     },
     {
       "age_days": 22,
-      "dead_sources": [
-        "https://www.explainx.ai/blog/semianalysis-claude-vs-chatgpt-subscription-api-value-limit-testing-2026"
-      ],
+      "dead_sources": [],
       "devforth": {
         "baseline": 15.2,
         "class": "All",
@@ -1326,17 +1316,13 @@
         "price_usd": 100,
         "updated": "2026-09-17T10:35:50.128Z"
       },
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "flags": [],
       "id": "openai-chatgpt-pro-100",
       "verified": "2026-10-20"
     },
     {
       "age_days": 22,
-      "dead_sources": [
-        "https://www.explainx.ai/blog/semianalysis-claude-vs-chatgpt-subscription-api-value-limit-testing-2026"
-      ],
+      "dead_sources": [],
       "devforth": {
         "baseline": 55.7,
         "class": "All",
@@ -1353,20 +1339,14 @@
         "price_usd": 200,
         "updated": "2026-09-17T10:03:43.286Z"
       },
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "flags": [],
       "id": "openai-chatgpt-pro-200",
       "verified": "2026-10-20"
     },
     {
       "age_days": 22,
-      "dead_sources": [
-        "https://www.explainx.ai/blog/semianalysis-claude-vs-chatgpt-subscription-api-value-limit-testing-2026"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "openai-chatgpt-pro-500",
       "verified": "2026-10-20"
     },
@@ -1872,7 +1852,7 @@
   ],
   "sources": {
     "total": 198,
-    "unreachable": 24
+    "unreachable": 23
   },
   "stale_after_days": 90
 }
