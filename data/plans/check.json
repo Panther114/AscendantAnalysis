@@ -1577,11 +1577,10 @@
     {
       "age_days": 23,
       "dead_sources": [
-        "https://www.trae.cn/pricing",
         "https://zhuanlan.zhihu.com/p/2066687263707238910"
       ],
       "flags": [
-        "2 source URL(s) unreachable"
+        "1 source URL(s) unreachable"
       ],
       "id": "trae-cn-lite",
       "verified": "2026-10-20"
@@ -1589,11 +1588,10 @@
     {
       "age_days": 23,
       "dead_sources": [
-        "https://www.trae.cn/pricing",
         "https://zhuanlan.zhihu.com/p/2066687263707238910"
       ],
       "flags": [
-        "2 source URL(s) unreachable"
+        "1 source URL(s) unreachable"
       ],
       "id": "trae-cn-pro",
       "verified": "2026-10-20"
@@ -1601,11 +1599,10 @@
     {
       "age_days": 23,
       "dead_sources": [
-        "https://www.trae.cn/pricing",
         "https://zhuanlan.zhihu.com/p/2066687263707238910"
       ],
       "flags": [
-        "2 source URL(s) unreachable"
+        "1 source URL(s) unreachable"
       ],
       "id": "trae-cn-pro-plus",
       "verified": "2026-10-20"
@@ -1613,11 +1610,10 @@
     {
       "age_days": 23,
       "dead_sources": [
-        "https://www.trae.cn/pricing",
         "https://zhuanlan.zhihu.com/p/2066687263707238910"
       ],
       "flags": [
-        "2 source URL(s) unreachable"
+        "1 source URL(s) unreachable"
       ],
       "id": "trae-cn-ultra",
       "verified": "2026-10-20"
@@ -1852,7 +1848,7 @@
   ],
   "sources": {
     "total": 198,
-    "unreachable": 23
+    "unreachable": 22
   },
   "stale_after_days": 90
 }
