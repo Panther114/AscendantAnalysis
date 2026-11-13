@@ -34,6 +34,8 @@ interface Props {
   presets?: boolean;
   /** Daily #1 by health, drawn as a colored band above the plot. */
   leaders?: LeaderSpan[];
+  /** Daily #2 and #3 by health (in that order), drawn as thinner bands below the #1 band (2/3 and 1/3 of its height). */
+  runnersUp?: LeaderSpan[][];
   /** Landscape-shifting releases, laid out on lanes below the plot. */
   events?: RaceEvent[];
 }
@@ -41,7 +43,10 @@ interface Props {
 const M = { top: 14, right: 132, bottom: 28, left: 40 };
 const MAX_END_LABELS = 8; // beyond this, end labels collide; the tooltip and picker carry identity
 const MAX_TIP_ROWS = 12;
-const LEADER_BAND = 40; // caption + band above the plot
+const LEADER_BAND = 40; // caption + #1 band above the plot
+const BAND_H = 18; // #1 band height
+const BAND_GAP = 4;
+const RUNNER_UP_H = [(BAND_H * 2) / 3, BAND_H / 3]; // #2 = 2/3 and #3 = 1/3 of the #1 height
 const LANE_H = 22;
 const EVENTS_TOP = 54; // axis labels + caption below the plot
 const PILL_H = 18;
@@ -98,6 +103,7 @@ export function HealthChart({
   fmt = (v) => v.toFixed(1),
   presets = true,
   leaders,
+  runnersUp,
   events,
 }: Props) {
   const [ref, width] = useWidth<HTMLDivElement>();
@@ -108,7 +114,8 @@ export function HealthChart({
   const [hoverEv, setHoverEv] = useState<number | null>(null);
 
   const narrow = width < 560;
-  const lb = leaders?.length ? LEADER_BAND : 0;
+  const extraRows = leaders?.length ? RUNNER_UP_H.slice(0, runnersUp?.length ?? 0) : [];
+  const lb = leaders?.length ? LEADER_BAND + extraRows.reduce((sum, h) => sum + BAND_GAP + h, 0) : 0;
   const lanes = events?.length ? (narrow ? 5 : 6) : 0;
   const eb = lanes ? EVENTS_TOP + lanes * LANE_H : 0;
   const m = { ...M, top: M.top + lb, right: narrow ? 14 : M.right };
@@ -169,7 +176,9 @@ export function HealthChart({
           .sort((a, b) => b.v - a.v);
   const tipLeft = hover == null ? 0 : x(t[hover]) + m.left;
   const tipFlip = tipLeft > width - 220;
-  const leaderAt = hover == null ? null : leaders?.find((l) => hover >= l.start && hover <= l.end);
+  const spanAt = (spans?: LeaderSpan[]) => (hover == null ? null : (spans?.find((l) => hover >= l.start && hover <= l.end) ?? null));
+  const leaderAt = spanAt(leaders);
+  const placeAt = extraRows.map((_, k) => spanAt(runnersUp?.[k]));
 
   const placedEvents = events?.length && width > 0 ? layoutEvents(events, (e) => x(t[e.i]), iw, lanes) : [];
   const evY = (lane: number) => ih + EVENTS_TOP + lane * LANE_H;
@@ -191,24 +200,28 @@ export function HealthChart({
             {lb > 0 && leaders && (
               <g aria-label="Health leader by day">
                 <text x={0} y={-lb + 8} style={{ fontSize: 11, fill: "var(--ink-3)" }}>
-                  #1 in health
+                  {extraRows.length ? `#1${extraRows.length === 1 ? " and #2" : ", #2 and #3"} in health` : "#1 in health"}
                 </text>
-                {leaders.map((l) => {
-                  const x0 = x(t[l.start]);
-                  const x1 = l.end + 1 < t.length ? x(t[l.end + 1]) : iw;
-                  const w = Math.max(1, x1 - x0);
-                  const label = w > 44 ? shortName(l.name, Math.floor((w - 10) / 6.4)) : "";
-                  const on = hover != null && hover >= l.start && hover <= l.end;
-                  return (
-                    <g key={l.start}>
-                      <rect x={x0} y={-lb + 16} width={w} height={18} fill={labColor(l.lab)} opacity={hover == null || on ? 1 : 0.55} />
-                      {label && (
-                        <text x={x0 + 5} y={-lb + 25} dy="0.32em" pointerEvents="none" style={{ fontSize: 10.5, fontWeight: 600, fill: `var(--lab-${l.lab}-ink, var(--ink))` }}>
-                          {label}
-                        </text>
-                      )}
-                    </g>
-                  );
+                {[leaders, ...(runnersUp ?? [])].slice(0, extraRows.length + 1).map((spans, row) => {
+                  const h = row === 0 ? BAND_H : RUNNER_UP_H[row - 1];
+                  const y0 = -lb + 16 + (row === 0 ? 0 : BAND_H + RUNNER_UP_H.slice(0, row - 1).reduce((s, v) => s + v, 0) + BAND_GAP * row);
+                  return spans.map((l) => {
+                    const x0 = x(t[l.start]);
+                    const x1 = l.end + 1 < t.length ? x(t[l.end + 1]) : iw;
+                    const w = Math.max(1, x1 - x0);
+                    const label = row === 0 && w > 44 ? shortName(l.name, Math.floor((w - 10) / 6.4)) : "";
+                    const on = hover != null && hover >= l.start && hover <= l.end;
+                    return (
+                      <g key={`${row}-${l.start}`}>
+                        <rect x={x0} y={y0} width={w} height={h} fill={labColor(l.lab)} opacity={hover == null || on ? 1 : 0.55} />
+                        {label && (
+                          <text x={x0 + 5} y={y0 + h / 2} dy="0.32em" pointerEvents="none" style={{ fontSize: 10.5, fontWeight: 600, fill: `var(--lab-${l.lab}-ink, var(--ink))` }}>
+                            {label}
+                          </text>
+                        )}
+                      </g>
+                    );
+                  });
                 })}
               </g>
             )}
@@ -331,10 +344,17 @@ export function HealthChart({
           >
             <p className="mb-1.5 font-medium text-ink">{fmtDay(t[hover])}</p>
             {leaderAt && (
-              <p className="mb-1.5 flex items-center gap-1.5 border-b border-rule-soft pb-1.5 text-ink-3">
-                <span className="h-2 w-2" style={{ background: labColor(leaderAt.lab) }} />
-                Leader: <span className="text-ink">{leaderAt.name}</span>
-              </p>
+              <div className="mb-1.5 border-b border-rule-soft pb-1.5 text-ink-3">
+                {[leaderAt, ...placeAt].map(
+                  (s, k) =>
+                    s && (
+                      <p key={k} className="flex items-center gap-1.5 py-px">
+                        <span className="h-2 w-2" style={{ background: labColor(s.lab) }} />
+                        {k === 0 ? "Leader" : `#${k + 1}`}: <span className="text-ink">{s.name}</span>
+                      </p>
+                    ),
+                )}
+              </div>
             )}
             {hoverRows.slice(0, MAX_TIP_ROWS).map(({ s, v }) => (
               <p key={s.lab} className="flex items-center justify-between gap-4 py-px">

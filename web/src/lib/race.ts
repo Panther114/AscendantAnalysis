@@ -53,8 +53,21 @@ function dailyLeaders(history: History): (string | null)[] {
   });
 }
 
-export function leaderSpans(history: History, nameOf: (lab: string) => string): LeaderSpan[] {
-  const leaders = dailyLeaders(history);
+/** Lab holding the given 0-based place (0 = #1) on each day; null when fewer labs are ranked. */
+function dailyPlace(history: History, place: number): (string | null)[] {
+  if (place === 0) return dailyLeaders(history);
+  return history.dates.map((_, i) => {
+    const ranked = Object.entries(history.labs)
+      .map(([lab, s]) => ({ lab, v: s.health[i] }))
+      .filter((r): r is { lab: string; v: number } => r.v != null)
+      .sort((a, b) => b.v - a.v); // stable: ties keep insertion order, like dailyLeaders
+    return ranked[place]?.lab ?? null;
+  });
+}
+
+/** Contiguous runs of days on which one lab held the given 0-based place by health (default #1). */
+export function leaderSpans(history: History, nameOf: (lab: string) => string, place = 0): LeaderSpan[] {
+  const leaders = dailyPlace(history, place);
   const spans: LeaderSpan[] = [];
   leaders.forEach((lab, i) => {
     if (!lab) return;

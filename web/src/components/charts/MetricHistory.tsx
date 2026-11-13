@@ -22,12 +22,14 @@ export function MetricHistory({
   labs,
   initial,
   leaders,
+  runnersUp,
   events,
 }: {
   dates: string[];
   labs: { lab: string; name: string; metrics: Record<Metric, (number | null)[]> }[];
   initial: string[];
   leaders?: LeaderSpan[];
+  runnersUp?: LeaderSpan[][];
   events?: RaceEvent[];
 }) {
   const [metric, setMetric] = useState<Metric>("health");
@@ -42,7 +44,7 @@ export function MetricHistory({
   return (
     <div>
       <Tabs options={METRICS.map((x) => ({ key: x.key, label: x.label }))} value={metric} onChange={(k) => setMetric(k as Metric)} />
-      <HealthChart dates={dates} series={series} shown={shown} onShownChange={setShown} height={420} metric={m.label} domain={m.domain} fmt={m.fmt} leaders={leaders} events={events} />
+      <HealthChart dates={dates} series={series} shown={shown} onShownChange={setShown} height={420} metric={m.label} domain={m.domain} fmt={m.fmt} leaders={leaders} runnersUp={runnersUp} events={events} />
     </div>
   );
 }

@@ -12,6 +12,7 @@ export const metadata: Metadata = { title: "Trends" };
 export default function TrendsPage() {
   const ranked = rankedLabs();
   const leaders = leaderSpans(history, labName);
+  const runnersUp = [leaderSpans(history, labName, 1), leaderSpans(history, labName, 2)];
   const events = raceEvents(history, releases, labName);
   const n = history.dates.length;
   const idx13 = Math.max(0, n - 92);
@@ -38,6 +39,7 @@ export default function TrendsPage() {
           dates={history.dates}
           initial={ranked.slice(0, 5)}
           leaders={leaders}
+          runnersUp={runnersUp}
           events={events}
           labs={ranked.map((lab) => ({
             lab,
@@ -56,7 +58,7 @@ export default function TrendsPage() {
           <span className="flex items-center gap-1.5"><span className="inline-block h-3 w-6 rounded-full bg-ink" /> took #1 in health</span>
           <span className="flex items-center gap-1.5"><span className="inline-block h-3 w-6 rounded-full border border-ink-2" /> entered the top 3</span>
           <span className="flex items-center gap-1.5"><span className="inline-block h-3 w-6 rounded-full border border-rule" /> surged {SURGE_POINTS}+ points in a day into the top 8</span>
-          <span>· hover a release for details · the band above shows the #1 lab each day</span>
+          <span>· hover a release for details · the bands above show the #1, #2 and #3 labs each day</span>
         </p>
         <InfoNote>
           Replay starts {fmtDate(history.dates[0])}. Before that, many now-deprecated models lack prices and speeds in the source
