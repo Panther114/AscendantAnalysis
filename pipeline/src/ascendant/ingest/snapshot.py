@@ -123,7 +123,8 @@ def take(date: dt.date | None = None) -> Path:
              for r in (prior_api or {"data": []})["data"] if r.get("model_creator")}
     with httpx.Client(headers=headers, timeout=60, follow_redirects=True) as client:
         api = aa_api.fetch_models(client, known)
-        board = aa_pages.extract(aa_pages.fetch_leaderboard_html(client))
+        board = aa_pages.attach_slugs(
+            aa_pages.extract(aa_pages.fetch_leaderboard_html(client)), api["data"])
     check_versions(api, board)
     fresh = {r["slug"] for r in api["data"]}
     api = carry_api(api, prior_api, prior_board, board["index_version"])
