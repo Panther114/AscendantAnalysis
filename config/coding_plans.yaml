@@ -273,7 +273,7 @@ plans:
     basis: $60/month cap ÷ $10 = ×6.
     confidence: official
   - name: Qwen3.8 Max
-    release: qwen3-8-max-0902
+    release: qwen3-8-max
     multiplier: 1.5
     basis: $15/month cap ÷ $10 = ×1.5.
     confidence: official
@@ -386,7 +386,7 @@ plans:
     basis: $180/month cap ÷ $40 = ×4.5.
     confidence: official
   - name: Qwen3.8 Max
-    release: qwen3-8-max-0902
+    release: qwen3-8-max
     multiplier: 1.5
     basis: $60/month cap ÷ $40 = ×1.5.
     confidence: official
@@ -776,7 +776,7 @@ plans:
     basis: Stated saving 20% vs official → ×1.25.
     confidence: official
   - name: Qwen3.8 Max
-    release: qwen3-8-max-0902
+    release: qwen3-8-max
     multiplier: 1.67
     basis: Stated saving 40% vs official → ×1.67.
     confidence: official
@@ -827,7 +827,7 @@ plans:
     basis: Stated saving 20% vs official → ×1.25.
     confidence: official
   - name: Qwen3.8 Max
-    release: qwen3-8-max-0902
+    release: qwen3-8-max
     multiplier: 1.67
     basis: Stated saving 40% vs official → ×1.67.
     confidence: official
@@ -878,7 +878,7 @@ plans:
     basis: Stated saving 20% vs official → ×1.25.
     confidence: official
   - name: Qwen3.8 Max
-    release: qwen3-8-max-0902
+    release: qwen3-8-max
     multiplier: 1.67
     basis: Stated saving 40% vs official → ×1.67.
     confidence: official
@@ -929,7 +929,7 @@ plans:
     basis: Stated saving 20% vs official → ×1.25.
     confidence: official
   - name: Qwen3.8 Max
-    release: qwen3-8-max-0902
+    release: qwen3-8-max
     multiplier: 1.67
     basis: Stated saving 40% vs official → ×1.67.
     confidence: official
@@ -980,7 +980,7 @@ plans:
     basis: Stated saving 20% vs official → ×1.25.
     confidence: official
   - name: Qwen3.8 Max
-    release: qwen3-8-max-0902
+    release: qwen3-8-max
     multiplier: 1.67
     basis: Stated saving 40% vs official → ×1.67.
     confidence: official
@@ -2908,7 +2908,7 @@ plans:
     date: '2026-10-20'
   models:
   - name: Qwen3.8 Max
-    release: qwen3-8-max-0902
+    release: qwen3-8-max
     multiplier: 3.27
     basis: x2.70 base x r 1.212 (releases $2/$6 vs Beijing $1.65/$4.951).
     confidence: derived
@@ -2974,7 +2974,7 @@ plans:
     date: '2026-10-20'
   models:
   - name: Qwen3.8 Max
-    release: qwen3-8-max-0902
+    release: qwen3-8-max
     multiplier: 4.35
     basis: x3.59 x r 1.212.
     confidence: derived
@@ -3041,7 +3041,7 @@ plans:
     date: '2026-10-20'
   models:
   - name: Qwen3.8 Max
-    release: qwen3-8-max-0902
+    release: qwen3-8-max
     multiplier: 4.27
     basis: x3.52 x r 1.212.
     confidence: derived
@@ -3110,7 +3110,7 @@ plans:
     date: 2026-10
   models:
   - name: Qwen3.8 Max
-    release: qwen3-8-max-0902
+    release: qwen3-8-max
     multiplier: 4.52
     basis: x3.73 x r 1.212.
     confidence: derived
@@ -3173,7 +3173,7 @@ plans:
     date: 2026-10
   models:
   - name: Qwen3.8 Max
-    release: qwen3-8-max-0902
+    release: qwen3-8-max
     multiplier: 3.57
     basis: x2.95 x r 1.212.
     confidence: derived
@@ -3236,7 +3236,7 @@ plans:
     date: 2026-10
   models:
   - name: Qwen3.8 Max
-    release: qwen3-8-max-0902
+    release: qwen3-8-max
     multiplier: 3.91
     basis: x3.23 x r 1.212.
     confidence: derived
@@ -3299,7 +3299,7 @@ plans:
     date: 2026-10
   models:
   - name: Qwen3.8 Max
-    release: qwen3-8-max-0902
+    release: qwen3-8-max
     multiplier: 3.92
     basis: x3.24 x r 1.212.
     confidence: derived
@@ -3364,7 +3364,7 @@ plans:
     date: 2026-10
   models:
   - name: Qwen3.8 Max
-    release: qwen3-8-max-0902
+    release: qwen3-8-max
     multiplier: 4.37
     basis: x3.61 x r 1.212.
     confidence: derived
@@ -3534,7 +3534,7 @@ plans:
     date: '2026-10-20'
   models:
   - name: Qwen3.8 Max
-    release: qwen3-8-max-0902
+    release: qwen3-8-max
     confidence: estimate
   - name: Qwen3.7 Plus
     release: qwen3-7-plus
@@ -3582,7 +3582,7 @@ plans:
     date: '2026-10-20'
   models:
   - name: Qwen3.8 Max
-    release: qwen3-8-max-0902
+    release: qwen3-8-max
     confidence: estimate
   - name: Qwen3.7 Plus
     release: qwen3-7-plus
@@ -3624,7 +3624,7 @@ plans:
     date: '2026-10-20'
   models:
   - name: Qwen3.8 Max
-    release: qwen3-8-max-0902
+    release: qwen3-8-max
     confidence: estimate
   - name: Qwen3.7 Plus
     release: qwen3-7-plus
@@ -3672,7 +3672,7 @@ plans:
     date: '2026-10-20'
   models:
   - name: Qwen3.8 Max
-    release: qwen3-8-max-0902
+    release: qwen3-8-max
     confidence: estimate
   - name: Qwen3.7 Plus
     release: qwen3-7-plus
@@ -3710,7 +3710,7 @@ plans:
     date: '2026-10-20'
   models:
   - name: Qwen3.8 Max
-    release: qwen3-8-max-0902
+    release: qwen3-8-max
     confidence: estimate
   - name: Qwen3.7 Plus
     release: qwen3-7-plus
@@ -6317,7 +6317,7 @@ plans:
     basis: 69.8M tokens (30M ÷ x0.43 × credits/60k) × $0.106/M mix cost ÷ $7.04.
     confidence: estimate
   - name: Qwen3.8-Max
-    release: qwen3-8-max-0902
+    release: qwen3-8-max
     multiplier: 1.06
     basis: 14.3M tokens (30M ÷ x2.10 × credits/60k) × $0.525/M mix cost ÷ $7.04.
     confidence: estimate
@@ -6395,7 +6395,7 @@ plans:
     basis: 279.1M tokens (30M ÷ x0.43 × credits/60k) × $0.106/M mix cost ÷ $26.06.
     confidence: estimate
   - name: Qwen3.8-Max
-    release: qwen3-8-max-0902
+    release: qwen3-8-max
     multiplier: 1.15
     basis: 57.1M tokens (30M ÷ x2.10 × credits/60k) × $0.525/M mix cost ÷ $26.06.
     confidence: estimate
@@ -6473,7 +6473,7 @@ plans:
     basis: 697.7M tokens (30M ÷ x0.43 × credits/60k) × $0.106/M mix cost ÷ $61.97.
     confidence: estimate
   - name: Qwen3.8-Max
-    release: qwen3-8-max-0902
+    release: qwen3-8-max
     multiplier: 1.21
     basis: 142.9M tokens (30M ÷ x2.10 × credits/60k) × $0.525/M mix cost ÷ $61.97.
     confidence: estimate
@@ -6551,7 +6551,7 @@ plans:
     basis: 2093.0M tokens (30M ÷ x0.43 × credits/60k) × $0.106/M mix cost ÷ $179.44.
     confidence: estimate
   - name: Qwen3.8-Max
-    release: qwen3-8-max-0902
+    release: qwen3-8-max
     multiplier: 1.25
     basis: 428.6M tokens (30M ÷ x2.10 × credits/60k) × $0.525/M mix cost ÷ $179.44.
     confidence: estimate
@@ -8824,7 +8824,7 @@ plans:
     release: glm-5-3-flash
     confidence: derived
   - name: Qwen3.8 Max
-    release: qwen3-8-max-0902
+    release: qwen3-8-max
     confidence: derived
   - name: DeepSeek V4.1 Flash
     release: deepseek-v4-1-flash
@@ -8913,7 +8913,7 @@ plans:
     release: glm-5-3-flash
     confidence: derived
   - name: Qwen3.8 Max
-    release: qwen3-8-max-0902
+    release: qwen3-8-max
     confidence: derived
   - name: DeepSeek V4.1 Flash
     release: deepseek-v4-1-flash
@@ -9006,7 +9006,7 @@ plans:
     release: glm-5-3-flash
     confidence: derived
   - name: Qwen3.8 Max
-    release: qwen3-8-max-0902
+    release: qwen3-8-max
     confidence: derived
   - name: DeepSeek V4.1 Flash
     release: deepseek-v4-1-flash
