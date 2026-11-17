@@ -214,12 +214,8 @@
     },
     {
       "age_days": 28,
-      "dead_sources": [
-        "https://www.usagepricing.com/blueprint/augment-code"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "augment-standard",
       "verified": "2026-10-20"
     },
@@ -296,12 +292,8 @@
     },
     {
       "age_days": 28,
-      "dead_sources": [
-        "https://www.usagepricing.com/blueprint/cerebras"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "cerebras-code-pro",
       "verified": "2026-10-20"
     },
@@ -586,12 +578,8 @@
     },
     {
       "age_days": 28,
-      "dead_sources": [
-        "https://www.usagepricing.com/blueprint/factory"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "factory-pro",
       "verified": "2026-10-20"
     },
@@ -783,19 +771,15 @@
     },
     {
       "age_days": 28,
-      "dead_sources": [
-        "https://www.usagepricing.com/blueprint/jetbrains-ai"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "jetbrains-ai-pro",
       "verified": "2026-10-20"
     },
     {
       "age_days": 28,
       "dead_sources": [
-        "https://www.usagepricing.com/blueprint/jetbrains-ai"
+        "https://aicybr.com/blog/ai-coding-subscription-plans-comparison"
       ],
       "flags": [
         "1 source URL(s) unreachable"
@@ -860,12 +844,11 @@
     {
       "age_days": 28,
       "dead_sources": [
-        "https://www.usagepricing.com/blueprint/activity/moonshot-ai-2026-09-28-kimi-plus-pro-max-ultra-plans",
         "https://linux.do/t/topic/2620965",
         "https://linux.do/t/topic/2617259"
       ],
       "flags": [
-        "3 source URL(s) unreachable"
+        "2 source URL(s) unreachable"
       ],
       "id": "kimi-code-max-global",
       "verified": "2026-10-20"
@@ -885,12 +868,11 @@
     {
       "age_days": 28,
       "dead_sources": [
-        "https://www.usagepricing.com/blueprint/activity/moonshot-ai-2026-09-28-kimi-plus-pro-max-ultra-plans",
         "https://linux.do/t/topic/2620965",
         "https://linux.do/t/topic/2617259"
       ],
       "flags": [
-        "3 source URL(s) unreachable"
+        "2 source URL(s) unreachable"
       ],
       "id": "kimi-code-plus-global",
       "verified": "2026-10-20"
@@ -910,12 +892,11 @@
     {
       "age_days": 28,
       "dead_sources": [
-        "https://www.usagepricing.com/blueprint/activity/moonshot-ai-2026-09-28-kimi-plus-pro-max-ultra-plans",
         "https://linux.do/t/topic/2620965",
         "https://linux.do/t/topic/2617259"
       ],
       "flags": [
-        "3 source URL(s) unreachable"
+        "2 source URL(s) unreachable"
       ],
       "id": "kimi-code-pro-global",
       "verified": "2026-10-20"
@@ -935,67 +916,51 @@
     {
       "age_days": 28,
       "dead_sources": [
-        "https://www.usagepricing.com/blueprint/activity/moonshot-ai-2026-09-28-kimi-plus-pro-max-ultra-plans",
         "https://linux.do/t/topic/2620965",
         "https://linux.do/t/topic/2617259"
       ],
       "flags": [
-        "3 source URL(s) unreachable"
+        "2 source URL(s) unreachable"
       ],
       "id": "kimi-code-ultra-global",
       "verified": "2026-10-20"
     },
     {
       "age_days": 28,
-      "dead_sources": [
-        "https://www.usagepricing.com/blueprint/kiro"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "kiro-power",
       "verified": "2026-10-20"
     },
     {
       "age_days": 28,
-      "dead_sources": [
-        "https://www.usagepricing.com/blueprint/kiro"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "kiro-pro",
       "verified": "2026-10-20"
     },
     {
       "age_days": 28,
-      "dead_sources": [
-        "https://www.usagepricing.com/blueprint/kiro"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "kiro-pro-max",
       "verified": "2026-10-20"
     },
     {
       "age_days": 28,
-      "dead_sources": [
-        "https://www.usagepricing.com/blueprint/kiro"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "kiro-pro-plus",
       "verified": "2026-10-20"
     },
     {
       "age_days": 28,
       "dead_sources": [
+        "https://github.com/AIddlx/coding-plans/blob/main/%E5%BF%AB%E6%89%8BKwaiKAT_Coding_Plan_%E8%AE%B0%E5%BD%95.md",
         "https://vercel.com/ai-gateway/models/kat-coder-pro-v2.5"
       ],
       "flags": [
-        "1 source URL(s) unreachable"
+        "2 source URL(s) unreachable"
       ],
       "id": "kwaikat-coding-plan-max-china",
       "verified": "2026-10-20"
@@ -1003,10 +968,11 @@
     {
       "age_days": 28,
       "dead_sources": [
+        "https://github.com/AIddlx/coding-plans/blob/main/%E5%BF%AB%E6%89%8BKwaiKAT_Coding_Plan_%E8%AE%B0%E5%BD%95.md",
         "https://vercel.com/ai-gateway/models/kat-coder-pro-v2.5"
       ],
       "flags": [
-        "1 source URL(s) unreachable"
+        "2 source URL(s) unreachable"
       ],
       "id": "kwaikat-coding-plan-max-global",
       "verified": "2026-10-20"
@@ -1014,10 +980,11 @@
     {
       "age_days": 28,
       "dead_sources": [
+        "https://github.com/AIddlx/coding-plans/blob/main/%E5%BF%AB%E6%89%8BKwaiKAT_Coding_Plan_%E8%AE%B0%E5%BD%95.md",
         "https://vercel.com/ai-gateway/models/kat-coder-pro-v2.5"
       ],
       "flags": [
-        "1 source URL(s) unreachable"
+        "2 source URL(s) unreachable"
       ],
       "id": "kwaikat-coding-plan-mini-china",
       "verified": "2026-10-20"
@@ -1025,10 +992,11 @@
     {
       "age_days": 28,
       "dead_sources": [
+        "https://github.com/AIddlx/coding-plans/blob/main/%E5%BF%AB%E6%89%8BKwaiKAT_Coding_Plan_%E8%AE%B0%E5%BD%95.md",
         "https://vercel.com/ai-gateway/models/kat-coder-pro-v2.5"
       ],
       "flags": [
-        "1 source URL(s) unreachable"
+        "2 source URL(s) unreachable"
       ],
       "id": "kwaikat-coding-plan-mini-global",
       "verified": "2026-10-20"
@@ -1036,10 +1004,11 @@
     {
       "age_days": 28,
       "dead_sources": [
+        "https://github.com/AIddlx/coding-plans/blob/main/%E5%BF%AB%E6%89%8BKwaiKAT_Coding_Plan_%E8%AE%B0%E5%BD%95.md",
         "https://vercel.com/ai-gateway/models/kat-coder-pro-v2.5"
       ],
       "flags": [
-        "1 source URL(s) unreachable"
+        "2 source URL(s) unreachable"
       ],
       "id": "kwaikat-coding-plan-pro-china",
       "verified": "2026-10-20"
@@ -1047,10 +1016,11 @@
     {
       "age_days": 28,
       "dead_sources": [
+        "https://github.com/AIddlx/coding-plans/blob/main/%E5%BF%AB%E6%89%8BKwaiKAT_Coding_Plan_%E8%AE%B0%E5%BD%95.md",
         "https://vercel.com/ai-gateway/models/kat-coder-pro-v2.5"
       ],
       "flags": [
-        "1 source URL(s) unreachable"
+        "2 source URL(s) unreachable"
       ],
       "id": "kwaikat-coding-plan-pro-global",
       "verified": "2026-10-20"
@@ -1058,10 +1028,11 @@
     {
       "age_days": 28,
       "dead_sources": [
+        "https://github.com/AIddlx/coding-plans/blob/main/%E5%BF%AB%E6%89%8BKwaiKAT_Coding_Plan_%E8%AE%B0%E5%BD%95.md",
         "https://vercel.com/ai-gateway/models/kat-coder-pro-v2.5"
       ],
       "flags": [
-        "1 source URL(s) unreachable"
+        "2 source URL(s) unreachable"
       ],
       "id": "kwaikat-coding-plan-starter-china",
       "verified": "2026-10-20"
@@ -1069,10 +1040,11 @@
     {
       "age_days": 28,
       "dead_sources": [
+        "https://github.com/AIddlx/coding-plans/blob/main/%E5%BF%AB%E6%89%8BKwaiKAT_Coding_Plan_%E8%AE%B0%E5%BD%95.md",
         "https://vercel.com/ai-gateway/models/kat-coder-pro-v2.5"
       ],
       "flags": [
-        "1 source URL(s) unreachable"
+        "2 source URL(s) unreachable"
       ],
       "id": "kwaikat-coding-plan-starter-global",
       "verified": "2026-10-20"
@@ -1681,24 +1653,15 @@
     },
     {
       "age_days": 28,
-      "dead_sources": [
-        "https://www.usagepricing.com/blueprint/warp",
-        "https://capitalandcompute.net/blog/warp-pricing-explained/"
-      ],
-      "flags": [
-        "2 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "warp-build",
       "verified": "2026-10-20"
     },
     {
       "age_days": 28,
-      "dead_sources": [
-        "https://www.usagepricing.com/blueprint/activity/warp-2026-10-price-change"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "warp-max",
       "verified": "2026-10-20"
     },
@@ -1852,7 +1815,7 @@
   ],
   "sources": {
     "total": 198,
-    "unreachable": 23
+    "unreachable": 16
   },
   "stale_after_days": 90
 }
