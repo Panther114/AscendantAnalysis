@@ -149,7 +149,9 @@
     },
     {
       "age_days": 33,
-      "dead_sources": [],
+      "dead_sources": [
+        "https://www.explainx.ai/blog/semianalysis-claude-vs-chatgpt-subscription-api-value-limit-testing-2026"
+      ],
       "devforth": {
         "baseline": 60.9,
         "class": "All",
@@ -166,7 +168,9 @@
         "price_usd": 20,
         "updated": "2026-09-17T10:03:43.286Z"
       },
-      "flags": [],
+      "flags": [
+        "1 source URL(s) unreachable"
+      ],
       "id": "anthropic-claude-pro",
       "verified": "2026-10-20"
     },
@@ -515,45 +519,29 @@
     },
     {
       "age_days": 33,
-      "dead_sources": [
-        "https://aitoolanalysis.com/supergrok-subscription-price-2026/"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "cursor-x-plus",
       "verified": "2026-10-20"
     },
     {
       "age_days": 33,
-      "dead_sources": [
-        "https://aitoolanalysis.com/supergrok-subscription-price-2026/"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "cursor-x-premium",
       "verified": "2026-10-20"
     },
     {
       "age_days": 33,
-      "dead_sources": [
-        "https://aitoolanalysis.com/supergrok-subscription-price-2026/"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "cursor-x-super",
       "verified": "2026-10-20"
     },
     {
       "age_days": 33,
-      "dead_sources": [
-        "https://aitoolanalysis.com/supergrok-subscription-price-2026/"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "cursor-x-ultra",
       "verified": "2026-10-20"
     },
@@ -1260,7 +1248,9 @@
     },
     {
       "age_days": 33,
-      "dead_sources": [],
+      "dead_sources": [
+        "https://www.explainx.ai/blog/semianalysis-claude-vs-chatgpt-subscription-api-value-limit-testing-2026"
+      ],
       "devforth": {
         "baseline": 15.2,
         "class": "All",
@@ -1277,13 +1267,17 @@
         "price_usd": 20,
         "updated": "2026-09-17T10:35:47.298Z"
       },
-      "flags": [],
+      "flags": [
+        "1 source URL(s) unreachable"
+      ],
       "id": "openai-chatgpt-plus",
       "verified": "2026-10-20"
     },
     {
       "age_days": 33,
-      "dead_sources": [],
+      "dead_sources": [
+        "https://www.explainx.ai/blog/semianalysis-claude-vs-chatgpt-subscription-api-value-limit-testing-2026"
+      ],
       "devforth": {
         "baseline": 15.2,
         "class": "All",
@@ -1300,13 +1294,17 @@
         "price_usd": 100,
         "updated": "2026-09-17T10:35:50.128Z"
       },
-      "flags": [],
+      "flags": [
+        "1 source URL(s) unreachable"
+      ],
       "id": "openai-chatgpt-pro-100",
       "verified": "2026-10-20"
     },
     {
       "age_days": 33,
-      "dead_sources": [],
+      "dead_sources": [
+        "https://www.explainx.ai/blog/semianalysis-claude-vs-chatgpt-subscription-api-value-limit-testing-2026"
+      ],
       "devforth": {
         "baseline": 55.7,
         "class": "All",
@@ -1323,14 +1321,20 @@
         "price_usd": 200,
         "updated": "2026-09-17T10:03:43.286Z"
       },
-      "flags": [],
+      "flags": [
+        "1 source URL(s) unreachable"
+      ],
       "id": "openai-chatgpt-pro-200",
       "verified": "2026-10-20"
     },
     {
       "age_days": 33,
-      "dead_sources": [],
-      "flags": [],
+      "dead_sources": [
+        "https://www.explainx.ai/blog/semianalysis-claude-vs-chatgpt-subscription-api-value-limit-testing-2026"
+      ],
+      "flags": [
+        "1 source URL(s) unreachable"
+      ],
       "id": "openai-chatgpt-pro-500",
       "verified": "2026-10-20"
     },
@@ -1693,45 +1697,29 @@
     },
     {
       "age_days": 33,
-      "dead_sources": [
-        "https://aitoolanalysis.com/supergrok-subscription-price-2026/"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "xai-supergrok",
       "verified": "2026-10-20"
     },
     {
       "age_days": 33,
-      "dead_sources": [
-        "https://aitoolanalysis.com/supergrok-subscription-price-2026/"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "xai-supergrok-heavy",
       "verified": "2026-10-20"
     },
     {
       "age_days": 33,
-      "dead_sources": [
-        "https://aitoolanalysis.com/supergrok-subscription-price-2026/"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "xai-supergrok-lite",
       "verified": "2026-10-20"
     },
     {
       "age_days": 33,
-      "dead_sources": [
-        "https://aitoolanalysis.com/supergrok-subscription-price-2026/"
-      ],
-      "flags": [
-        "1 source URL(s) unreachable"
-      ],
+      "dead_sources": [],
+      "flags": [],
       "id": "xai-supergrok-plus",
       "verified": "2026-10-20"
     },
