@@ -1777,22 +1777,34 @@
     },
     {
       "age_days": 36,
-      "dead_sources": [],
-      "flags": [],
+      "dead_sources": [
+        "https://glm5.app/blog/glm-5-3-coding-plan"
+      ],
+      "flags": [
+        "1 source URL(s) unreachable"
+      ],
       "id": "zai-glm-lite",
       "verified": "2026-10-20"
     },
     {
       "age_days": 36,
-      "dead_sources": [],
-      "flags": [],
+      "dead_sources": [
+        "https://glm5.app/blog/glm-5-3-coding-plan"
+      ],
+      "flags": [
+        "1 source URL(s) unreachable"
+      ],
       "id": "zai-glm-max",
       "verified": "2026-10-20"
     },
     {
       "age_days": 36,
-      "dead_sources": [],
-      "flags": [],
+      "dead_sources": [
+        "https://glm5.app/blog/glm-5-3-coding-plan"
+      ],
+      "flags": [
+        "1 source URL(s) unreachable"
+      ],
       "id": "zai-glm-pro",
       "verified": "2026-10-20"
     },
@@ -1827,7 +1839,7 @@
   ],
   "sources": {
     "total": 198,
-    "unreachable": 16
+    "unreachable": 17
   },
   "stale_after_days": 90
 }
