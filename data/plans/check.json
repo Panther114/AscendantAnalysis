@@ -207,15 +207,23 @@
     },
     {
       "age_days": 38,
-      "dead_sources": [],
-      "flags": [],
+      "dead_sources": [
+        "https://www.augmentcode.com/pricing"
+      ],
+      "flags": [
+        "1 source URL(s) unreachable"
+      ],
       "id": "augment-business",
       "verified": "2026-10-20"
     },
     {
       "age_days": 38,
-      "dead_sources": [],
-      "flags": [],
+      "dead_sources": [
+        "https://www.augmentcode.com/pricing"
+      ],
+      "flags": [
+        "1 source URL(s) unreachable"
+      ],
       "id": "augment-standard",
       "verified": "2026-10-20"
     },
@@ -1059,29 +1067,45 @@
     },
     {
       "age_days": 38,
-      "dead_sources": [],
-      "flags": [],
+      "dead_sources": [
+        "https://github.com/Fei2411/real-api-pricing/issues/99"
+      ],
+      "flags": [
+        "1 source URL(s) unreachable"
+      ],
       "id": "meta-muse-code-everyday",
       "verified": "2026-10-20"
     },
     {
       "age_days": 38,
-      "dead_sources": [],
-      "flags": [],
+      "dead_sources": [
+        "https://github.com/Fei2411/real-api-pricing/issues/99"
+      ],
+      "flags": [
+        "1 source URL(s) unreachable"
+      ],
       "id": "meta-muse-code-high",
       "verified": "2026-10-20"
     },
     {
       "age_days": 38,
-      "dead_sources": [],
-      "flags": [],
+      "dead_sources": [
+        "https://github.com/Fei2411/real-api-pricing/issues/99"
+      ],
+      "flags": [
+        "1 source URL(s) unreachable"
+      ],
       "id": "meta-muse-code-max",
       "verified": "2026-10-20"
     },
     {
       "age_days": 38,
-      "dead_sources": [],
-      "flags": [],
+      "dead_sources": [
+        "https://github.com/Fei2411/real-api-pricing/issues/99"
+      ],
+      "flags": [
+        "1 source URL(s) unreachable"
+      ],
       "id": "meta-muse-code-power",
       "verified": "2026-10-20"
     },
@@ -1811,7 +1835,7 @@
   ],
   "sources": {
     "total": 198,
-    "unreachable": 15
+    "unreachable": 17
   },
   "stale_after_days": 90
 }
